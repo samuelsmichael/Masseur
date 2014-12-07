@@ -126,62 +126,11 @@ public class MasseurSocketService extends Service implements
 	protected void doACTION_STARTING_FROM_BOOTUP() {		
 	}
 	
-	class SocketListenerThread implements Runnable {
-		boolean keepGoing=true;
-		@Override
-		public void run() {			
-            while (keepGoing) {
-                // LISTEN FOR INCOMING CLIENTS
-            	try {
-            		Socket clientSocket = mServerSocket.accept();
-            		
-        	    	if(this.isMyActivityRunning()) {
-        	    		MasseurMainActivity.mSingleton.addNewClientSocket(clientSocket, mItemMasseurMe.getmName());
-
-        	    	} else {
-        	    		pendingSockets.put(clientSocket.getPort(), clientSocket);
-        	    		Intent intent=new Intent(MasseurSocketService.this,MasseurMainActivity.class);
-        	    		intent.setAction(ApplicationMasseur.ACTION_NEW_CLIENT_CONNECTION);
-        		    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        		    	startActivity(intent);
-        		    	// TODO
-        		    	/*
-        		    	 * 1. After the activity starts, it needs to send me a notice so I can do a
-        		    	 * MasseurMainActivity.mSingleton.addNewClientSocket(clientSocket, mItemMasseurMe.getmName());
-        		    	 */
-        	    	}
-
-            	} catch (IOException e) {
-            		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
-            		cleanUpButLeaveNetworkPolling();
-            	}
-            }
-            closeClientSockets();
-		}	
-		private void closeClientSockets() {
-			// TODO 
-		}
-		public boolean isMyActivityRunning(){
-			return MasseurMainActivity.mSingleton==null;
-/*			
-			ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-			 List< ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(200); 
-			 for(ActivityManager.RunningTaskInfo info : runningTaskInfo) {
-				 String className=info.baseActivity.getClassName();
-				 if(className.indexOf("MasseurMainActivity")!=-1 && info.baseActivity.getPackageName().equals(getPackageName())) {
-					 return true;
-				 }
-			 }
-			return false;
-					*/
-
-		}
-	}
 	private void doActivityIsNowAvailableActions() {
 		Enumeration<Socket> socks=pendingSockets.elements(); 
 		while(socks.hasMoreElements()) {
 			Socket socket=socks.nextElement();
-    		MasseurMainActivity.mSingleton.addNewClientSocket(socket, mItemMasseurMe.getmName());
+    		MasseurMainActivity.mSingleton.addNewClientSocket(socket, mItemMasseurMe.getmName(),mItemMasseurMe.getmUserId());
 		}
 		pendingSockets.clear();
 	}
@@ -241,7 +190,58 @@ public class MasseurSocketService extends Service implements
 				}
 			}
 		}	
+	}	class SocketListenerThread implements Runnable {
+		boolean keepGoing=true;
+		@Override
+		public void run() {			
+            while (keepGoing) {
+                // LISTEN FOR INCOMING CLIENTS
+            	try {
+            		Socket clientSocket = mServerSocket.accept();
+            		
+        	    	if(this.isMyActivityRunning()) {
+        	    		MasseurMainActivity.mSingleton.addNewClientSocket(clientSocket, mItemMasseurMe.getmName(), mItemMasseurMe.getmUserId());
+
+        	    	} else {
+        	    		pendingSockets.put(clientSocket.getPort(), clientSocket);
+        	    		Intent intent=new Intent(MasseurSocketService.this,MasseurMainActivity.class);
+        	    		intent.setAction(ApplicationMasseur.ACTION_NEW_CLIENT_CONNECTION);
+        		    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        		    	startActivity(intent);
+        		    	// TODO
+        		    	/*
+        		    	 * 1. After the activity starts, it needs to send me a notice so I can do a
+        		    	 * MasseurMainActivity.mSingleton.addNewClientSocket(clientSocket, mItemMasseurMe.getmName());
+        		    	 */
+        	    	}
+
+            	} catch (IOException e) {
+            		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
+            		cleanUpButLeaveNetworkPolling();
+            	}
+            }
+            closeClientSockets();
+		}	
+		private void closeClientSockets() {
+			// TODO 
+		}
+		public boolean isMyActivityRunning(){
+			return MasseurMainActivity.mSingleton!=null;
+/*			
+			ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+			 List< ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(200); 
+			 for(ActivityManager.RunningTaskInfo info : runningTaskInfo) {
+				 String className=info.baseActivity.getClassName();
+				 if(className.indexOf("MasseurMainActivity")!=-1 && info.baseActivity.getPackageName().equals(getPackageName())) {
+					 return true;
+				 }
+			 }
+			return false;
+					*/
+
+		}
 	}
+
     private String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
@@ -288,6 +288,7 @@ public class MasseurSocketService extends Service implements
 						 String localIpAddress=getLocalIpAddress();
 						 if(!localIpAddress.equals(mInetAddress)) {
 					        // Tell web server that we're here, and here's my inet address
+							 mInetAddress=localIpAddress;
 					       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("moi~"+ mSettingsManager.getMasseurName(), MasseurSocketService.this, MasseurSocketService.this);
 						 }
 					 }

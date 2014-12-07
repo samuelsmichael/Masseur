@@ -1,6 +1,8 @@
 package com.diamondsoftware.android.masseur;
 
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.acra.ReportingInteractionMode;
@@ -35,7 +37,21 @@ public class ApplicationMasseur extends Application {
 	public static final int SERVERPORT = 8080;
 	public static final int NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS=5000;
 	
-	public Hashtable<String,ItemClient> mClients=new Hashtable<String,ItemClient>();
+	public ArrayList<ItemClient> mClients=new ArrayList<ItemClient>();
 	public Hashtable<Integer,Socket> mPendingSockets=new Hashtable<Integer,Socket>();
+	String[] getAllClientsAsStringArray() {
+		if(mClients!=null) {
+			String[] allClientNames=new String[mClients.size()];
+			int c=0;
+			for(ItemClient ic: mClients) {
+				allClientNames[c++]=ic.getmName();
+			}		
+			return allClientNames;
+		} else {
+			return null;
+		}
+	}
+	
+	
 }
 

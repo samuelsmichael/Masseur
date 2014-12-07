@@ -33,8 +33,8 @@ public class SettingsManager {
 	public String getMasseurName() {
 		return getValue(ApplicationMasseur.KEY_MASSEUR_NAME,null);
 	}
-	public String setMasseurName(String value) {
-		return getValue(ApplicationMasseur.KEY_MASSEUR_NAME,value);
+	public void setMasseurName(String value) {
+		setValue(ApplicationMasseur.KEY_MASSEUR_NAME,value);
 	}
 	public int getLoggingLevel() {
 		String value=getValue(com.diamondsoftware.android.common.GlobalStaticValues.KEY_LOGGINGLEVEL,String.valueOf(com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL));
@@ -43,4 +43,11 @@ public class SettingsManager {
 	public void setLoggingLevel(int value) {
 		setValue(com.diamondsoftware.android.common.GlobalStaticValues.KEY_LOGGINGLEVEL, String.valueOf(value));
 	}
+	public String getChatId() {
+		return getValue("chat_id", "");
+	}
+	public void setChatId(String chatId) {
+		setValue("chat_id",chatId);
+	}
+
 }

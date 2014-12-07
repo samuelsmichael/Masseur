@@ -1,6 +1,5 @@
 package com.diamondsoftware.android.masseur;
 
-
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -101,13 +100,28 @@ public class NavigationDrawerFragment extends Fragment {
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                }));
+                ((ApplicationMasseur)getActivity().getApplication()).getAllClientsAsStringArray()
+        		));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
+    }
+    
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) // called when drawer opens
+    {
+      if (mDrawerLayout != null && isDrawerOpen()) {
+          String[] allMs=((ApplicationMasseur)getActivity().getApplication()).getAllClientsAsStringArray();
+          if(allMs==null) {
+          	allMs=new String[]{"Client list"};
+          }
+          mDrawerListView.setAdapter(new ArrayAdapter<String>(
+                  getActionBar().getThemedContext(),
+                  android.R.layout.simple_list_item_activated_1,
+                  android.R.id.text1,
+                  allMs
+                  ));
+          mDrawerListView.invalidateViews();
+      }
     }
 
     public boolean isDrawerOpen() {

@@ -1,14 +1,22 @@
 package com.diamondsoftware.android.masseur;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 
+import com.diamondsoftware.android.common.DataGetter;
 import com.diamondsoftware.android.common.GlobalStaticValues;
+import com.diamondsoftware.android.massagenearby.model.ItemClient;
+import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 
 import android.app.Activity;
 
@@ -20,31 +28,36 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class MasseurMainActivity extends Activity
+public class MasseurMainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 	
 	public static MasseurMainActivity mSingleton=null;
 	private SettingsManager mSettingsManager;
+	private ItemMasseur mItemMasseur_me;
 
 
     /**
@@ -75,7 +88,7 @@ public class MasseurMainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         
-        if(mSettingsManager.getMasseurName().equals(null)) {
+        if(mSettingsManager.getMasseurName()==null) {
 		    android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 		    android.app.Fragment prev = getFragmentManager().findFragmentByTag("login");
 		    if (prev != null) {
@@ -137,7 +150,7 @@ public class MasseurMainActivity extends Activity
     
     
     
-    public void addNewClientSocket(Socket socket,String name) {
+    public void addNewClientSocket(Socket socket,String name, int userId) {
     	// TODO
     	/*
     	 * This is a new socket. It doesn't have a ClientMasseur associated with it yet. 
@@ -145,16 +158,76 @@ public class MasseurMainActivity extends Activity
     	 * just needs an acknowledgement (with a name)
     	 */
 
-        
+    	if(this.mItemMasseur_me==null) {
+    		mItemMasseur_me=new ItemMasseur();
+    		mItemMasseur_me.setmUserId(userId);
+    		mItemMasseur_me.setmName(name);
+    	}
+    	ItemClient ic=new ItemClient();
+    	ClientThreadReceive ctr=new ClientThreadReceive(socket,ic,mItemMasseur_me.getmUserId());
+    	ic.setmClientThreadReceive(ctr);
+
+        ((ApplicationMasseur)getApplication()).mClients.add(ic);
         // Ask client to tell you his name
     	// We need to put this into a thread (ClientSocket?)
     	try {
 	        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket
 	                .getOutputStream())), true);
-	        out.println(name+"~"+GlobalStaticValues.COMMAND_WHATS_YOUR_NAME+"~");
+	        out.println(name+"~"+GlobalStaticValues.COMMAND_WHATS_YOUR_NAME_AND_ID+"~");
+            Thread cThread = new Thread(ctr);
+            cThread.start();
     	} catch (IOException e) {}
     }
     
+    public class ClientThreadReceive implements Runnable {
+    	Socket mSocket;
+    	public boolean mClientIsAlive;
+    	public ItemClient mItemClient;
+    	private int mMasseurClientId; 
+    	public ClientThreadReceive(Socket socket, ItemClient ic, int masseurClientId) {
+    		mSocket=socket;
+    		mClientIsAlive=true;
+    		mItemClient=ic;
+    		mMasseurClientId=masseurClientId;
+    	}
+
+		@Override
+		public void run() {
+			while(mClientIsAlive) {
+				try {
+		            BufferedReader in = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+		            String line = null;
+		            while ((line = in.readLine()) != null) {
+                    	String[] sa=line.split("\\~", -1);
+                    	String name=sa[0];
+                    	String command=sa[1];
+                    	String msg=sa[2];
+                    	if (command.equals(GlobalStaticValues.COMMAND_MY_NAME_AND_ID_IS)) {
+                    		mItemClient.setmName(name);
+                    		mItemClient.setmClientId(Integer.valueOf(msg));
+                    	} else {
+                    		if(command.equals(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG)) {
+                    			
+	                			ContentValues values = new ContentValues(2);
+	                			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_MSG, msg);
+	                			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_FROM, String.valueOf(mItemClient.getmClientId()));
+	                			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_TO, String.valueOf(mMasseurClientId));
+	                			MasseurMainActivity.this.getContentResolver().insert(com.diamondsoftware.android.massagenearby.model.DataProvider.CONTENT_URI_MESSAGES, values);
+
+                    		}
+                    	}
+		            }
+
+				} catch (IOException e) {
+					break;
+				}
+			}
+			try {
+				mSocket.close();
+			} catch (IOException e) {}
+		}
+    	
+    }
     
 
     /* (non-Javadoc)
@@ -163,31 +236,33 @@ public class MasseurMainActivity extends Activity
 	@Override
 	protected void onDestroy() {
 		mSingleton=null;
-
+		ArrayList<ItemClient> aL=((ApplicationMasseur)getApplication()).mClients;
+		for(ItemClient ic: aL) {
+			ic.close();
+		}
+		((ApplicationMasseur)getApplication()).mClients.clear();
 		super.onDestroy();
 	}
 
 	@Override
     public void onNavigationDrawerItemSelected(int position) {
+		int clientId=((ApplicationMasseur)getApplication()).mClients.get(position-1).getmClientId();
+		String clientName=((ApplicationMasseur)getApplication()).mClients.get(position-1).getmName();
+		Socket socket=((ApplicationMasseur)getApplication()).mClients.get(position-1).getmClientThreadReceive().mSocket;
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, PlaceholderFragment.newInstance(clientId,clientName,mSettingsManager,socket))
                 .commit();
     }
 
     public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+    	ArrayList<ItemClient> allMs=((ApplicationMasseur)getApplication()).mClients;
+    	if(allMs!=null && allMs.size()>0) {
+    		mTitle = ((ItemClient)allMs.get(number-1)).getmName();
+    	} else {
+    		mTitle="";
+    	}
     }
 
     public void restoreActionBar() {
@@ -226,7 +301,14 @@ public class MasseurMainActivity extends Activity
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends android.support.v4.app.Fragment {
+    	int mClientId;
+    	String mClientName;
+    	private EditText msgEdit;
+    	private Button btnSend;
+    	private Socket mSocket;
+
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -237,11 +319,17 @@ public class MasseurMainActivity extends Activity
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int clientId, String clientName, SettingsManager sm, Socket socket) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putInt(ARG_SECTION_NUMBER, clientId);
             fragment.setArguments(args);
+        	fragment.mClientId=clientId;
+        	fragment.mClientName=clientName;
+        	fragment.mSocket=socket;
+        	sm.setChatId(String.valueOf(fragment.mClientId));
+        	
+            
             return fragment;
         }
 
@@ -251,7 +339,44 @@ public class MasseurMainActivity extends Activity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_masseur_main, container, false);
+            android.support.v4.app.FragmentManager fragmentManager = getChildFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container2, com.diamondsoftware.android.massagenearby.common.MessagesFragment.newInstance(mClientId))
+                    .commit();
+
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            msgEdit = (EditText)rootView.findViewById(R.id.msg_edit);
+            btnSend = (Button) rootView.findViewById(R.id.send_btn);
+            btnSend.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+	    			String msg = msgEdit.getText().toString();
+	    			if (!TextUtils.isEmpty(msg)) {
+	           			btnSend.setEnabled(false);
+	    				
+	           			String txt=mClientName+"~"+GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG+"~"+msg;
+	           			
+	           			try {
+	                    PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket
+	                            .getOutputStream())), true);
+	                    out.println(txt);     	 	
+	           			} catch (IOException e) {
+	           				return;
+	           			}
+	           			
+            			ContentValues values = new ContentValues(2);
+            			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_MSG, msg);
+            			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_TO, String.valueOf(mClientId));
+            			getActivity().getContentResolver().insert(com.diamondsoftware.android.massagenearby.model.DataProvider.CONTENT_URI_MESSAGES, values);
+            			
+	           			
+	    				
+	    				msgEdit.setText(null);
+	    				
+	    			}
+				}
+			});
             return rootView;
         }
 

@@ -2,9 +2,30 @@ package com.diamondsoftware.android.massagenearby.model;
 
 import java.net.Socket;
 
+import com.diamondsoftware.android.masseur.MasseurMainActivity.ClientThreadReceive;
+
 public class ItemClient {
 	private String mName;
-	private Socket mSocket;
+	private ClientThreadReceive mClientThreadReceive;
+	private int mClientId;
+	/**
+	 * @return the mClientId
+	 */
+	public int getmClientId() {
+		return mClientId;
+	}
+
+	/**
+	 * @param mClientId the mClientId to set
+	 */
+	public void setmClientId(int mClientId) {
+		this.mClientId = mClientId;
+	}
+
+	public void close() {
+		mClientThreadReceive.mClientIsAlive=true;
+	}
+
 	/**
 	 * @return the mName
 	 */
@@ -18,15 +39,17 @@ public class ItemClient {
 		this.mName = mName;
 	}
 	/**
-	 * @return the mSocket
+	 * @return the mClientThreadReceive
 	 */
-	public Socket getmSocket() {
-		return mSocket;
+	public ClientThreadReceive getmClientThreadReceive() {
+		return mClientThreadReceive;
 	}
 	/**
-	 * @param mSocket the mSocket to set
+	 * @param mClientThreadReceive the mClientThreadReceive to set
 	 */
-	public void setmSocket(Socket mSocket) {
-		this.mSocket = mSocket;
+	public void setmClientThreadReceive(ClientThreadReceive mClientThreadReceive) {
+		this.mClientThreadReceive = mClientThreadReceive;
 	}
+
+
 }
