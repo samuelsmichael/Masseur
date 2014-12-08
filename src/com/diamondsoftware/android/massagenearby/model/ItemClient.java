@@ -7,7 +7,23 @@ import com.diamondsoftware.android.masseur.MasseurMainActivity.ClientThreadRecei
 public class ItemClient {
 	private String mName;
 	private ClientThreadReceive mClientThreadReceive;
-	private int mClientId;
+	private int mClientId=-1;
+	private String mPendingMessageTillIGetIDAndName;
+	/**
+	 * @return the mPendingMessageTillIGetIDAndName
+	 */
+	public String getmPendingMessageTillIGetIDAndName() {
+		return mPendingMessageTillIGetIDAndName;
+	}
+
+	/**
+	 * @param mPendingMessageTillIGetIDAndName the mPendingMessageTillIGetIDAndName to set
+	 */
+	public void setmPendingMessageTillIGetIDAndName(
+			String mPendingMessageTillIGetIDAndName) {
+		this.mPendingMessageTillIGetIDAndName = mPendingMessageTillIGetIDAndName;
+	}
+
 	/**
 	 * @return the mClientId
 	 */

@@ -53,11 +53,14 @@ import android.widget.TextView;
 
 
 public class MasseurMainActivity extends FragmentActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        com.diamondsoftware.android.massagenearby.common.MessagesFragment.OnFragmentInteractionListener {
 	
 	public static MasseurMainActivity mSingleton=null;
 	private SettingsManager mSettingsManager;
-	private ItemMasseur mItemMasseur_me;
+	public ItemMasseur mItemMasseur_me;
+	String profileClientId;
+
 
 
     /**
@@ -166,17 +169,8 @@ public class MasseurMainActivity extends FragmentActivity
     	ItemClient ic=new ItemClient();
     	ClientThreadReceive ctr=new ClientThreadReceive(socket,ic,mItemMasseur_me.getmUserId());
     	ic.setmClientThreadReceive(ctr);
-
         ((ApplicationMasseur)getApplication()).mClients.add(ic);
-        // Ask client to tell you his name
-    	// We need to put this into a thread (ClientSocket?)
-    	try {
-	        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket
-	                .getOutputStream())), true);
-	        out.println(name+"~"+GlobalStaticValues.COMMAND_WHATS_YOUR_NAME_AND_ID+"~");
-            Thread cThread = new Thread(ctr);
-            cThread.start();
-    	} catch (IOException e) {}
+        new Thread(ctr).run();
     }
     
     public class ClientThreadReceive implements Runnable {
@@ -200,22 +194,18 @@ public class MasseurMainActivity extends FragmentActivity
 		            while ((line = in.readLine()) != null) {
                     	String[] sa=line.split("\\~", -1);
                     	String name=sa[0];
-                    	String command=sa[1];
-                    	String msg=sa[2];
-                    	if (command.equals(GlobalStaticValues.COMMAND_MY_NAME_AND_ID_IS)) {
+                    	String id=sa[1];
+                    	String command=sa[2];
+                    	String msg=sa[3];
+                		if(command.equals(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG)) {
                     		mItemClient.setmName(name);
-                    		mItemClient.setmClientId(Integer.valueOf(msg));
-                    	} else {
-                    		if(command.equals(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG)) {
-                    			
-	                			ContentValues values = new ContentValues(2);
-	                			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_MSG, msg);
-	                			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_FROM, String.valueOf(mItemClient.getmClientId()));
-	                			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_TO, String.valueOf(mMasseurClientId));
-	                			MasseurMainActivity.this.getContentResolver().insert(com.diamondsoftware.android.massagenearby.model.DataProvider.CONTENT_URI_MESSAGES, values);
-
-                    		}
-                    	}
+                    		mItemClient.setmClientId(Integer.valueOf(id));
+                			ContentValues values = new ContentValues(2);
+                			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_MSG, msg);
+                			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_FROM, String.valueOf(mItemClient.getmClientId()));
+                			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_TO, String.valueOf(mMasseurClientId));
+                			MasseurMainActivity.this.getContentResolver().insert(com.diamondsoftware.android.masseur.DataProvider.CONTENT_URI_MESSAGES, values);
+            			}
 		            }
 
 				} catch (IOException e) {
@@ -246,20 +236,29 @@ public class MasseurMainActivity extends FragmentActivity
 
 	@Override
     public void onNavigationDrawerItemSelected(int position) {
-		int clientId=((ApplicationMasseur)getApplication()).mClients.get(position-1).getmClientId();
-		String clientName=((ApplicationMasseur)getApplication()).mClients.get(position-1).getmName();
-		Socket socket=((ApplicationMasseur)getApplication()).mClients.get(position-1).getmClientThreadReceive().mSocket;
-        // update the main content by replacing fragments
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(clientId,clientName,mSettingsManager,socket))
-                .commit();
+		ArrayList<ItemClient> aL=((ApplicationMasseur)getApplication()).mClients;
+		if(aL.size()>0) {
+			int clientId=aL.get(position).getmClientId();
+			profileClientId=String.valueOf(clientId);
+			String clientName=((ApplicationMasseur)getApplication()).mClients.get(position).getmName();
+			Socket socket=((ApplicationMasseur)getApplication()).mClients.get(position).getmClientThreadReceive().mSocket;
+	        // update the main content by replacing fragments
+	        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+	        fragmentManager.beginTransaction()
+	                .replace(R.id.container, PlaceholderFragment.newInstance(clientId,clientName,mSettingsManager,socket))
+	                .commit();
+		}
     }
 
     public void onSectionAttached(int number) {
     	ArrayList<ItemClient> allMs=((ApplicationMasseur)getApplication()).mClients;
     	if(allMs!=null && allMs.size()>0) {
-    		mTitle = ((ItemClient)allMs.get(number-1)).getmName();
+    		ItemClient ic= ((ApplicationMasseur)getApplication()).getItemClientWhoseUserIdEquals(number);
+    		if(ic!=null) {
+    			mTitle = ic.getmName();
+    		} else {
+    			mTitle="";
+    		}
     	} else {
     		mTitle="";
     	}
@@ -354,8 +353,8 @@ public class MasseurMainActivity extends FragmentActivity
 	    			String msg = msgEdit.getText().toString();
 	    			if (!TextUtils.isEmpty(msg)) {
 	           			btnSend.setEnabled(false);
-	    				
-	           			String txt=mClientName+"~"+GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG+"~"+msg;
+	    				ItemMasseur im=((MasseurMainActivity)getActivity()).mItemMasseur_me;
+	           			String txt=im.getmName()+"~"+im.getmUserId()+"~"+GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG+"~"+msg;
 	           			
 	           			try {
 	                    PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket
@@ -366,14 +365,14 @@ public class MasseurMainActivity extends FragmentActivity
 	           			}
 	           			
             			ContentValues values = new ContentValues(2);
-            			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_MSG, msg);
-            			values.put(com.diamondsoftware.android.massagenearby.model.DataProvider.COL_TO, String.valueOf(mClientId));
-            			getActivity().getContentResolver().insert(com.diamondsoftware.android.massagenearby.model.DataProvider.CONTENT_URI_MESSAGES, values);
+            			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_MSG, msg);
+            			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_TO, String.valueOf(mClientId));
+            			getActivity().getContentResolver().insert(com.diamondsoftware.android.masseur.DataProvider.CONTENT_URI_MESSAGES, values);
             			
 	           			
 	    				
 	    				msgEdit.setText(null);
-	    				
+	    				btnSend.setEnabled(true);
 	    			}
 				}
 			});
@@ -387,5 +386,14 @@ public class MasseurMainActivity extends FragmentActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+
+
+
+
+	@Override
+	public String getProfileChatId() {
+
+		return profileClientId;
+	}
 
 }

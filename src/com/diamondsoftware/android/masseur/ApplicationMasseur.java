@@ -52,6 +52,15 @@ public class ApplicationMasseur extends Application {
 		}
 	}
 	
-	
+	ItemClient getItemClientWhoseUserIdEquals(int clientId) {
+		ItemClient retValue=null;
+		for(ItemClient ic: mClients) {
+			if(ic.getmClientId()==clientId) {
+				retValue=ic;
+				break;
+			}
+		}
+		return retValue;
+	}
 }
 

@@ -5,8 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.diamondsoftware.android.massagenearby.model.DataProvider;
 import com.diamondsoftware.android.masseur.ApplicationMasseur;
+import com.diamondsoftware.android.masseur.DataProvider;
 import com.diamondsoftware.android.masseur.R;
 import com.diamondsoftware.android.masseur.SettingsManager;
 

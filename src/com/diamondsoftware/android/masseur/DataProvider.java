@@ -1,4 +1,4 @@
-package com.diamondsoftware.android.massagenearby.model;
+package com.diamondsoftware.android.masseur;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -13,8 +13,8 @@ import android.net.Uri;
 
 public class DataProvider extends ContentProvider {
 	
-	public static final Uri CONTENT_URI_MESSAGES = Uri.parse("content://com.diamondsoftware.android.massagenearby.model.provider/messages");
-	public static final Uri CONTENT_URI_PROFILE = Uri.parse("content://com.diamondsoftware.android.massagenearby.model.provider/profile");
+	public static final Uri CONTENT_URI_MESSAGES = Uri.parse("content://com.diamondsoftware.android.masseur.provider/messages");
+	public static final Uri CONTENT_URI_PROFILE = Uri.parse("content://com.diamondsoftware.android.masseur.provider/profile");
 
 	public static final String COL_ID = "_id";
 	
@@ -40,10 +40,10 @@ public class DataProvider extends ContentProvider {
 	private static final UriMatcher uriMatcher;
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI("com.diamondsoftware.android.massagenearby.model.provider", "messages", MESSAGES_ALLROWS);
-		uriMatcher.addURI("com.diamondsoftware.android.massagenearby.model.provider", "messages/#", MESSAGES_SINGLE_ROW);
-		uriMatcher.addURI("com.diamondsoftware.android.massagenearby.model.provider", "profile", PROFILE_ALLROWS);
-		uriMatcher.addURI("com.diamondsoftware.android.massagenearby.model.provider", "profile/#", PROFILE_SINGLE_ROW);
+		uriMatcher.addURI("com.diamondsoftware.android.masseur.provider", "messages", MESSAGES_ALLROWS);
+		uriMatcher.addURI("com.diamondsoftware.android.masseur.provider", "messages/#", MESSAGES_SINGLE_ROW);
+		uriMatcher.addURI("com.diamondsoftware.android.masseur.provider", "profile", PROFILE_ALLROWS);
+		uriMatcher.addURI("com.diamondsoftware.android.masseur.provider", "profile/#", PROFILE_SINGLE_ROW);
 	}
 
 	@Override
