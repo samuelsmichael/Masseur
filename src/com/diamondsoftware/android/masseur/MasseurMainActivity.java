@@ -59,7 +59,7 @@ public class MasseurMainActivity extends FragmentActivity
 	public static MasseurMainActivity mSingleton=null;
 	private SettingsManager mSettingsManager;
 	public ItemMasseur mItemMasseur_me;
-	String profileClientId;
+	private String profileClientId;
 
 
 
@@ -165,12 +165,15 @@ public class MasseurMainActivity extends FragmentActivity
     		mItemMasseur_me=new ItemMasseur();
     		mItemMasseur_me.setmUserId(userId);
     		mItemMasseur_me.setmName(name);
+        	mSettingsManager.setChatId(String.valueOf(userId));
     	}
     	ItemClient ic=new ItemClient();
     	ClientThreadReceive ctr=new ClientThreadReceive(socket,ic,mItemMasseur_me.getmUserId());
     	ic.setmClientThreadReceive(ctr);
         ((ApplicationMasseur)getApplication()).mClients.add(ic);
-        new Thread(ctr).run();
+        new Thread(ctr).start();
+        int andwawgh=3;
+        int x=andwawgh;
     }
     
     public class ClientThreadReceive implements Runnable {
@@ -326,7 +329,6 @@ public class MasseurMainActivity extends FragmentActivity
         	fragment.mClientId=clientId;
         	fragment.mClientName=clientName;
         	fragment.mSocket=socket;
-        	sm.setChatId(String.valueOf(fragment.mClientId));
         	
             
             return fragment;

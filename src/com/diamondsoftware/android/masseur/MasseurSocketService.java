@@ -190,12 +190,15 @@ public class MasseurSocketService extends Service implements
 				}
 			}
 		}	
-	}	class SocketListenerThread implements Runnable {
+	}	
+	class SocketListenerThread implements Runnable {
 		boolean keepGoing=true;
 		@Override
 		public void run() {			
             while (keepGoing) {
                 // LISTEN FOR INCOMING CLIENTS
+            	int zz=3;
+            	int qqa=zz;
             	try {
             		Socket clientSocket = mServerSocket.accept();
             		
@@ -214,7 +217,8 @@ public class MasseurSocketService extends Service implements
         		    	 * MasseurMainActivity.mSingleton.addNewClientSocket(clientSocket, mItemMasseurMe.getmName());
         		    	 */
         	    	}
-
+        	    	int andsowhyarentwegettinghere=3;
+        	    	int bbhbb=andsowhyarentwegettinghere;
             	} catch (IOException e) {
             		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
             		cleanUpButLeaveNetworkPolling();
