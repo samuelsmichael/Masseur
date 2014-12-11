@@ -64,11 +64,11 @@ public class Logger {
 		FileOutputStream fileOutputStream_Log = null;
 		File file = null;
 		if (isSdPresent()) {
-			file = new File("/sdcard/kidminder");
+			file = new File("/sdcard/masseur");
 			if (!file.exists()) {
 				file.mkdirs();
 			}
-			fileOutputStream_Log = new FileOutputStream("/sdcard/kidminder/log.txt",
+			fileOutputStream_Log = new FileOutputStream("/sdcard/masseur/log.txt",
 					true);
 		}
 		return fileOutputStream_Log;

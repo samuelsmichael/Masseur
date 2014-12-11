@@ -51,11 +51,23 @@ public class RemoteDataReader {
 			conn.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
 			conn.setRequestProperty("Accept","*/*");
 			conn.setUseCaches(false);
-			conn.setConnectTimeout(5000);
+			conn.setConnectTimeout(2000);
+			conn.setReadTimeout(3000);
+			long start = System.nanoTime();
 			conn.connect();
+			long end=System.nanoTime();
+			long diff2=end-start;
+			if (diff2 > 2508117678l) {
+				try {
+					conn.disconnect();
+				}
+				catch (Exception e) {}
+				throw new IOException("Probably not connected to internet");
+			}
 			OutputStream out = conn.getOutputStream();
 			PrintWriter pw = new PrintWriter(out);
 			pw.close();
+
 			is=conn.getInputStream();
 		}		
 		InputStreamReader is2 = new InputStreamReader(is);

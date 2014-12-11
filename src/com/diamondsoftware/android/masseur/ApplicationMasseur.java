@@ -4,10 +4,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Random;
 
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
+import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
 
 
@@ -37,14 +39,20 @@ public class ApplicationMasseur extends Application {
 	public static final int SERVERPORT = 8080;
 	public static final int NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS=5000;
 	
-	public ArrayList<ItemClient> mClients=new ArrayList<ItemClient>();
+    public static final int MAX_ATTEMPTS = 5;
+    public static final int BACKOFF_MILLI_SECONDS = 2000;
+    public static final Random random = new Random();
+    public static final String TAG="MasseurMain";
+
+	
+	public ArrayList<SocketCommunicationsManager> mClients=new ArrayList<SocketCommunicationsManager>();
 	public Hashtable<Integer,Socket> mPendingSockets=new Hashtable<Integer,Socket>();
 	String[] getAllClientsAsStringArray() {
 		if(mClients!=null) {
 			String[] allClientNames=new String[mClients.size()];
 			int c=0;
-			for(ItemClient ic: mClients) {
-				allClientNames[c++]=ic.getmName();
+			for(SocketCommunicationsManager ic: mClients) {
+				allClientNames[c++]=ic.getmItemUserClient().getmName();
 			}		
 			return allClientNames;
 		} else {
@@ -52,15 +60,29 @@ public class ApplicationMasseur extends Application {
 		}
 	}
 	
-	ItemClient getItemClientWhoseUserIdEquals(int clientId) {
-		ItemClient retValue=null;
-		for(ItemClient ic: mClients) {
-			if(ic.getmClientId()==clientId) {
+	SocketCommunicationsManager getItemClientWhoseUserIdEquals(int userId) {
+		SocketCommunicationsManager retValue=null;
+		for(SocketCommunicationsManager ic: mClients) {
+			if(ic.getmItemUserClient().getmUserId()==userId) {
 				retValue=ic;
 				break;
 			}
 		}
 		return retValue;
+	}
+	
+	void removeUserFromList(SocketCommunicationsManager scm) {
+		ArrayList<SocketCommunicationsManager> newClients=new ArrayList<SocketCommunicationsManager>();
+		for(SocketCommunicationsManager smcexisting: mClients) {
+			if(smcexisting.getmItemUserClient().getmUserId()!=scm.getmItemUserClient().getmUserId()) {
+				newClients.add(smcexisting);
+			}
+			mClients=newClients;
+		}
+	}
+	void updateListWithNewSCM(SocketCommunicationsManager scm) {
+		removeUserFromList(scm);
+		mClients.add(scm);
 	}
 }
 

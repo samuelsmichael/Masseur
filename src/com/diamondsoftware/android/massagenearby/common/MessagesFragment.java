@@ -45,6 +45,7 @@ public class MessagesFragment extends android.support.v4.app.ListFragment implem
 	private SimpleCursorAdapter adapter;
 	private Date now;
 	private SettingsManager mSettingsManager;
+	private SocketCommunicationsManager mSSC;
 		
 	@Override
 	public void onAttach(Activity activity) {
@@ -118,10 +119,10 @@ public class MessagesFragment extends android.support.v4.app.ListFragment implem
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static MessagesFragment newInstance(int sectionNumber) {
+    public static MessagesFragment newInstance(SocketCommunicationsManager scm) {
         MessagesFragment fragment = new MessagesFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putInt(ARG_SECTION_NUMBER, scm.getmItemUserClient().getmUserId());
         fragment.setArguments(args);
         return fragment;
     }
@@ -162,6 +163,7 @@ public class MessagesFragment extends android.support.v4.app.ListFragment implem
 			return datetime;
 		}
 	}
+
 	
 	//----------------------------------------------------------------------------
 

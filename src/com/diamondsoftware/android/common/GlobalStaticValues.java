@@ -8,6 +8,7 @@ public class GlobalStaticValues {
 	public static final int LOG_LEVEL_FATAL=3;
 
 	public static final String COMMAND_HERES_MY_CHAT_MSG="heresmychatmsg";
+	public static final String COMMAND_ACK="ack";
 	
 	public static final String KEY_ORIGINAL_MSG="OriginalMessage";
 

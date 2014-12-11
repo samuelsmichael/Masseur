@@ -1,11 +1,6 @@
 package com.diamondsoftware.android.masseur;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
@@ -13,25 +8,20 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.diamondsoftware.android.common.GlobalStaticValues;
-import com.diamondsoftware.android.common.Logger;
-import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
-
-import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.diamondsoftware.android.common.Logger;
+import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 
 
 public class MasseurSocketService extends Service implements 
@@ -49,6 +39,7 @@ public class MasseurSocketService extends Service implements
 	private boolean mDontReenter=false;
 	SocketListenerThread mSocketListenerThread=null;
 	Hashtable<Integer,Socket> pendingSockets = new Hashtable<Integer,Socket>();
+	String mPendingLocalIpAddress;
 
 	public MasseurSocketService() {
 	}
@@ -59,40 +50,13 @@ public class MasseurSocketService extends Service implements
     	mConnectivityManager=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
     }
     
-	/* (non-Javadoc)
-	 * @see android.app.Service#onDestroy()
-	 */
-	@Override
-	public void onDestroy() {
-		cleanUp();
-		super.onDestroy();
-	}
-	
-	private void cleanUpButLeaveNetworkPolling() {
-		try {
-			if(mServerSocket!=null) {
-				mServerSocket.close();
-			}
-			mServerSocket=null;
-		} catch (IOException e) {}
-		mInetAddress=null;
-		if (mSocketListenerThread!=null) {
-			mSocketListenerThread.keepGoing=false;
-			mSocketListenerThread=null;
-		}
-	}
-	
-	private void cleanUp() {
-		stopMyNetworkPollingTimer();
-		cleanUpButLeaveNetworkPolling();
-	}
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
 		super.onStartCommand(intent, flags, startId);
 		if(mSettingsManager.getMasseurName()==null) {
 			cleanUp();
-			return Service.START_STICKY;
+			return Service.START_NOT_STICKY;
 		} else {
 			if(mNetworkPollingTimer==null) {
 		    	mDontReenter=false;
@@ -120,6 +84,34 @@ public class MasseurSocketService extends Service implements
 		return Service.START_STICKY;
 	}		
     
+    
+	/* (non-Javadoc)
+	 * @see android.app.Service#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
+		cleanUp();
+		super.onDestroy();
+	}
+	
+	private void cleanUpButLeaveNetworkPolling() {
+		if (mSocketListenerThread!=null) {
+			mSocketListenerThread.keepGoing=false;
+		}
+		try {
+			if(mServerSocket!=null) {
+				mServerSocket.close();
+			}
+		} catch (IOException e) {}
+		finally {			
+			mServerSocket=null;
+		}
+	}
+	
+	private void cleanUp() {
+		stopMyNetworkPollingTimer();
+		cleanUpButLeaveNetworkPolling();
+	}
 	protected void doACTION_STARTING_FROM_MAINACTIVITY() {
 	}	
 
@@ -127,6 +119,8 @@ public class MasseurSocketService extends Service implements
 	}
 	
 	private void doActivityIsNowAvailableActions() {
+		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",this).log("doActivityIsNowAvailable", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
+		
 		Enumeration<Socket> socks=pendingSockets.elements(); 
 		while(socks.hasMoreElements()) {
 			Socket socket=socks.nextElement();
@@ -148,10 +142,10 @@ public class MasseurSocketService extends Service implements
 			// 10.0.0.253 when wifi on my computer
 			String url=null;
 			if(key.equals("moi")) {
-				url="http://listplus.no-ip.org/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&URL="+URLEncoder.encode(mInetAddress);
+				url="http://"+getBaseURL()+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&URL="+URLEncoder.encode(mPendingLocalIpAddress!=null?mPendingLocalIpAddress:mInetAddress);
 			} else {
 				if(key.equals("byebye")) {
-					url="http://listplus.no-ip.org/MassageNearby/Masseur.aspx"+"?MasseurId="+ mItemMasseurMe.getmMasserId();
+					url="http://"+getBaseURL()+"/MassageNearby/Masseur.aspx"+"?MasseurId="+ mItemMasseurMe.getmMasserId();
 				} else {
 					return null;
 				}
@@ -162,25 +156,38 @@ public class MasseurSocketService extends Service implements
 				).parse();
 			return data;
 		} catch (Exception e) {
+   			cleanUpButLeaveNetworkPolling();
 			int bkhere1=3;
 			int bkhere2=bkhere1;
 		} finally {
 		}			
 	return null;
 	}
+	private String getBaseURL() {
+		String ipAddress=getLocalIpAddress();
+		if(ipAddress.equals("fe80::cc3a:61ff:fe02:d1ac%p2p0")) {
+			return "10.0.0.253";
+		} else {
+			return "listplus.no-ip.org";
+		}
+	}
 	@Override
 	public void gotMyData(String keyname, ArrayList<Object> data) {
 		String[] array = keyname.split("\\~", -1);
 		String key=array[0];
 		String name=array[1];
+		this.mDontReenter=false;
+
 		if(data!=null && data.size()>0) {
 			if(key.equals("moi")) {
 				mItemMasseurMe=(ItemMasseur)data.get(0);
-				this.mDontReenter=false;
+				mInetAddress=mPendingLocalIpAddress;
+				mPendingLocalIpAddress=null;
 		       	try {
 		       		mServerSocket = new ServerSocket(ApplicationMasseur.SERVERPORT);
 		       		mSocketListenerThread=new SocketListenerThread();
-			        new Thread(mSocketListenerThread).start();
+		       		Thread thread=new Thread(mSocketListenerThread);
+		       		thread.start();
 		       	} catch (IOException e) {
 		       		// TODO What if we're not connected to the Internet?  We didn't do any of this until we got connectivity, so this shouldn't happen.
 		       	}				
@@ -206,6 +213,8 @@ public class MasseurSocketService extends Service implements
         	    		MasseurMainActivity.mSingleton.addNewClientSocket(clientSocket, mItemMasseurMe.getmName(), mItemMasseurMe.getmUserId());
 
         	    	} else {
+                		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Pending", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
+
         	    		pendingSockets.put(clientSocket.getPort(), clientSocket);
         	    		Intent intent=new Intent(MasseurSocketService.this,MasseurMainActivity.class);
         	    		intent.setAction(ApplicationMasseur.ACTION_NEW_CLIENT_CONNECTION);
@@ -220,14 +229,18 @@ public class MasseurSocketService extends Service implements
         	    	int andsowhyarentwegettinghere=3;
         	    	int bbhbb=andsowhyarentwegettinghere;
             	} catch (IOException e) {
+            		mInetAddress=null;
             		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
-            		cleanUpButLeaveNetworkPolling();
+            		keepGoing=false;
             	}
             }
-            closeClientSockets();
+			mSocketListenerThread=null;
+			if(mServerSocket!= null && !mServerSocket.isClosed()) {
+				closeClientSockets();
+			}
 		}	
 		private void closeClientSockets() {
-			// TODO 
+			cleanUpButLeaveNetworkPolling();
 		}
 		public boolean isMyActivityRunning(){
 			return MasseurMainActivity.mSingleton!=null;
@@ -286,13 +299,12 @@ public class MasseurSocketService extends Service implements
 		getMyNetWorkPollingTimer().schedule(new TimerTask() {
 			public void run() {				
 				if(!mDontReenter) {
-					mDontReenter=true;					
 					 NetworkInfo networkInfo =mConnectivityManager.getActiveNetworkInfo ();
 					 if(networkInfo!=null && networkInfo.isConnected()) {
-						 String localIpAddress=getLocalIpAddress();
-						 if(!localIpAddress.equals(mInetAddress)) {
+						 mPendingLocalIpAddress=getLocalIpAddress();
+						 if(!mPendingLocalIpAddress.equals(mInetAddress)) {
 					        // Tell web server that we're here, and here's my inet address
-							 mInetAddress=localIpAddress;
+							mDontReenter=true;											
 					       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("moi~"+ mSettingsManager.getMasseurName(), MasseurSocketService.this, MasseurSocketService.this);
 						 }
 					 }
