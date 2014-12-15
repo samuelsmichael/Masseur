@@ -3,6 +3,10 @@ package com.diamondsoftware.android.massagenearby.model;
 import java.net.Socket;
 
 public class ItemClient extends ItemUser {
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+
 	private int mClientId=-1;
 	private String mPendingMessageTillIGetIDAndName;
 	/**

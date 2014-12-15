@@ -1,6 +1,13 @@
 package com.diamondsoftware.android.massagenearby.model;
 
 public abstract class ItemUser {
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return mName;
+	}
 	protected int mUserId;
 	protected String mName;
 	protected String mURL;

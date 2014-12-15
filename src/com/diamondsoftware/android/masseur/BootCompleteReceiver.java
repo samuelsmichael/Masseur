@@ -12,7 +12,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
     	Intent jdItent2=new Intent(context,MasseurSocketService.class)
-    		.setAction(ApplicationMasseur.ACTION_STARTING_FROM_BOOTUP_MASSEUR);
+    		.setAction(MasseurMainActivity.ACTION_STARTING_FROM_BOOTUP_MASSEUR);
 		context.startService(jdItent2);
 	}	
 }

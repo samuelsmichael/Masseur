@@ -4,6 +4,17 @@ import java.net.Socket;
 
 public class ItemMasseur extends ItemUser {
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		if(mIsOnline) {
+			return mName + " (online)";
+		} else {
+			return mName;
+		}
+	}
 	public int getmMasserId() {
 		return mMasserId;
 	}

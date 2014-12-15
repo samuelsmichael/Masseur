@@ -8,7 +8,6 @@ import java.util.Date;
 import com.diamondsoftware.android.masseur.ApplicationMasseur;
 import com.diamondsoftware.android.masseur.DataProvider;
 import com.diamondsoftware.android.masseur.R;
-import com.diamondsoftware.android.masseur.SettingsManager;
 
 import android.app.Activity;
 import android.app.Fragment;

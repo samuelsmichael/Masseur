@@ -33,6 +33,9 @@ public class SocketCommunicationsManager  {
 	private int mPendingACKs;
 	private Object mSyncObject=new Object();
 	private int mCountdownAwaitingACKs;
+	private static final String TAG="TAG_SocketCommunicationsManager";
+	
+	
 	public SocketCommunicationsManager(Socket socket, ChatPageManager chatPageManager, ItemUser itemUserClient, ItemUser itemUserMe) {
 		mSocket=socket;
 		mChatPageManager=chatPageManager;
@@ -115,7 +118,7 @@ public class SocketCommunicationsManager  {
      */
 	public void doSend(String transactionType,String msg) throws Exception {
 		String txt=getmItemUserME().getmName()+"~"+getmItemUserME().getmUserId()+"~"+transactionType+"~"+(msg==null?"":msg);   	
-		if(!transactionType.equals(GlobalStaticValues.COMMAND_ACK)) {
+		if(transactionType.equals(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG)) {
 			mPendingACKs++;
 			mCountdownAwaitingACKs+=NBR_OF_SECONDS_ALLOWED_FOR_RESPONSE;
 			if(mPendingACKs==1) {
@@ -130,7 +133,7 @@ public class SocketCommunicationsManager  {
                 out.println(txt);  
                 return;
     		} catch (IOException e) {
-    			Log.e( ApplicationMasseur.TAG, "Failed on attempt " + i + ":" + e);
+    			Log.e( TAG, "Failed on attempt " + i + ":" + e);
                 try {
                     Thread.sleep(backoff);
                 } catch (InterruptedException e1) {

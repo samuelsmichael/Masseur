@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,11 +24,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.common.Logger;
 import com.diamondsoftware.android.massagenearby.common.ChatPageManager;
+import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
@@ -46,7 +45,12 @@ public class MasseurMainActivity extends FragmentActivity
 	public ItemMasseur mItemMasseur_me;
 	private String profileClientId;
 	private Handler mHandler;
+	public static final String ACTION_STARTING_FROM_BOOTUP_MASSEUR="StartingFromBootupMasseur";
+	public static final String ACTION_STARTING_FROM_ACTIVITY_MASSEUR="StartingFromActivityMasseur";
+	public static final String ACTION_NEW_CLIENT_CONNECTION="actionnewclientconnection";
+	public static final String ACTION_CLIENT_IS_NOW_AVAILABLE = "actionisnowavailable";
 
+    public static final String TAG="MasseurMain";
 
 
     /**
@@ -90,7 +94,7 @@ public class MasseurMainActivity extends FragmentActivity
     		new Logger(mSettingsManager.getLoggingLevel(),"MasseurMainActivity",this).log("Telling socket I'm here", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
 
             Intent intent=new Intent(this,MasseurSocketService.class);
-            intent.setAction(ApplicationMasseur.ACTION_CLIENT_IS_NOW_AVAILABLE);
+            intent.setAction(ACTION_CLIENT_IS_NOW_AVAILABLE);
             startService(intent);
         }
         
@@ -122,10 +126,10 @@ public class MasseurMainActivity extends FragmentActivity
 		                   public void onClick(DialogInterface dialog, int id) {
 		                	   final EditText mEditText=(EditText)Login.this.getDialog().findViewById(R.id.edittextloginid);
 		                	   //TODO can't allow blanks here
-		                	   MasseurMainActivity.mSingleton.mSettingsManager.setMasseurName(mEditText.getText().toString());		    
+		                	   MasseurMainActivity.mSingleton.mSettingsManager.setMasseurName(mEditText.getText().toString().trim());		    
 		                       
 		                       Intent intent=new Intent(MasseurMainActivity.this,MasseurSocketService.class);
-		                       intent.setAction(ApplicationMasseur.ACTION_CLIENT_IS_NOW_AVAILABLE);
+		                       intent.setAction(ACTION_CLIENT_IS_NOW_AVAILABLE);
 		                       startService(intent);
 
 		                  }
@@ -320,7 +324,7 @@ public class MasseurMainActivity extends FragmentActivity
     			public void onClick(DialogInterface dialog, int which) {
     			}
     		});
-            Log.d(ApplicationMasseur.TAG, "Showing alert dialog: " + message);
+            Log.d(TAG, "Showing alert dialog: " + message);
             bld.create().show();
         }
         

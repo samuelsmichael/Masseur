@@ -11,5 +11,6 @@ public class GlobalStaticValues {
 	public static final String COMMAND_ACK="ack";
 	
 	public static final String KEY_ORIGINAL_MSG="OriginalMessage";
-
+	
+	public static final String MISC_MYPHONESNAME = "fe80::cc3a:61ff:fe02:d1ac%p2p0";
 }

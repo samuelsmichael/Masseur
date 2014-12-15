@@ -1,4 +1,7 @@
-package com.diamondsoftware.android.masseur;
+package com.diamondsoftware.android.massagenearby.common;
+
+import com.diamondsoftware.android.masseur.ApplicationMasseur;
+import com.diamondsoftware.android.masseur.MasseurMainActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,19 +25,19 @@ public class SettingsManager {
 		editor.commit();				
 	}
 	public boolean getIsEnabledMasseur() {
-		String value= getValue(ApplicationMasseur.KEY_IS_ENABLED_MASSEUR,"true");
+		String value= getValue(GlobalStaticValuesMassageNearby.KEY_IS_ENABLED_MASSEUR,"true");
 		return value.equals("true")?true:false;
 	}
 	public void setIsEnabledMasseur(boolean value) {
 		Editor editor=mSharedPreferences.edit();
-		editor.putString(ApplicationMasseur.KEY_IS_ENABLED_MASSEUR, value?"true":"false");
+		editor.putString(GlobalStaticValuesMassageNearby.KEY_IS_ENABLED_MASSEUR, value?"true":"false");
 		editor.commit();
 	}
 	public String getMasseurName() {
-		return getValue(ApplicationMasseur.KEY_MASSEUR_NAME,null);
+		return getValue(GlobalStaticValuesMassageNearby.KEY_MASSEUR_NAME,null);
 	}
 	public void setMasseurName(String value) {
-		setValue(ApplicationMasseur.KEY_MASSEUR_NAME,value);
+		setValue(GlobalStaticValuesMassageNearby.KEY_MASSEUR_NAME,value);
 	}
 	public int getLoggingLevel() {
 		String value=getValue(com.diamondsoftware.android.common.GlobalStaticValues.KEY_LOGGINGLEVEL,String.valueOf(com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL));
@@ -49,5 +52,10 @@ public class SettingsManager {
 	public void setChatId(String chatId) {
 		setValue("chat_id",chatId);
 	}
-
+    public String getCurrentUserName() {
+    	return getValue(GlobalStaticValuesMassageNearby.KEY_CURRENT_USER_NAME, null);
+    }
+    public void setCurrentUserName(String name) {
+    	setValue(GlobalStaticValuesMassageNearby.KEY_CURRENT_USER_NAME, name);
+    }
 }

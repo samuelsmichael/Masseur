@@ -20,7 +20,9 @@ import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.common.Logger;
+import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 
 
@@ -68,13 +70,13 @@ public class MasseurSocketService extends Service implements
 		if(intent!=null) {
 			String action=intent.getAction();
 			if(action!=null) {
-				if(action.equals(ApplicationMasseur.ACTION_CLIENT_IS_NOW_AVAILABLE)) {
+				if(action.equals(MasseurMainActivity.ACTION_CLIENT_IS_NOW_AVAILABLE)) {
 					doActivityIsNowAvailableActions();
 				} else {
-					if(action.equals(ApplicationMasseur.ACTION_STARTING_FROM_ACTIVITY_MASSEUR)) {
+					if(action.equals(MasseurMainActivity.ACTION_STARTING_FROM_ACTIVITY_MASSEUR)) {
 						doACTION_STARTING_FROM_MAINACTIVITY();
 					} else {
-						if(action.equals(ApplicationMasseur.ACTION_STARTING_FROM_BOOTUP_MASSEUR)) {
+						if(action.equals(MasseurMainActivity.ACTION_STARTING_FROM_BOOTUP_MASSEUR)) {
 							doACTION_STARTING_FROM_BOOTUP();
 						}
 					}
@@ -142,10 +144,10 @@ public class MasseurSocketService extends Service implements
 			// 10.0.0.253 when wifi on my computer
 			String url=null;
 			if(key.equals("moi")) {
-				url="http://"+getBaseURL()+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&URL="+URLEncoder.encode(mPendingLocalIpAddress!=null?mPendingLocalIpAddress:mInetAddress);
+				url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(this)+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&URL="+URLEncoder.encode(mPendingLocalIpAddress!=null?mPendingLocalIpAddress:mInetAddress);
 			} else {
 				if(key.equals("byebye")) {
-					url="http://"+getBaseURL()+"/MassageNearby/Masseur.aspx"+"?MasseurId="+ mItemMasseurMe.getmMasserId();
+					url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(this)+"/MassageNearby/Masseur.aspx"+"?MasseurId="+ mItemMasseurMe.getmMasserId();
 				} else {
 					return null;
 				}
@@ -163,14 +165,7 @@ public class MasseurSocketService extends Service implements
 		}			
 	return null;
 	}
-	private String getBaseURL() {
-		String ipAddress=getLocalIpAddress();
-		if(ipAddress.equals("fe80::cc3a:61ff:fe02:d1ac%p2p0")) {
-			return "10.0.0.253";
-		} else {
-			return "listplus.no-ip.org";
-		}
-	}
+
 	@Override
 	public void gotMyData(String keyname, ArrayList<Object> data) {
 		String[] array = keyname.split("\\~", -1);
@@ -217,7 +212,7 @@ public class MasseurSocketService extends Service implements
 
         	    		pendingSockets.put(clientSocket.getPort(), clientSocket);
         	    		Intent intent=new Intent(MasseurSocketService.this,MasseurMainActivity.class);
-        	    		intent.setAction(ApplicationMasseur.ACTION_NEW_CLIENT_CONNECTION);
+        	    		intent.setAction(MasseurMainActivity.ACTION_NEW_CLIENT_CONNECTION);
         		    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         		    	startActivity(intent);
         		    	// TODO

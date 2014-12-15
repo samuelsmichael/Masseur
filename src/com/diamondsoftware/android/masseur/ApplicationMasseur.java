@@ -28,13 +28,6 @@ import android.app.Application;
 )
 
 public class ApplicationMasseur extends Application {
-	public static final String ACTION_STARTING_FROM_BOOTUP_MASSEUR="StartingFromBootupMasseur";
-	public static final String ACTION_STARTING_FROM_ACTIVITY_MASSEUR="StartingFromActivityMasseur";
-	public static final String ACTION_NEW_CLIENT_CONNECTION="actionnewclientconnection";
-	public static final String ACTION_CLIENT_IS_NOW_AVAILABLE = "actionisnowavailable";
-	
-	public static final String KEY_IS_ENABLED_MASSEUR="MasseurIsEnabled";
-	public static final String KEY_MASSEUR_NAME="masseur_name";
 	
 	public static final int SERVERPORT = 8080;
 	public static final int NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS=5000;
@@ -42,7 +35,6 @@ public class ApplicationMasseur extends Application {
     public static final int MAX_ATTEMPTS = 5;
     public static final int BACKOFF_MILLI_SECONDS = 2000;
     public static final Random random = new Random();
-    public static final String TAG="MasseurMain";
 
 	
 	public ArrayList<SocketCommunicationsManager> mClients=new ArrayList<SocketCommunicationsManager>();
