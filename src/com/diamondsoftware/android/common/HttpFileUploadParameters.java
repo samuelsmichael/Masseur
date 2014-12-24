@@ -14,12 +14,12 @@ public class HttpFileUploadParameters {
 	 InputStream mInputStream;
 	 ManagesFileUploads mCanShowAlert;
 	 int mUserId;
-	public HttpFileUploadParameters(String remoteURL, List<NameValuePair> parameters, ProgressDialog progressDialog, InputStream inputStream, ManagesFileUploads canShowAlert, int userId) {
+	public HttpFileUploadParameters(String remoteURL, List<NameValuePair> parameters, ProgressDialog progressDialog, InputStream inputStream, ManagesFileUploads managesFileUploads, int userId) {
 		mRemoteURL=remoteURL;
 		mParameters=parameters;
 		mProgressDialog=progressDialog;
 		mInputStream=inputStream;
-		mCanShowAlert=canShowAlert;
+		mCanShowAlert=managesFileUploads;
 		mUserId=userId;
 	}
 

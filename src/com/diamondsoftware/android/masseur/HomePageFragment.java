@@ -24,9 +24,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends Fragment
+		implements ManagesFileUploads{
 	SettingsManager mSettingsManager;
+	ImageView mImageMasseur;
 
 	public static HomePageFragment newInstance(SettingsManager sm) {
 		HomePageFragment fragment=new HomePageFragment();
@@ -42,12 +45,23 @@ public class HomePageFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
+	private void displayMasseurImage(boolean clearCache) {
+		if(MasseurMainActivity.mSingleton!=null && MasseurMainActivity.mSingleton.mItemMasseur_me!=null && MasseurMainActivity.mSingleton.mItemMasseur_me.getMainPictureURL()!=null) {
+			String url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/files/"+MasseurMainActivity.mSingleton.mItemMasseur_me.getMainPictureURL();
+			com.diamondsoftware.android.common.ImageLoaderRemote ilm=new com.diamondsoftware.android.common.ImageLoaderRemote(getActivity(),true,.80f);
+			if(clearCache) {
+				ilm.clearCache();
+			}
+			ilm.displayImage(url,mImageMasseur);
+		}
+
+	}
+	
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
 	 */
 	@Override
 	public void onAttach(Activity activity) {
-		// TODO Auto-generated method stub
 		super.onAttach(activity);
 	}
 
@@ -68,6 +82,7 @@ public class HomePageFragment extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		ViewGroup viewGroup=(ViewGroup) inflater.inflate(R.layout.fragment_homepage, container,false);
 		Button upload=(Button)viewGroup.findViewById(R.id.btnUploadNewPhoto);
+		mImageMasseur=(ImageView)viewGroup.findViewById(R.id.imageMasseur);
 		upload.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -96,7 +111,7 @@ public class HomePageFragment extends Fragment {
 					HttpFileUploadParameters params=new HttpFileUploadParameters(
 								"http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/FileUpload.aspx"
 								,parms 
-								,ProgressDialog.show(getActivity(),"Working ...","Uploading "+selectedImage.getPath(),true,false,null), imageStream, (ManagesFileUploads)getActivity()
+								,ProgressDialog.show(getActivity(),"Working ...","Uploading "+selectedImage.getPath(),true,false,null), imageStream, this
 								,MasseurMainActivity.mSingleton.mItemMasseur_me.getmUserId());
 					new HttpFileUpload().execute(params);
 				} catch (FileNotFoundException e) {
@@ -115,6 +130,18 @@ public class HomePageFragment extends Fragment {
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
+		displayMasseurImage(false);
+	}
+	@Override
+	public void alert(String message) {
+		((ManagesFileUploads)getActivity()).alert(message);
+		
+	}
+	@Override
+	public void heresTheResponse(String response) {
+		((ManagesFileUploads)getActivity()).heresTheResponse(response);
+		displayMasseurImage(true);
+
 	}
 
 }
