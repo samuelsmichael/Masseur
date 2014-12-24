@@ -37,6 +37,32 @@ public class ItemMasseur extends ItemUser {
 	boolean mIsOnline;
 	Socket mSocket;
 	boolean mConnected=false;
+	String MainPictureURL;
+	/**
+	 * @return the mainPictureURL
+	 */
+	public String getMainPictureURL() {
+		return MainPictureURL;
+	}
+	/**
+	 * @param mainPictureURL the mainPictureURL to set
+	 */
+	public void setMainPictureURL(String mainPictureURL) {
+		MainPictureURL = mainPictureURL;
+	}
+	/**
+	 * @return the certifiedPictureURL
+	 */
+	public String getCertifiedPictureURL() {
+		return CertifiedPictureURL;
+	}
+	/**
+	 * @param certifiedPictureURL the certifiedPictureURL to set
+	 */
+	public void setCertifiedPictureURL(String certifiedPictureURL) {
+		CertifiedPictureURL = certifiedPictureURL;
+	}
+	String CertifiedPictureURL;
 	/**
 	 * @return the mConnected
 	 */

@@ -121,6 +121,7 @@ public class MasseurSocketService extends Service implements
 	}
 	
 	private void doActivityIsNowAvailableActions() {
+		MasseurMainActivity.mSingleton.mItemMasseur_me=mItemMasseurMe;
 		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",this).log("doActivityIsNowAvailable", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
 		
 		Enumeration<Socket> socks=pendingSockets.elements(); 
@@ -171,11 +172,13 @@ public class MasseurSocketService extends Service implements
 		String[] array = keyname.split("\\~", -1);
 		String key=array[0];
 		String name=array[1];
-		this.mDontReenter=false;
 
 		if(data!=null && data.size()>0) {
 			if(key.equals("moi")) {
 				mItemMasseurMe=(ItemMasseur)data.get(0);
+				if(MasseurMainActivity.mSingleton!=null) {
+    	    		MasseurMainActivity.mSingleton.mItemMasseur_me=mItemMasseurMe;
+				}
 				mInetAddress=mPendingLocalIpAddress;
 				mPendingLocalIpAddress=null;
 		       	try {
@@ -185,7 +188,9 @@ public class MasseurSocketService extends Service implements
 		       		thread.start();
 		       	} catch (IOException e) {
 		       		// TODO What if we're not connected to the Internet?  We didn't do any of this until we got connectivity, so this shouldn't happen.
-		       	}				
+		       	}		
+				this.mDontReenter=false;
+
 			} else {
 				if(key.equals("byebye")) {
 					this.cleanUp();

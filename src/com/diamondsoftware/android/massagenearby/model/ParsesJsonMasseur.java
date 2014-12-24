@@ -26,6 +26,8 @@ public class ParsesJsonMasseur extends ParsesJson {
 			item.setmName(jsonObject.getString("Name"));
 			item.setmURL(jsonObject.getString("URL"));
 			item.setmUserId(jsonObject.getInt("UserId"));
+			item.setMainPictureURL(jsonObject.getString("MainPictureURL"));
+			item.setCertifiedPictureURL(jsonObject.getString("CertifiedPictureURL"));
 			items.add(item);
 		}
 		return items;

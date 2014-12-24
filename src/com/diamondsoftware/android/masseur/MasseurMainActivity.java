@@ -1,6 +1,9 @@
 package com.diamondsoftware.android.masseur;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.Socket;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
@@ -8,9 +11,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -25,7 +30,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.diamondsoftware.android.common.ManagesFileUploads;
 import com.diamondsoftware.android.common.GlobalStaticValues;
+import com.diamondsoftware.android.common.HttpFileUpload;
+import com.diamondsoftware.android.common.HttpFileUploadParameters;
 import com.diamondsoftware.android.common.Logger;
 import com.diamondsoftware.android.massagenearby.common.ChatPageManager;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
@@ -33,12 +41,13 @@ import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsMana
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
+import com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur;
 
 
 public class MasseurMainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         com.diamondsoftware.android.massagenearby.common.MessagesFragment.OnFragmentInteractionListener,
-        ChatPageManager {
+        ChatPageManager, ManagesFileUploads {
 	
 	public static MasseurMainActivity mSingleton=null;
 	private SettingsManager mSettingsManager;
@@ -184,14 +193,21 @@ public class MasseurMainActivity extends FragmentActivity
 
 	@Override
     public void onNavigationDrawerItemSelected(int position) {
-		ArrayList<SocketCommunicationsManager> aL=((ApplicationMasseur)getApplication()).mClients;
-		if(aL.size()>0) {
-			SocketCommunicationsManager smc=aL.get(position);
-			profileClientId=String.valueOf(smc.getmItemUserClient().getmUserId());
-	        // update the main content by replacing fragments
+		if(position>=100) {
+			ArrayList<SocketCommunicationsManager> aL=((ApplicationMasseur)getApplication()).mClients;
+			if(aL.size()>0) {
+				SocketCommunicationsManager smc=aL.get(position-100);
+				profileClientId=String.valueOf(smc.getmItemUserClient().getmUserId());
+		        // update the main content by replacing fragments
+		        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+		        fragmentManager.beginTransaction()
+		                .replace(R.id.container, PlaceholderFragment.newInstance(smc,mSettingsManager))
+		                .commit();
+			}
+		} else {
 	        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 	        fragmentManager.beginTransaction()
-	                .replace(R.id.container, PlaceholderFragment.newInstance(smc,mSettingsManager))
+	                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
 	                .commit();
 		}
     }
@@ -315,19 +331,6 @@ public class MasseurMainActivity extends FragmentActivity
             return rootView;
         }
     	
-        void alert(String message) {
-            AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
-            bld.setMessage(message);
-            bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-
-    			@Override
-    			public void onClick(DialogInterface dialog, int which) {
-    			}
-    		});
-            Log.d(TAG, "Showing alert dialog: " + message);
-            bld.create().show();
-        }
-        
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
@@ -336,7 +339,23 @@ public class MasseurMainActivity extends FragmentActivity
         }
     }
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
+	    super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
+	
+	}
 
+    public void alert(String message) {
+        AlertDialog.Builder bld = new AlertDialog.Builder(this);
+        bld.setMessage(message);
+        bld.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+        bld.create().show();
+    }
 
 
 	@Override
@@ -402,6 +421,19 @@ public class MasseurMainActivity extends FragmentActivity
 			
 		});
 
+		
+	}
+
+
+
+	@Override
+	public void heresTheResponse(String response) {
+		try {
+			ArrayList<Object> massers=new ParsesJsonMasseur("").parsePublic(response);
+			if(massers.size()>0) {
+				mItemMasseur_me=(ItemMasseur)massers.get(0);
+			}
+		} catch (Exception e) {}
 		
 	}
 

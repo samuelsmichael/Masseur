@@ -16,4 +16,8 @@ public abstract class ParsesJson {
 	public ParsesJson() {
 	}
 	protected abstract ArrayList<Object> parse(String jsonString) throws Exception;
+	
+	public ArrayList<Object> parsePublic(String jsonString) throws Exception {
+		return parse(jsonString);
+	}
 }
