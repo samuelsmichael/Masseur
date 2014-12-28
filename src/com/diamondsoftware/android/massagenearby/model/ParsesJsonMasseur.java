@@ -28,6 +28,8 @@ public class ParsesJsonMasseur extends ParsesJson {
 			item.setmUserId(jsonObject.getInt("UserId"));
 			item.setMainPictureURL(jsonObject.getString("MainPictureURL"));
 			item.setCertifiedPictureURL(jsonObject.getString("CertifiedPictureURL"));
+			item.setLongitude(jsonObject.getDouble("Longitude"));
+			item.setLatitude(jsonObject.getDouble("Latitude"));
 			items.add(item);
 		}
 		return items;

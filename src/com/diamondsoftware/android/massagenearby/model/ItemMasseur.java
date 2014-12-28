@@ -39,6 +39,32 @@ public class ItemMasseur extends ItemUser {
 	boolean mConnected=false;
 	String MainPictureURL;
 	/**
+	 * @return the longitude
+	 */
+	public double getLongitude() {
+		return Longitude;
+	}
+	/**
+	 * @param longitude the longitude to set
+	 */
+	public void setLongitude(double longitude) {
+		Longitude = longitude;
+	}
+	/**
+	 * @return the latitude
+	 */
+	public double getLatitude() {
+		return Latitude;
+	}
+	/**
+	 * @param latitude the latitude to set
+	 */
+	public void setLatitude(double latitude) {
+		Latitude = latitude;
+	}
+	double Longitude;
+	double Latitude;
+	/**
 	 * @return the mainPictureURL
 	 */
 	public String getMainPictureURL() {

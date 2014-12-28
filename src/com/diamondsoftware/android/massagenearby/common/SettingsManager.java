@@ -47,7 +47,8 @@ public class SettingsManager {
 		setValue(com.diamondsoftware.android.common.GlobalStaticValues.KEY_LOGGINGLEVEL, String.valueOf(value));
 	}
 	public String getChatId() {
-		return getValue("chat_id", "");
+		String id=getValue("chat_id", "");
+		return id;
 	}
 	public void setChatId(String chatId) {
 		setValue("chat_id",chatId);

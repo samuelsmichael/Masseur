@@ -15,12 +15,15 @@ import java.util.TimerTask;
 
 import android.app.Service;
 import android.content.Intent;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.diamondsoftware.android.common.GlobalStaticValues;
+import com.diamondsoftware.android.common.LocationHelper;
+import com.diamondsoftware.android.common.LocationWanter;
 import com.diamondsoftware.android.common.Logger;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
@@ -28,7 +31,7 @@ import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 
 public class MasseurSocketService extends Service implements 
 		com.diamondsoftware.android.common.WaitingForDataAcquiredAsynchronously,
-		com.diamondsoftware.android.common.DataGetter
+		com.diamondsoftware.android.common.DataGetter, LocationWanter
  {
     
 	private static String TAG="MasseurSocketService";
@@ -42,6 +45,7 @@ public class MasseurSocketService extends Service implements
 	SocketListenerThread mSocketListenerThread=null;
 	Hashtable<Integer,Socket> pendingSockets = new Hashtable<Integer,Socket>();
 	String mPendingLocalIpAddress;
+	LocationHelper mLocationHelper;
 
 	public MasseurSocketService() {
 	}
@@ -50,6 +54,7 @@ public class MasseurSocketService extends Service implements
         super.onCreate();
         mSettingsManager=new SettingsManager(this);
     	mConnectivityManager=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+    	mLocationHelper=new LocationHelper(this);
     }
     
 	@Override
@@ -150,7 +155,15 @@ public class MasseurSocketService extends Service implements
 				if(key.equals("byebye")) {
 					url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(this)+"/MassageNearby/Masseur.aspx"+"?MasseurId="+ mItemMasseurMe.getmMasserId();
 				} else {
+					if(key.equals("newlocation")) {
+						String bbLat=array[2];
+						String bbLong=array[3];
+						url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(this)+"/MassageNearby/Masseur.aspx"+"?Action=set&UserId="+ mItemMasseurMe.getmUserId()+"&Latitude="+bbLat + "&Longitude="+bbLong;
+					} else {
+						
+					
 					return null;
+					}
 				}
 			}
 			ArrayList<Object> data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
@@ -174,8 +187,15 @@ public class MasseurSocketService extends Service implements
 		String name=array[1];
 
 		if(data!=null && data.size()>0) {
+			int jdIndex=-1;
+			for(int c=0;c<data.size();c++) {
+				if(((ItemMasseur)data.get(c)).getmName().equals(mSettingsManager.getMasseurName())) {
+					jdIndex=c;
+					break;
+				}
+			}
 			if(key.equals("moi")) {
-				mItemMasseurMe=(ItemMasseur)data.get(0);
+				mItemMasseurMe=(ItemMasseur)data.get(jdIndex);
 				if(MasseurMainActivity.mSingleton!=null) {
     	    		MasseurMainActivity.mSingleton.mItemMasseur_me=mItemMasseurMe;
 				}
@@ -189,11 +209,16 @@ public class MasseurSocketService extends Service implements
 		       	} catch (IOException e) {
 		       		// TODO What if we're not connected to the Internet?  We didn't do any of this until we got connectivity, so this shouldn't happen.
 		       	}		
+		    	mLocationHelper.getNextLocationReadingJustOnce(this);
 				this.mDontReenter=false;
 
 			} else {
 				if(key.equals("byebye")) {
 					this.cleanUp();
+				} else {
+					if(key.equals("newlocation")) {
+						mItemMasseurMe=(ItemMasseur)data.get(jdIndex);
+					}
 				}
 			}
 		}	
@@ -311,6 +336,15 @@ public class MasseurSocketService extends Service implements
 				}
 			}
 		}, ApplicationMasseur.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS, ApplicationMasseur.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS);
+	}
+	@Override
+	public void heresYourLocation(Location location) {
+       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously(
+       			"newlocation~"+ 
+       					mSettingsManager.getMasseurName()+"~"+
+       					String.valueOf(location.getLatitude())+"~"+
+       					String.valueOf(location.getLongitude()), 
+       			MasseurSocketService.this, MasseurSocketService.this);
 	}
 
     

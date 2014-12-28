@@ -166,10 +166,10 @@ public class MasseurMainActivity extends FragmentActivity
 
     	if(this.mItemMasseur_me==null) {
     		mItemMasseur_me=new ItemMasseur();
-    		mItemMasseur_me.setmUserId(userId);
-    		mItemMasseur_me.setmName(name);
-        	mSettingsManager.setChatId(String.valueOf(userId));
     	}
+		mItemMasseur_me.setmUserId(userId);
+		mItemMasseur_me.setmName(name);
+    	mSettingsManager.setChatId(String.valueOf(userId));
     	ItemClient ic=new ItemClient();
     	SocketCommunicationsManager ctr=new SocketCommunicationsManager(socket, this, ic, mItemMasseur_me);
 
