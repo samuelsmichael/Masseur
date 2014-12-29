@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.diamondsoftware.android.masseur.ApplicationMasseur;
 import com.diamondsoftware.android.masseur.DataProvider;
@@ -154,6 +155,11 @@ public class MessagesFragment extends android.support.v4.app.ListFragment implem
 	private String getDisplayTime(String datetime) {
 		try {
 			Date dt = sdf.parse(datetime);
+			
+			TimeZone tz=TimeZone.getDefault();
+			int offset = tz.getOffset(dt.getTime());
+			dt.setTime(dt.getTime()+offset);			
+			
 			if (now.getYear()==dt.getYear() && now.getMonth()==dt.getMonth() && now.getDate()==dt.getDate()) {
 				return df[1].format(dt);
 			}
