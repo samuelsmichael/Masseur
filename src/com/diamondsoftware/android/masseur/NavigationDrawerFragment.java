@@ -61,6 +61,10 @@ public class NavigationDrawerFragment extends Fragment {
     public NavigationDrawerFragment() {
     }
 
+    public void setDrawerIndicatorEnabled(boolean enable) {
+    	mDrawerToggle.setDrawerIndicatorEnabled(enable);
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import org.apache.http.NameValuePair;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -205,13 +207,34 @@ public class MasseurMainActivity extends FragmentActivity
 		                .commit();
 			}
 		} else {
-	        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-	        fragmentManager.beginTransaction()
-	                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
-	                .commit();
+			if(position==0) {
+		        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+		        fragmentManager.beginTransaction()
+		                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
+		                .commit();
+			} else {
+				if(position==1) {
+					//disable the toggle menu and show up carat
+					mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+			        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+			        fragmentManager.beginTransaction()
+			                .replace(R.id.container, PrivatePicturesFragment.newInstance(mSettingsManager))
+			                .addToBackStack(null)
+			                .commit();
+				}
+				
+			}
 		}
     }
 
+	@Override
+	public void onBackPressed() {
+	    super.onBackPressed();
+	    // turn on the Navigation Drawer image; 
+	    // this is called in the LowerLevelFragments
+	    mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
+	}
+	
     public void onSectionAttached(int number) {
     	ArrayList<SocketCommunicationsManager> allMs=((ApplicationMasseur)getApplication()).mClients;
     	if(allMs!=null && allMs.size()>0) {
@@ -427,7 +450,7 @@ public class MasseurMainActivity extends FragmentActivity
 
 
 	@Override
-	public void heresTheResponse(String response) {
+	public void heresTheResponse(String response, ArrayList<NameValuePair> parms) {
 		try {
 			ArrayList<Object> massers=new ParsesJsonMasseur("").parsePublic(response);
 			if(massers.size()>0) {

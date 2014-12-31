@@ -6,13 +6,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.NameValuePair;
 
 import android.os.AsyncTask;
 import android.util.Log;
 	
-public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Exception> {
+public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Object> {
 	private HttpFileUploadParameters mParameters;
 	private String lineEnd = "\r\n";
 	private String twoHyphens = "--";
@@ -52,16 +54,24 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ex
 	        
 	        
 	        if(mParameters.mParameters!=null) {
+	        	int whichPrivatePicture=0;
 				for(NameValuePair nvp: mParameters.mParameters) {
 					writeAField(nvp.getName(),nvp.getValue(),dos);
+					if(nvp.getName().equals("pnbr")) {
+						whichPrivatePicture=Integer.valueOf(nvp.getValue());
+					}
 				}
-                dos.writeBytes(twoHyphens + boundary + lineEnd);                
-                dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+this.mParameters.mUserId+"_XMainPicture" +"\"" + lineEnd);
+                dos.writeBytes(twoHyphens + boundary + lineEnd);   
+                if(whichPrivatePicture==0) {
+                	dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+this.mParameters.mUserId+"_XMainPicture_" + String.valueOf(new Date().getTime()) +"\"" + lineEnd);
+                } else {
+                	dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+this.mParameters.mUserId+"_XPrivatePicture_" +String.valueOf(whichPrivatePicture)+"_"+ String.valueOf(new Date().getTime()) +"\"" + lineEnd);
+                }
                 dos.writeBytes(lineEnd);
 
 	        } else {
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+mParameters.mUserId+"_MainPicture" +"\"" + lineEnd);
+               	dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+mParameters.mUserId+"_MainPicture" +"\"" + lineEnd);
                 dos.writeBytes(lineEnd);
 	        }
 	        // create a buffer of maximum size
@@ -100,7 +110,7 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ex
 	        
 	        dos.close();
 	
-	        mParameters.mCanShowAlert.heresTheResponse(s);
+	        mParameters.mCanShowAlert.heresTheResponse(s,(ArrayList<NameValuePair>) mParameters.mParameters);
 		} catch (MalformedURLException mex) {
 			e=mex;
 		} catch (IOException ioex) {
@@ -108,11 +118,11 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ex
 		}
 		return e;
 	}
-	protected void onPostExecute(Exception result) {
+	protected void onPostExecute(Object result) {
 		if(mParameters.mProgressDialog!=null) {
 			mParameters.mProgressDialog.dismiss();
 		}
-		if(result!=null) {
+		if(result!=null && result instanceof Exception) {
 			mParameters.mCanShowAlert.alert(result.toString());
 		}
 	}

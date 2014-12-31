@@ -39,6 +39,7 @@ import android.widget.ImageView;
 	    float mWidthFactor;
 	    Context mContext;
 	    ExecutorService executorService;
+	    boolean mBlackAndWhiteATate=false;
 	 
 
 	    public ImageLoaderRemote( Context context, boolean scaleImageToScreenWidth, float widthFactor){
@@ -56,14 +57,17 @@ import android.widget.ImageView;
 	    */
 	    public void displayImage(String uri,ImageView imageView)
 	    {
-            queuePhoto(uri, imageView, mContext);
+	    	displayImage(uri,imageView,false);
+	    }
+	    public void displayImage(String uri,ImageView imageView, boolean blackAndWhiteATate){
+            queuePhoto(uri, imageView, mContext,blackAndWhiteATate);
 	    }
 	 /*
 	  * 
 	  */
-	    private void queuePhoto(String url, ImageView imageView, Context context)
+	    private void queuePhoto(String url, ImageView imageView, Context context, boolean bnwatate)
 	    {
-	        PhotoToLoad p=new PhotoToLoad(url, imageView, context);
+	        PhotoToLoad p=new PhotoToLoad(url, imageView, context, bnwatate);
 	        executorService.submit(new PhotosLoader(p));
 	    }
 	 
@@ -135,10 +139,12 @@ import android.widget.ImageView;
 	        public String url;
 	        public ImageView imageView;
 	        public Context mContext;
-	        public PhotoToLoad(String u, ImageView i, Context context){
+	        public boolean mBlackAndWhiteATate;
+	        public PhotoToLoad(String u, ImageView i, Context context, boolean bnwatate){
 	            url=u;
 	            imageView=i;
 	            mContext=context;
+	            mBlackAndWhiteATate=bnwatate;
 	        }
 	    }
 	 
@@ -169,6 +175,9 @@ import android.widget.ImageView;
 	        {
 	            if(bitmap!=null && photoToLoad.imageView!=null) { // if either the bitmap load failed, or the imageView=null, then don't set the imageView's bitmap
             			photoToLoad.imageView.setImageBitmap(bitmap);
+            			if(photoToLoad.mBlackAndWhiteATate) {
+            				Utils.setBlackAndWhite(photoToLoad.imageView);
+            			}
 	            }
 	        }
 	    }

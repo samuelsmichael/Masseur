@@ -2,20 +2,144 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
-    <Button
-        android:id="@+id/btnUploadNewPhoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="Upload new photo" />
-
     <ImageView 
         android:id="@+id/imageMasseur"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnUploadNewPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".35"
+        android:scaleType="centerCrop"
         />
+    
+    <ScrollView
+        	android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+        	android:layout_above="@+id/tblHomePageBottom"
+        	android:layout_marginBottom="6dip"
+        	
+        >
+		<TableLayout
+		    android:id="@+id/tblHomePage"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:stretchColumns="*"
+		    android:shrinkColumns="*"
+		    android:layout_marginTop="10dp"
+		    >
+		    <TableRow>
+		        <TextView
+		            style="@style/TextMasseurHomePageHeading"
+		            android:text="Age" />"
+		        <TextView 
+		            style="@style/TextMasseurHomePageValue"
+		            android:id="@+id/tvHomeAge"
+		            />
+		    </TableRow>
+		    <TableRow>
+		        <TextView
+		            style="@style/TextMasseurHomePageHeading"
+		            android:text="Height" />
+		        <TextView 
+		            style="@style/TextMasseurHomePageValue"
+		            android:id="@+id/tvHomeHeight"
+		            />
+		    </TableRow>
+		    <TableRow>
+		        <TextView
+		            style="@style/TextMasseurHomePageHeading"
+		            android:text="Ethnicity" />
+		        <TextView 
+		            style="@style/TextMasseurHomePageValue"
+		            android:id="@+id/tvHomeEthnicity"
+		            />
+		    </TableRow>
+		    <TableRow>
+		        <TextView
+		            style="@style/TextMasseurHomePageHeading"
+		            android:text="Services" />
+		        <TextView 
+		            style="@style/TextMasseurHomePageValue"
+		            android:id="@+id/tvHomeServices"
+		            />
+		    </TableRow>
+		    <TableRow>
+		        <TextView
+		            style="@style/TextMasseurHomePageHeading"
+		            android:text="Bio" />
+		        <TextView 
+		            style="@style/TextMasseurHomePageValue"
+		            android:id="@+id/tvHomeBio"
+		            />
+		    </TableRow>
+		    <TableRow>
+		        <TextView
+		            style="@style/TextMasseurHomePageHeading"
+		            android:text="Certified" />
+		        <LinearLayout
+		            android:orientation="horizontal"
+		            >
+			        <TextView 
+			            style="@style/TextMasseurHomePageValue"
+			            android:id="@+id/tvHomeCertified"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            />	            	
+			        <TextView 
+			            style="@style/TextMasseurHomePageHeading"
+			            android:id="@+id/tvHomeGetCertified"
+			            android:textSize="10sp"
+			            android:clickable="true"
+			            android:text="Get Certified"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            />	            	
+		        </LinearLayout>
+		    </TableRow>
+		    <TableRow>
+		        		<TextView
+		    android:layout_width="1dip"
+		    android:layout_height="22dp"
+		    >
+		    
+		</TextView>
+		        
+		    </TableRow>	    	    
+		</TableLayout>
+	</ScrollView>
+    	<TableLayout 
+	   	android:id="@+id/tblHomePageBottom"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:stretchColumns="*"
+	    android:shrinkColumns="*"
+	    android:layout_alignParentBottom="true"
+	    
+	    >
+	   	<TableRow>
+		    <Button
+		        style="@style/ButtonMasseur"
+		       	android:layout_span="2"
+		       	android:layout_width="wrap_content"
+		       	android:layout_gravity="center_horizontal"
+		        android:id="@+id/btnUpdateInfo"
+		        android:text="Update Info" />
+	        
+	    </TableRow>
+   	    <TableRow>
+	    	<Button
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		        android:id="@+id/btnUploadNewPhoto"
+		        android:layout_gravity="center_horizontal"
+		        android:text="Update Public Photo" />
+	    	<Button
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		        android:id="@+id/btnManagePrivatePhotos"
+		        android:layout_gravity="center_horizontal"
+		        android:text="Manage Private Photos" />
+	    		        
+	    </TableRow>
+	    
+	</TableLayout>
     
 </RelativeLayout>

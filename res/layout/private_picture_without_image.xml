@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/private_picture_doesnt_exist_framed"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <ImageView
+        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/plussign"
+        android:layout_marginTop="29dip"
+        android:id="@+id/ivplussign"
+        ></ImageView>
+	<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dip"
+        android:id="@+id/tvaddphoto"
+        android:text="Add Photo"
+        android:layout_below="@+id/ivplussign"
+	    ></TextView>
+   	<Button
+       style="@style/ButtonMasseur"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/btnPrivateNoImageFromCamera"
+       android:layout_centerHorizontal="true"
+       android:layout_below="@+id/tvaddphoto"
+       android:layout_marginTop="20dip"
+       android:text="From Camera" />
+   	<Button
+       style="@style/ButtonMasseur"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/btnPrivateNoImageFromGallery"
+       android:layout_centerHorizontal="true"
+       android:layout_below="@+id/btnPrivateNoImageFromCamera"
+       android:layout_marginTop="20dip"
+       android:text="From Gallery" />
+</RelativeLayout>
