@@ -428,14 +428,14 @@ containing a value of this type.
         public static final int private_picture_exists_framed=0x7f02002c;
     }
     public static final class id {
-        public static final int action_example=0x7f0a003d;
-        public static final int action_settings=0x7f0a003c;
+        public static final int action_example=0x7f0a0039;
+        public static final int action_settings=0x7f0a0038;
         public static final int book_now=0x7f0a000e;
         public static final int btnManagePrivatePhotos=0x7f0a0026;
-        public static final int btnManagePrivatePhotosContinue=0x7f0a0034;
-        public static final int btnPrivateNoImageFromCamera=0x7f0a003a;
-        public static final int btnPrivateNoImageFromGallery=0x7f0a003b;
-        public static final int btnPrivatePictureRemove=0x7f0a0037;
+        public static final int btnManagePrivatePhotosContinue=0x7f0a0030;
+        public static final int btnPrivateNoImageFromCamera=0x7f0a0036;
+        public static final int btnPrivateNoImageFromGallery=0x7f0a0037;
+        public static final int btnPrivatePictureRemove=0x7f0a0033;
         public static final int btnUpdateInfo=0x7f0a0024;
         public static final int btnUploadNewPhoto=0x7f0a0025;
         public static final int button1=0x7f0a002b;
@@ -446,17 +446,16 @@ containing a value of this type.
         public static final int container=0x7f0a0015;
         public static final int container2=0x7f0a0027;
         public static final int drawer_layout=0x7f0a0014;
-        public static final int edittextloginid=0x7f0a0035;
+        public static final int edittextloginid=0x7f0a0031;
         public static final int grayscale=0x7f0a0012;
+        public static final int gridviewPrivatePhotos=0x7f0a002f;
         public static final int holo_dark=0x7f0a0005;
         public static final int holo_light=0x7f0a0006;
         public static final int hybrid=0x7f0a0000;
         public static final int imageMasseur=0x7f0a001a;
-        public static final int ivPrivatePicture=0x7f0a0036;
-        public static final int ivplussign=0x7f0a0038;
+        public static final int ivPrivatePicture=0x7f0a0032;
+        public static final int ivplussign=0x7f0a0034;
         public static final int listView1=0x7f0a002d;
-        public static final int llrow1=0x7f0a0031;
-        public static final int llrow2=0x7f0a0033;
         public static final int match_parent=0x7f0a000c;
         public static final int monochrome=0x7f0a0013;
         public static final int msg_edit=0x7f0a0029;
@@ -473,13 +472,10 @@ containing a value of this type.
         public static final int strict_sandbox=0x7f0a0009;
         public static final int tblHomePage=0x7f0a001c;
         public static final int tblHomePageBottom=0x7f0a001b;
-        public static final int tblManagePrivatePictures=0x7f0a002f;
         public static final int terrain=0x7f0a0004;
         public static final int text1=0x7f0a0018;
         public static final int text2=0x7f0a0019;
         public static final int textView1=0x7f0a002c;
-        public static final int trPrivatePicturesRow1=0x7f0a0030;
-        public static final int trPrivatePicturesRow2=0x7f0a0032;
         public static final int tvHomeAge=0x7f0a001d;
         public static final int tvHomeBio=0x7f0a0021;
         public static final int tvHomeCertified=0x7f0a0022;
@@ -488,7 +484,7 @@ containing a value of this type.
         public static final int tvHomeHeight=0x7f0a001e;
         public static final int tvHomeServices=0x7f0a0020;
         public static final int tvManagePrivatePicturesHeading=0x7f0a002e;
-        public static final int tvaddphoto=0x7f0a0039;
+        public static final int tvaddphoto=0x7f0a0035;
         public static final int wrap_content=0x7f0a000d;
     }
     public static final class integer {

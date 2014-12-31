@@ -17,6 +17,7 @@ import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDr
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -86,79 +87,36 @@ public class PrivatePicturesFragment extends Fragment implements ManagesFileUplo
 		ArrayList<View> cellsLeftToRightTopToBottom=new ArrayList<View>();
 		ViewGroup viewGroup = (ViewGroup) inflater.inflate(
 				R.layout.fragment_private_pictures, container, false);
-		TableLayout tableLayout=(TableLayout)viewGroup.findViewById(R.id.tblManagePrivatePictures);
-		TableRow row1=(TableRow)tableLayout.findViewById(R.id.trPrivatePicturesRow1);
-		LinearLayout ll1=(LinearLayout)row1.findViewById(R.id.llrow1);
-//		ViewGroup row1Column1=(ViewGroup)row1.findViewById(R.id.tcPrivatePicturesRow1Column1);
-//		cellsLeftToRightTopToBottom.add(row1Column1);
-//		ViewGroup row1Column2=(ViewGroup)row1.findViewById(R.id.tcPrivatePicturesRow1Column2);
-//		cellsLeftToRightTopToBottom.add(row1Column2);
-		TableRow row2=(TableRow)tableLayout.findViewById(R.id.trPrivatePicturesRow2);
-		LinearLayout ll2=(LinearLayout)row2.findViewById(R.id.llrow2);
-//		ViewGroup row2Column1=(ViewGroup)row1.findViewById(R.id.tcPrivatePicturesRow2Column1);
-//		cellsLeftToRightTopToBottom.add(row2Column1);
-//		ViewGroup row2Column2=(ViewGroup)row1.findViewById(R.id.tcPrivatePicturesRow2Column2);
-//		cellsLeftToRightTopToBottom.add(row2Column2);
+		GridView gridView=(GridView)viewGroup.findViewById(R.id.gridviewPrivatePhotos);
 		
 		if(MasseurMainActivity.mSingleton!=null && MasseurMainActivity.mSingleton.mItemMasseur_me!=null) {
 			ItemMasseur im=MasseurMainActivity.mSingleton.mItemMasseur_me;
 			ArrayList<String> urls = new ArrayList<String>();
 			if(!TextUtils.isEmpty(im.getPrivatePicture1URL())) {
 				urls.add(im.getPrivatePicture1URL());
-				View view=inflater.inflate(R.layout.private_picture_with_image, ll1, false);
+				View view=inflater.inflate(R.layout.private_picture_with_image, null, false);
 				cellsLeftToRightTopToBottom.add(view);
 			}
 			if(!TextUtils.isEmpty(im.getPrivatePicture2URL())) {
 				urls.add(im.getPrivatePicture2URL());
-				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image,ll1,false));
+				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image,null,false));
 			}
 			if(!TextUtils.isEmpty(im.getPrivatePicture3URL())) {
 				urls.add(im.getPrivatePicture3URL());
-				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image,ll1,false));
+				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image,null,false));
 			}
 			if(!TextUtils.isEmpty(im.getPrivatePicture4URL())) {
 				urls.add(im.getPrivatePicture4URL());
-				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image, ll1,false));
-			}
-			for(int c=0;c<urls.size();c++) {
-				if(c<2) {
-					ll1.addView(cellsLeftToRightTopToBottom.get(c));
-				} else {
-					ll2.addView(cellsLeftToRightTopToBottom.get(c));
-				}
-				ImageView iv=(ImageView)cellsLeftToRightTopToBottom.get(c).findViewById(R.id.ivPrivatePicture);
-				com.diamondsoftware.android.common.ImageLoaderRemote ilm = new com.diamondsoftware.android.common.ImageLoaderRemote(
-						getActivity(), true, .80f);
-				String url = "http://"
-						+ com.diamondsoftware.android.massagenearby.common.CommonMethods
-								.getBaseURL(getActivity())
-						+ "/MassageNearby/files/"
-						+ urls.get(c);
-
-				ilm.displayImage(url, iv);
+				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image, null,false));
 			}
 			for(int c=urls.size();c<4;c++) {
 				d=c;
-				View view=inflater.inflate(R.layout.private_picture_without_image, ll1,false);
-				if(c>=2) {
-					ll2.addView(view);
-				} else {
-					ll1.addView(view);
-				}
-				
-				Button btnFromGallery=(Button)view.findViewById(R.id.btnPrivateNoImageFromGallery);
-				btnFromGallery.setOnClickListener(new View.OnClickListener() {
-				
-					@Override
-					public void onClick(View v) {
-						Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-						photoPickerIntent.setType("image/*");
-						startActivityForResult(
-								photoPickerIntent,
-								com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS[d]);					
-						}
-				});
+				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_without_image, null,false));
 			}
+			gridView.setAdapter(
+					new PrivatePhotosAdapter(cellsLeftToRightTopToBottom, 
+							urls.size(), im, getActivity(), urls,
+							this));
 			/*
 			if(TextUtils.isEmpty(im.getPrivatePicture2URL())) {
 				View view=inflater.inflate(R.layout.private_picture_without_image, row1, true);
