@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/masseur_background_main"
+    >
+
+        <TextView 
+        android:id="@+id/tvUpdateInfoHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextMasseurUpdateInfoValue"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="15dip"
+        android:text="Profile Info"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+		                />
+
+    
+	   <ScrollView android:id="@+id/svUpdateInfo"
+		   	android:layout_width="match_parent"
+		 	android:layout_height="wrap_content"
+		 	android:layout_below="@+id/tvUpdateInfoHeading"
+		 	android:layout_above="@+id/btnUpdateInfoContinue"
+	   >	
+		   <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+		       >
+			<LinearLayout
+			    android:id="@+id/tblUpdateInfo"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical"
+			    android:layout_marginBottom="10dp"
+			    
+			    
+			    >
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal" 
+			        >
+			        <TextView
+			            style="@style/TextMasseurUpdateInfoHeading"
+				        android:layout_height="wrap_content"
+			            
+			            android:text="Birthdate" />"	
+			        <EditText android:id="@+id/etUpdateInfo_Birthdate"
+			            style="@style/TextMasseurUpdateInfoValue"
+			            android:layout_height="wrap_content"
+					    android:layout_width="match_parent"
+					    android:inputType="date"
+					    android:hint="yyyy.mm.dd"
+			            
+			         ></EditText>
+			    </LinearLayout>
+				<LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal" 
+			        >
+	
+			        <TextView
+				        android:layout_height="wrap_content"
+			            style="@style/TextMasseurUpdateInfoHeading"
+			            android:text="Height" />"	
+			        <EditText android:id="@+id/etUpdateInfo_Height"
+			            style="@style/TextMasseurUpdateInfoValue"
+			            android:layout_height="wrap_content"
+					    android:layout_width="match_parent"
+					    android:inputType="none"
+					    android:hint=""		            
+			            ></EditText>
+			 	</LinearLayout>
+			 	<LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal" 
+			        >
+	>
+			        <TextView
+			            style="@style/TextMasseurUpdateInfoHeading"
+				        android:layout_height="wrap_content"
+			            android:text="Ethnicity" />"	
+			        <EditText android:id="@+id/etUpdateInfo_Ethnicity"
+			            style="@style/TextMasseurUpdateInfoValue"
+			            android:layout_height="wrap_content"
+					    android:layout_width="match_parent"
+					    android:inputType="none"
+					    android:hint=""		            
+			            ></EditText>		        		        
+				</LinearLayout>
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal" 
+			        >
+			 	    
+			        <TextView
+				        android:layout_height="wrap_content"
+			            style="@style/TextMasseurUpdateInfoHeading"
+			            android:text="Services" />"	
+			        
+				        <EditText android:id="@+id/etUpdateInfo_Service1"
+				            style="@style/TextMasseurUpdateInfoValue"
+				            android:layout_height="wrap_content"
+						    android:layout_width="match_parent"
+						    android:inputType="none"
+						    android:hint=""		            
+				            ></EditText>	
+					        	        		        
+				</LinearLayout>
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal" 
+			        >
+			 	    
+			        <TextView
+				        android:layout_height="wrap_content"
+			            style="@style/TextMasseurUpdateInfoHeading"
+			            android:text="" />"	
+	
+				        <EditText android:id="@+id/etUpdateInfo_Service2"
+				            style="@style/TextMasseurUpdateInfoValue"
+				            android:layout_height="wrap_content"
+						    android:layout_width="match_parent"
+						    android:inputType="none"
+						    android:hint=""		            
+				            ></EditText>		        
+				</LinearLayout>
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal" 
+			        >
+			        <TextView
+				        android:layout_height="wrap_content"
+			            style="@style/TextMasseurUpdateInfoHeading"
+			            android:text="" />"	
+			        <EditText android:id="@+id/etUpdateInfo_Service3"
+			            style="@style/TextMasseurUpdateInfoValue"
+			            android:layout_height="wrap_content"
+					    android:layout_width="match_parent"
+					    android:inputType="none"
+					    android:hint=""		            
+			            ></EditText>		        		        
+				</LinearLayout>
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal" 
+			        >		 	    
+			        <TextView
+			            style="@style/TextMasseurUpdateInfoHeading"
+				        android:layout_height="wrap_content"
+			            android:text="Bio" />"	
+			        <EditText android:id="@+id/etUpdateInfo_Bio"
+			                   style="@style/TextMasseurUpdateInfoValue"
+			            
+			            android:layout_height="wrap_content"
+					    android:layout_width="match_parent"
+					    android:inputType="textMultiLine"
+					    android:hint=""		            
+			            ></EditText>
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>	            
+    </ScrollView>
+	   	   
+   	<Button 
+        style="@style/ButtonMasseur"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+        android:id="@+id/btnUpdateInfoContinue"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Continue" />
+</RelativeLayout>

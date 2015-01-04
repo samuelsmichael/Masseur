@@ -16,15 +16,26 @@
       <item name="android:layout_width">0dp</item>
   </style>
   <style name="TextMasseurHomePageHeading" parent="TextMasseurHomePage">
-      <item name="android:layout_weight">1</item>
+      <item name="android:layout_weight">1.39</item>
       <item name="android:textColor">#ffffff</item>
       <item name="android:paddingLeft">40dip</item>
-  </style>
+      <item name="android:paddingRight">5dip</item>
+      </style>
     <style name="TextMasseurHomePageValue" parent="TextMasseurHomePage">
       <item name="android:layout_weight">2</item>
       <item name="android:textColor">#2f5172</item>
   </style>
-  
+  <style name="TextMasseurUpdateInfoHeading" parent="TextMasseurHomePage">
+      <item name="android:textColor">#ffffff</item>
+      <item name="android:paddingLeft">20dip</item>
+      <item name="android:layout_width">130dip</item>
+      <item name="android:paddingRight">8dip</item>
+  </style>
+    <style name="TextMasseurUpdateInfoValue" parent="TextMasseurHomePage">
+      <item name="android:textColor">#2f5172</item>
+      <item name="android:paddingRight">18dip</item>
+      </style>
+    
   <style name="ImageButtonMasseur" parent="android:Widget.Holo.Light.ImageButton">
 	  <item name="android:background">@drawable/masseur_btn_default_holo_light</item>
   </style>

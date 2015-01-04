@@ -10,12 +10,13 @@
         android:scaleType="centerCrop"
         />
     
-    <ScrollView
+    <ScrollView android:id="@+id/svHomePage"
         	android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-        	android:layout_above="@+id/tblHomePageBottom"
+		    android:layout_above="@+id/tblHomePageBottom"
+        	android:layout_marginTop="6dip"
         	android:layout_marginBottom="6dip"
-        	
+        	android:layout_marginRight="6dip"
         >
 		<TableLayout
 		    android:id="@+id/tblHomePage"
@@ -23,9 +24,8 @@
 		    android:layout_height="wrap_content"
 		    android:stretchColumns="*"
 		    android:shrinkColumns="*"
-		    android:layout_marginTop="10dp"
 		    >
-		    <TableRow>
+		    <TableRow android:layout_marginTop="11dip">
 		        <TextView
 		            style="@style/TextMasseurHomePageHeading"
 		            android:text="Age" />"
@@ -34,7 +34,7 @@
 		            android:id="@+id/tvHomeAge"
 		            />
 		    </TableRow>
-		    <TableRow>
+		    <TableRow android:layout_marginTop="11dip">
 		        <TextView
 		            style="@style/TextMasseurHomePageHeading"
 		            android:text="Height" />
@@ -43,7 +43,7 @@
 		            android:id="@+id/tvHomeHeight"
 		            />
 		    </TableRow>
-		    <TableRow>
+		    <TableRow android:layout_marginTop="11dip">
 		        <TextView
 		            style="@style/TextMasseurHomePageHeading"
 		            android:text="Ethnicity" />
@@ -52,7 +52,7 @@
 		            android:id="@+id/tvHomeEthnicity"
 		            />
 		    </TableRow>
-		    <TableRow>
+		    <TableRow android:layout_marginTop="11dip">
 		        <TextView
 		            style="@style/TextMasseurHomePageHeading"
 		            android:text="Services" />
@@ -61,7 +61,7 @@
 		            android:id="@+id/tvHomeServices"
 		            />
 		    </TableRow>
-		    <TableRow>
+		    <TableRow android:layout_marginTop="11dip">
 		        <TextView
 		            style="@style/TextMasseurHomePageHeading"
 		            android:text="Bio" />
@@ -70,49 +70,76 @@
 		            android:id="@+id/tvHomeBio"
 		            />
 		    </TableRow>
-		    <TableRow>
+		    <TableRow android:layout_marginTop="11dip">
 		        <TextView
 		            style="@style/TextMasseurHomePageHeading"
 		            android:text="Certified" />
 		        <LinearLayout
 		            android:orientation="horizontal"
+		            style="@style/TextMasseurHomePageValue"
 		            >
-			        <TextView 
-			            style="@style/TextMasseurHomePageValue"
+			        <TextView 			            
 			            android:id="@+id/tvHomeCertified"
-			            android:layout_width="wrap_content"
+			            android:layout_width="83sp"
 			            android:layout_height="wrap_content"
+			            android:textColor="#2f5172"
+			            android:textStyle="bold"
 			            />	            	
 			        <TextView 
 			            style="@style/TextMasseurHomePageHeading"
 			            android:id="@+id/tvHomeGetCertified"
-			            android:textSize="10sp"
+			            android:textSize="12sp"
 			            android:clickable="true"
-			            android:text="Get Certified"
+			            android:text="@string/homepage_getcertified"
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
 			            />	            	
 		        </LinearLayout>
 		    </TableRow>
-		    <TableRow>
-		        		<TextView
-		    android:layout_width="1dip"
-		    android:layout_height="22dp"
-		    >
-		    
-		</TextView>
+		    <TableRow android:layout_marginTop="11dip">
+		        <TextView
+		            style="@style/TextMasseurHomePageHeading"
+		            android:text="Subscription expire date" />
+		        <LinearLayout
+		            android:orientation="horizontal"
+		            style="@style/TextMasseurHomePageValue"
+		            >
+			        <TextView 			            
+			            android:id="@+id/tvHomeSubscriptionExpireDate"
+			            android:layout_width="83sp"
+			            android:layout_height="wrap_content"
+			            android:textColor="#2f5172"
+			            android:textStyle="bold"	
+			            		            
+			            />	            	
+			        <TextView 
+			            style="@style/TextMasseurHomePageHeading"
+			            android:id="@+id/tvHomeRenewNow"
+			            android:textSize="12sp"
+			            android:clickable="true"
+			            android:text="@string/homepage_renewsubscription"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            />	            	
+		        </LinearLayout>
+		    </TableRow>
+		    		    <TableRow>
+		       <TextView
+				    android:layout_width="1dip"
+				    android:layout_height="22dp"
+		    		>		    
+				</TextView>
 		        
 		    </TableRow>	    	    
 		</TableLayout>
 	</ScrollView>
-    	<TableLayout 
+    <TableLayout 
 	   	android:id="@+id/tblHomePageBottom"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:stretchColumns="*"
 	    android:shrinkColumns="*"
 	    android:layout_alignParentBottom="true"
-	    
 	    >
 	   	<TableRow>
 		    <Button

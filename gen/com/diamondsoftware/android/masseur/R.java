@@ -428,37 +428,45 @@ containing a value of this type.
         public static final int private_picture_exists_framed=0x7f02002c;
     }
     public static final class id {
-        public static final int action_example=0x7f0a0039;
-        public static final int action_settings=0x7f0a0038;
+        public static final int action_example=0x7f0a0047;
+        public static final int action_settings=0x7f0a0046;
         public static final int book_now=0x7f0a000e;
-        public static final int btnManagePrivatePhotos=0x7f0a0026;
-        public static final int btnManagePrivatePhotosContinue=0x7f0a0030;
-        public static final int btnPrivateNoImageFromCamera=0x7f0a0036;
-        public static final int btnPrivateNoImageFromGallery=0x7f0a0037;
-        public static final int btnPrivatePictureRemove=0x7f0a0033;
-        public static final int btnUpdateInfo=0x7f0a0024;
-        public static final int btnUploadNewPhoto=0x7f0a0025;
-        public static final int button1=0x7f0a002b;
+        public static final int btnManagePrivatePhotos=0x7f0a0029;
+        public static final int btnManagePrivatePhotosContinue=0x7f0a0033;
+        public static final int btnNavDrawerFrag_Home=0x7f0a002e;
+        public static final int btnPrivateNoImageFromCamera=0x7f0a0044;
+        public static final int btnPrivateNoImageFromGallery=0x7f0a0045;
+        public static final int btnPrivatePictureRemove=0x7f0a0041;
+        public static final int btnUpdateInfo=0x7f0a0027;
+        public static final int btnUpdateInfoContinue=0x7f0a0036;
+        public static final int btnUploadNewPhoto=0x7f0a0028;
         public static final int buyButton=0x7f0a000a;
         public static final int buy_now=0x7f0a000f;
         public static final int buy_with_google=0x7f0a0010;
         public static final int classic=0x7f0a0011;
         public static final int container=0x7f0a0015;
-        public static final int container2=0x7f0a0027;
+        public static final int container2=0x7f0a002a;
         public static final int drawer_layout=0x7f0a0014;
-        public static final int edittextloginid=0x7f0a0031;
+        public static final int edittextloginid=0x7f0a003f;
+        public static final int etUpdateInfo_Bio=0x7f0a003e;
+        public static final int etUpdateInfo_Birthdate=0x7f0a0038;
+        public static final int etUpdateInfo_Ethnicity=0x7f0a003a;
+        public static final int etUpdateInfo_Height=0x7f0a0039;
+        public static final int etUpdateInfo_Service1=0x7f0a003b;
+        public static final int etUpdateInfo_Service2=0x7f0a003c;
+        public static final int etUpdateInfo_Service3=0x7f0a003d;
         public static final int grayscale=0x7f0a0012;
-        public static final int gridviewPrivatePhotos=0x7f0a002f;
+        public static final int gridviewPrivatePhotos=0x7f0a0032;
         public static final int holo_dark=0x7f0a0005;
         public static final int holo_light=0x7f0a0006;
         public static final int hybrid=0x7f0a0000;
         public static final int imageMasseur=0x7f0a001a;
-        public static final int ivPrivatePicture=0x7f0a0032;
-        public static final int ivplussign=0x7f0a0034;
-        public static final int listView1=0x7f0a002d;
+        public static final int ivPrivatePicture=0x7f0a0040;
+        public static final int ivplussign=0x7f0a0042;
+        public static final int listView1=0x7f0a0030;
         public static final int match_parent=0x7f0a000c;
         public static final int monochrome=0x7f0a0013;
-        public static final int msg_edit=0x7f0a0029;
+        public static final int msg_edit=0x7f0a002c;
         public static final int myLinLay=0x7f0a0017;
         public static final int navigation_drawer=0x7f0a0016;
         public static final int none=0x7f0a0001;
@@ -466,25 +474,31 @@ containing a value of this type.
         public static final int production=0x7f0a0007;
         public static final int sandbox=0x7f0a0008;
         public static final int satellite=0x7f0a0003;
-        public static final int section_label=0x7f0a002a;
+        public static final int section_label=0x7f0a002d;
         public static final int selectionDetails=0x7f0a000b;
-        public static final int send_btn=0x7f0a0028;
+        public static final int send_btn=0x7f0a002b;
         public static final int strict_sandbox=0x7f0a0009;
-        public static final int tblHomePage=0x7f0a001c;
-        public static final int tblHomePageBottom=0x7f0a001b;
+        public static final int svHomePage=0x7f0a001b;
+        public static final int svUpdateInfo=0x7f0a0035;
+        public static final int tblHomePage=0x7f0a001d;
+        public static final int tblHomePageBottom=0x7f0a001c;
+        public static final int tblUpdateInfo=0x7f0a0037;
         public static final int terrain=0x7f0a0004;
         public static final int text1=0x7f0a0018;
         public static final int text2=0x7f0a0019;
-        public static final int textView1=0x7f0a002c;
-        public static final int tvHomeAge=0x7f0a001d;
-        public static final int tvHomeBio=0x7f0a0021;
-        public static final int tvHomeCertified=0x7f0a0022;
-        public static final int tvHomeEthnicity=0x7f0a001f;
-        public static final int tvHomeGetCertified=0x7f0a0023;
-        public static final int tvHomeHeight=0x7f0a001e;
-        public static final int tvHomeServices=0x7f0a0020;
-        public static final int tvManagePrivatePicturesHeading=0x7f0a002e;
-        public static final int tvaddphoto=0x7f0a0035;
+        public static final int textView1=0x7f0a002f;
+        public static final int tvHomeAge=0x7f0a001e;
+        public static final int tvHomeBio=0x7f0a0022;
+        public static final int tvHomeCertified=0x7f0a0023;
+        public static final int tvHomeEthnicity=0x7f0a0020;
+        public static final int tvHomeGetCertified=0x7f0a0024;
+        public static final int tvHomeHeight=0x7f0a001f;
+        public static final int tvHomeRenewNow=0x7f0a0026;
+        public static final int tvHomeServices=0x7f0a0021;
+        public static final int tvHomeSubscriptionExpireDate=0x7f0a0025;
+        public static final int tvManagePrivatePicturesHeading=0x7f0a0031;
+        public static final int tvUpdateInfoHeading=0x7f0a0034;
+        public static final int tvaddphoto=0x7f0a0043;
         public static final int wrap_content=0x7f0a000d;
     }
     public static final class integer {
@@ -498,9 +512,10 @@ containing a value of this type.
         public static final int fragment_masseur_main=0x7f030004;
         public static final int fragment_navigation_drawer_masseur=0x7f030005;
         public static final int fragment_private_pictures=0x7f030006;
-        public static final int login=0x7f030007;
-        public static final int private_picture_with_image=0x7f030008;
-        public static final int private_picture_without_image=0x7f030009;
+        public static final int fragment_updateinfo=0x7f030007;
+        public static final int login=0x7f030008;
+        public static final int private_picture_with_image=0x7f030009;
+        public static final int private_picture_without_image=0x7f03000a;
     }
     public static final class menu {
         public static final int global=0x7f090000;
@@ -612,6 +627,9 @@ containing a value of this type.
         /**   Crash Reports 
          */
         public static final int crash_toast_text=0x7f050020;
+        public static final int homepage_getcertified=0x7f05002d;
+        public static final int homepage_renewSubcriptionTitle=0x7f05002f;
+        public static final int homepage_renewsubscription=0x7f05002e;
         public static final int navigation_drawer_close=0x7f05002a;
         public static final int navigation_drawer_open=0x7f050029;
         public static final int title_section1=0x7f050026;
@@ -650,11 +668,13 @@ containing a value of this type.
          */
         public static final int AppTheme=0x7f040006;
         public static final int ButtonMasseur=0x7f040007;
-        public static final int ImageButtonMasseur=0x7f04000b;
-        public static final int Masseur=0x7f04000c;
+        public static final int ImageButtonMasseur=0x7f04000d;
+        public static final int Masseur=0x7f04000e;
         public static final int TextMasseurHomePage=0x7f040008;
         public static final int TextMasseurHomePageHeading=0x7f040009;
         public static final int TextMasseurHomePageValue=0x7f04000a;
+        public static final int TextMasseurUpdateInfoHeading=0x7f04000b;
+        public static final int TextMasseurUpdateInfoValue=0x7f04000c;
         public static final int Theme_IAPTheme=0x7f040000;
         public static final int WalletFragmentDefaultButtonTextAppearance=0x7f040003;
         public static final int WalletFragmentDefaultDetailsHeaderTextAppearance=0x7f040002;
@@ -665,7 +685,7 @@ containing a value of this type.
     
          */
         public static final int WalletFragmentDefaultStyle=0x7f040004;
-        public static final int _Masseur=0x7f04000d;
+        public static final int _Masseur=0x7f04000f;
     }
     public static final class styleable {
         /** Attributes that can be used with a AdsAttrs.

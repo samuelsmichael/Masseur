@@ -25,6 +25,7 @@
 		    android:verticalSpacing="5dp"
 		    android:horizontalSpacing="5dp"
 		    android:stretchMode="columnWidth"
+		    android:layout_marginTop="25dip"
 		    android:gravity="center"
 		    android:layout_below="@+id/tvManagePrivatePicturesHeading" 
 			/>

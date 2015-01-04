@@ -3,18 +3,26 @@ package com.diamondsoftware.android.common;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
+import android.os.Bundle;
 import android.widget.ImageView;
 
  
@@ -82,6 +90,25 @@ public class Utils {
 			  mm-1,
 			  dd,hh,min,sec);
 	}
+	public static final DateFormat mDateFormatYYYYMMDD=new SimpleDateFormat(
+			"yyyy.mm.dd");
+	public static final DateFormat mLocaleDateFormat=new SimpleDateFormat("MM/dd/yyyy",Locale.US);
+	public static final DateFormat mDateFormat = new SimpleDateFormat(
+	"yyyy-MM-dd HH:mm:ss");
+	public static String toStringYYYYdashMMdashDDTHHcolonMMcolonSSFromDate(GregorianCalendar gc) {
+		
+		String retValue=mDateFormat.format(gc.getTime());
+		return retValue;
+	}
+	public static boolean isNullDate(GregorianCalendar gc) {
+		if (gc==null) {
+			return true;
+		}
+		String str=toStringYYYYdashMMdashDDTHHcolonMMcolonSSFromDate(gc);
+		return 
+				str.equals("0001-01-01 00:00:00") ||
+				str.equals("1900-01-01 00:00:00");
+	}
 	public static java.util.Calendar toDateFromMMdashDDdashYYYY(String s) throws ParseException {
 		DateFormat df1 = new SimpleDateFormat("MM-dd-yyyy");
 		DateFormat df2 = new SimpleDateFormat("MM/dd/yyyy");
@@ -115,5 +142,54 @@ public class Utils {
            iv.setColorFilter(colorFilter);
            
        }
-	
+    public static class Confirmer extends DialogFragment {
+		private String mTitle;
+		private String mMessage;
+		private Activity mActivity;
+		private ConfirmerClient mClient;
+    	private ArrayList<Object> mOtherData;
+    	
+    	@SuppressWarnings("unused")
+		private Confirmer() {
+    		super();
+    	}
+		public Confirmer(String title, String message,
+				Activity activity, ConfirmerClient client, ArrayList<Object> otherData) {
+			super();
+			mTitle = title;
+			mMessage = message;
+			mActivity = activity;
+			mClient=client;
+			mOtherData=otherData;
+		}
+
+		
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle(mTitle)
+            			.setMessage(mMessage)
+						.setNegativeButton("No",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										mClient.heresYourAnswer(false, mOtherData);
+										dismiss();
+									}
+								})
+						.setPositiveButton("Yes",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										mClient.heresYourAnswer(true, mOtherData);
+										dismiss();
+									}
+								});
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+
 }

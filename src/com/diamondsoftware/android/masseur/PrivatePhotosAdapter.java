@@ -52,41 +52,51 @@ public class PrivatePhotosAdapter extends BaseAdapter {
 		return position;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.widget.BaseAdapter#getItemViewType(int)
+	 */
+	@Override
+	public int getItemViewType(int position) {
+		if(position<mCountGotPictures) {
+			return 1;
+		} else {
+			return 1;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see android.widget.BaseAdapter#getViewTypeCount()
+	 */
+	@Override
+	public int getViewTypeCount() {
+		return 1;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		int width=parent.getWidth();
 		View zView=(View)getItem(position);
+		
 		if(position<mCountGotPictures) {
 			zView.setLayoutParams(new GridView.LayoutParams((int)(width/2-15), (int)(width/2-15)));
 		} else {
-			zView.setLayoutParams(new GridView.LayoutParams((int)(width/2-15), (int)(width/2+155)));
+			//zView.setLayoutParams(new GridView.LayoutParams((int)(width/2-15), (int)(width/2+155)));
 		}
+		
 
 		if(position<mCountGotPictures) {
-			ImageView iv=(ImageView)((ViewGroup)getItem(position)).findViewById(R.id.ivPrivatePicture);
-			String url = "http://"
-					+ com.diamondsoftware.android.massagenearby.common.CommonMethods
-							.getBaseURL(mActivity)
-					+ "/MassageNearby/files/"
-					+ mUrls.get(position);
-
-			mImageLoaderRemote.displayImage(url, iv);
+			if(convertView==null) {
+				ImageView iv=(ImageView)zView.findViewById(R.id.ivPrivatePicture);
+				String url = "http://"
+						+ com.diamondsoftware.android.massagenearby.common.CommonMethods
+								.getBaseURL(mActivity)
+						+ "/MassageNearby/files/"
+						+ mUrls.get(position);
+	
+				mImageLoaderRemote.displayImage(url, iv);
+			}
 		} else {
-			final int d=position;
-			Button btnFromGallery=(Button)((ViewGroup)getItem(position)).findViewById((R.id.btnPrivateNoImageFromGallery));
-			btnFromGallery.setOnClickListener(new View.OnClickListener() {
-			
-				@Override
-				public void onClick(View v) {
-					Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-					photoPickerIntent.setType("image/*");
-					mFragment.startActivityForResult(
-							photoPickerIntent,
-							com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS[d]);					
-					}
-			});
 		}
-
-        return (View)getItem(position);
+        return zView;
     }
 }

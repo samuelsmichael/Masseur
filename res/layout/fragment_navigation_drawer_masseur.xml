@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.diamondsoftware.android.masseur.NavigationDrawerFragment" >
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/btnNavDrawerFrag_Home"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
+        android:layout_below="@+id/btnNavDrawerFrag_Home"
         android:text="Chats" />
 
     <ListView

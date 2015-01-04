@@ -3,13 +3,18 @@ package com.diamondsoftware.android.masseur;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.zip.Inflater;
+import com.diamondsoftware.android.common.Utils;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.diamondsoftware.android.common.ConfirmerClient;
 import com.diamondsoftware.android.common.HttpFileUpload;
 import com.diamondsoftware.android.common.HttpFileUploadParameters;
 import com.diamondsoftware.android.common.ManagesFileUploads;
+import com.diamondsoftware.android.common.OnClickListenerWithData;
+import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDrawerCallbacks;
@@ -36,13 +41,18 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
-public class PrivatePicturesFragment extends Fragment implements ManagesFileUploads {
+public class PrivatePicturesFragment extends Fragment implements ManagesFileUploads,
+com.diamondsoftware.android.common.WaitingForDataAcquiredAsynchronously,
+com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 	private SettingsManager mSettingsManager;
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
     private NavigationDrawerCallbacks mCallbacks;
     
+    ViewGroup mViewGroup; 
+    GridView mGridView;
+    LayoutInflater mInflater;
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
 	 */
@@ -77,165 +87,155 @@ public class PrivatePicturesFragment extends Fragment implements ManagesFileUplo
 
         return super.onOptionsItemSelected(item);
     } 
-    int d;
+    private void showThePictures(final ItemMasseur im) {
+    	GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.clear();
+    	ArrayList<Integer> leftOvers=new ArrayList<Integer>();
+		final ArrayList<View> cellsLeftToRightTopToBottom=new ArrayList<View>();
+		final ArrayList<String> urls = new ArrayList<String>();
+		if(!TextUtils.isEmpty(im.getPrivatePicture1URL())) {
+			urls.add(im.getPrivatePicture1URL());
+			View view=mInflater.inflate(R.layout.private_picture_with_image, null, false);
+			Button remove=(Button)view.findViewById(R.id.btnPrivatePictureRemove);
+			remove.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ArrayList<Object> al=new ArrayList<Object>();
+					al.add("1");
+					al.add(im);
+					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
+							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove1");
+				}
+			});
+			GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_1);
+			cellsLeftToRightTopToBottom.add(view);
+		} else {
+			leftOvers.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_1);
+		}
+		if(!TextUtils.isEmpty(im.getPrivatePicture2URL())) {
+			urls.add(im.getPrivatePicture2URL());
+			View view=mInflater.inflate(R.layout.private_picture_with_image, null, false);
+			Button remove=(Button)view.findViewById(R.id.btnPrivatePictureRemove);
+			remove.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ArrayList<Object> al=new ArrayList<Object>();
+					al.add("2");
+					al.add(im);
+					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
+							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove2");
+				}
+			});
+			cellsLeftToRightTopToBottom.add(view);
+			GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_2);
+		} else {
+			leftOvers.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_2);
+		}
+		if(!TextUtils.isEmpty(im.getPrivatePicture3URL())) {
+			urls.add(im.getPrivatePicture3URL());
+			View view=mInflater.inflate(R.layout.private_picture_with_image, null, false);
+			Button remove=(Button)view.findViewById(R.id.btnPrivatePictureRemove);
+			remove.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ArrayList<Object> al=new ArrayList<Object>();
+					al.add("3");
+					al.add(im);
+					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
+							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove3");
+
+				}
+			});
+			cellsLeftToRightTopToBottom.add(view);
+			GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_3);
+		} else {
+			leftOvers.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_3);
+		}
+		if(!TextUtils.isEmpty(im.getPrivatePicture4URL())) {
+			urls.add(im.getPrivatePicture4URL());
+			View view=mInflater.inflate(R.layout.private_picture_with_image, null, false);
+			Button remove=(Button)view.findViewById(R.id.btnPrivatePictureRemove);
+			remove.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ArrayList<Object> al=new ArrayList<Object>();
+					al.add("4");
+					al.add(im);
+					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
+							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove4");
+
+				}
+			});
+			cellsLeftToRightTopToBottom.add(view);
+			GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_4);
+		} else {
+			leftOvers.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_4);
+		}
+		int i=0;
+		for(int c=urls.size();c<4;c++) {
+			View zView=mInflater.inflate(R.layout.private_picture_without_image, null,false);
+			
+			Button btnFromGallery=(Button)zView.findViewById((R.id.btnPrivateNoImageFromGallery));
+			
+			GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.add(leftOvers.get(i++));
+
+			Integer theId=com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.get(c);
+			ArrayList<Object> aa=new ArrayList<Object>();
+			aa.add(theId);
+			btnFromGallery.setOnClickListener(new OnClickListenerWithData(aa) {
+			
+				@Override
+				public void onClick(View v) {
+					Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+					photoPickerIntent.setType("image/*");
+					startActivityForResult(
+							photoPickerIntent,
+							((Integer)mData.get(0)).intValue());					
+					}
+			});
+			
+			
+			cellsLeftToRightTopToBottom.add(zView);
+		}
+		getActivity().runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				mGridView.setAdapter(
+						new PrivatePhotosAdapter(cellsLeftToRightTopToBottom, 
+								urls.size(), im, getActivity(), urls,
+								PrivatePicturesFragment.this));
+				}
+			
+		});
+
+    	
+    }
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		ArrayList<View> cellsLeftToRightTopToBottom=new ArrayList<View>();
-		ViewGroup viewGroup = (ViewGroup) inflater.inflate(
+		mInflater=inflater;
+		mViewGroup= (ViewGroup) inflater.inflate(
 				R.layout.fragment_private_pictures, container, false);
-		GridView gridView=(GridView)viewGroup.findViewById(R.id.gridviewPrivatePhotos);
+		Button jdContinue=(Button)mViewGroup.findViewById(R.id.btnManagePrivatePhotosContinue);
+		jdContinue.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				getActivity().onBackPressed();
+				
+			}
+		});
+		mGridView=(GridView)mViewGroup.findViewById(R.id.gridviewPrivatePhotos);
 		
 		if(MasseurMainActivity.mSingleton!=null && MasseurMainActivity.mSingleton.mItemMasseur_me!=null) {
 			ItemMasseur im=MasseurMainActivity.mSingleton.mItemMasseur_me;
-			ArrayList<String> urls = new ArrayList<String>();
-			if(!TextUtils.isEmpty(im.getPrivatePicture1URL())) {
-				urls.add(im.getPrivatePicture1URL());
-				View view=inflater.inflate(R.layout.private_picture_with_image, null, false);
-				cellsLeftToRightTopToBottom.add(view);
-			}
-			if(!TextUtils.isEmpty(im.getPrivatePicture2URL())) {
-				urls.add(im.getPrivatePicture2URL());
-				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image,null,false));
-			}
-			if(!TextUtils.isEmpty(im.getPrivatePicture3URL())) {
-				urls.add(im.getPrivatePicture3URL());
-				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image,null,false));
-			}
-			if(!TextUtils.isEmpty(im.getPrivatePicture4URL())) {
-				urls.add(im.getPrivatePicture4URL());
-				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_with_image, null,false));
-			}
-			for(int c=urls.size();c<4;c++) {
-				d=c;
-				cellsLeftToRightTopToBottom.add(inflater.inflate(R.layout.private_picture_without_image, null,false));
-			}
-			gridView.setAdapter(
-					new PrivatePhotosAdapter(cellsLeftToRightTopToBottom, 
-							urls.size(), im, getActivity(), urls,
-							this));
-			/*
-			if(TextUtils.isEmpty(im.getPrivatePicture2URL())) {
-				View view=inflater.inflate(R.layout.private_picture_without_image, row1, true);
-				Button btnFromGallery=(Button)view.findViewById(R.id.btnPrivateNoImageFromGallery);
-				btnFromGallery.setOnClickListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-						photoPickerIntent.setType("image/*");
-						startActivityForResult(
-								photoPickerIntent,
-								com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_2);					
-						}
-				});
-			} else {
-				View view=inflater.inflate(R.layout.private_picture_with_image, row1, true);
-				ImageView iv=(ImageView)view.findViewById(R.id.ivPrivatePicture);
-				com.diamondsoftware.android.common.ImageLoaderRemote ilm = new com.diamondsoftware.android.common.ImageLoaderRemote(
-						getActivity(), true, .80f);
-				String url = "http://"
-						+ com.diamondsoftware.android.massagenearby.common.CommonMethods
-								.getBaseURL(getActivity())
-						+ "/MassageNearby/files/"
-						+ MasseurMainActivity.mSingleton.mItemMasseur_me
-								.getPrivatePicture2URL();
-
-				ilm.displayImage(url, iv);
-			}
-			if(TextUtils.isEmpty(im.getPrivatePicture1URL())) {
-				View view=inflater.inflate(R.layout.private_picture_without_image, row1, true);
-				Button btnFromGallery=(Button)view.findViewById(R.id.btnPrivateNoImageFromGallery);
-				btnFromGallery.setOnClickListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-						photoPickerIntent.setType("image/*");
-						startActivityForResult(
-								photoPickerIntent,
-								com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_1);					
-						}
-				});
-			} else {
-				View view=inflater.inflate(R.layout.private_picture_with_image, row1, true);
-				ImageView iv=(ImageView)view.findViewById(R.id.ivPrivatePicture);
-				com.diamondsoftware.android.common.ImageLoaderRemote ilm = new com.diamondsoftware.android.common.ImageLoaderRemote(
-						getActivity(), true, .80f);
-				String url = "http://"
-						+ com.diamondsoftware.android.massagenearby.common.CommonMethods
-								.getBaseURL(getActivity())
-						+ "/MassageNearby/files/"
-						+ MasseurMainActivity.mSingleton.mItemMasseur_me
-								.getPrivatePicture1URL();
-
-				ilm.displayImage(url, iv);
-			}
-			
-			if(TextUtils.isEmpty(im.getPrivatePicture4URL())) {
-				View view=inflater.inflate(R.layout.private_picture_without_image, row2, true);
-				Button btnFromGallery=(Button)view.findViewById(R.id.btnPrivateNoImageFromGallery);
-				btnFromGallery.setOnClickListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-						photoPickerIntent.setType("image/*");
-						startActivityForResult(
-								photoPickerIntent,
-								com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_4);					
-						}
-				});
-			} else {
-				View view=inflater.inflate(R.layout.private_picture_with_image, row2, true);
-				ImageView iv=(ImageView)view.findViewById(R.id.ivPrivatePicture);
-				com.diamondsoftware.android.common.ImageLoaderRemote ilm = new com.diamondsoftware.android.common.ImageLoaderRemote(
-						getActivity(), true, .80f);
-				String url = "http://"
-						+ com.diamondsoftware.android.massagenearby.common.CommonMethods
-								.getBaseURL(getActivity())
-						+ "/MassageNearby/files/"
-						+ MasseurMainActivity.mSingleton.mItemMasseur_me
-								.getPrivatePicture4URL();
-
-				ilm.displayImage(url, iv);
-			}
-			
-			if(TextUtils.isEmpty(im.getPrivatePicture3URL())) {
-				View view=inflater.inflate(R.layout.private_picture_without_image, row2, true);
-				Button btnFromGallery=(Button)view.findViewById(R.id.btnPrivateNoImageFromGallery);
-				btnFromGallery.setOnClickListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-						photoPickerIntent.setType("image/*");
-						startActivityForResult(
-								photoPickerIntent,
-								com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_3);					
-						}
-				});
-			} else {
-				View view=inflater.inflate(R.layout.private_picture_with_image, row2, true);
-				ImageView iv=(ImageView)view.findViewById(R.id.ivPrivatePicture);
-				com.diamondsoftware.android.common.ImageLoaderRemote ilm = new com.diamondsoftware.android.common.ImageLoaderRemote(
-						getActivity(), true, .80f);
-				String url = "http://"
-						+ com.diamondsoftware.android.massagenearby.common.CommonMethods
-								.getBaseURL(getActivity())
-						+ "/MassageNearby/files/"
-						+ MasseurMainActivity.mSingleton.mItemMasseur_me
-								.getPrivatePicture3URL();
-
-				ilm.displayImage(url, iv);
-			}
-*/
+			showThePictures(im);
 		}
 		
-		return viewGroup;
+		return mViewGroup;
 	}
 	
 	@Override
@@ -376,8 +376,6 @@ public class PrivatePicturesFragment extends Fragment implements ManagesFileUplo
 				}
 			}
 			break;
-			
-			
 		}
 	}
 
@@ -396,6 +394,75 @@ public class PrivatePicturesFragment extends Fragment implements ManagesFileUplo
 	@Override
 	public void heresTheResponse(String response, ArrayList<NameValuePair> parms) {
 		((ManagesFileUploads) getActivity()).heresTheResponse(response,parms);
+		if(MasseurMainActivity.mSingleton!=null && MasseurMainActivity.mSingleton.mItemMasseur_me!=null) {
+			ItemMasseur im=MasseurMainActivity.mSingleton.mItemMasseur_me;
+			showThePictures(im);
+		}
 	}
 
+	@Override
+	public ArrayList<Object> getRemoteData(String keyname) {
+		ArrayList<Object> data=null;
+		String[] array = keyname.split("\\~", -1);
+		String key=array[0];
+		if(key.equals("UpdateMasseur")) {
+			String name=array[1];
+			String masseurQueryString=array[2];
+			String url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?"+masseurQueryString;
+			try {
+				data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
+						new com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur(name), 
+						url
+						).parse();
+			} catch (Exception e) {
+				e=e;
+			}
+		}
+		
+		return data;
+	}
+
+
+	private void flushMasseurToDB(ItemMasseur masseur) {
+       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("UpdateMasseur~"+masseur.getmName()+"~"+ masseur.getDBQueryStringEncoded(),this, this);
+	}
+
+
+	@Override
+	public void gotMyData(String name, ArrayList<Object> data) {
+		String[] array = name.split("\\~", -1);
+		String key=array[0];
+		if(key.equals("UpdateMasseur")) {
+			if(data!=null && data.size()>0) {				
+				((MasseurMainActivity)getActivity()).mItemMasseur_me=(ItemMasseur)data.get(0);
+				showThePictures((ItemMasseur)data.get(0));
+			}
+		}
+	}
+	@Override
+	public void heresYourAnswer(boolean saidYes, ArrayList<Object> otherData) {
+		if(saidYes) {
+			ItemMasseur im=(ItemMasseur)otherData.get(1);
+			String itemNo=(String)otherData.get(0);
+			if(itemNo.equals("1")) {
+				im.setPrivatePicture1URL(null);
+				flushMasseurToDB(im);
+			} else {
+				if(itemNo.equals("2")) {
+					im.setPrivatePicture2URL(null);
+					flushMasseurToDB(im);
+				} else {
+					if(itemNo.equals("3")) {
+						im.setPrivatePicture3URL(null);
+						flushMasseurToDB(im);
+					} else {
+						if(itemNo.equals("4")) {
+							im.setPrivatePicture4URL(null);
+							flushMasseurToDB(im);
+						} 
+					}
+				}
+			}
+		}
+	}
 }

@@ -1,5 +1,7 @@
 package com.diamondsoftware.android.massagenearby.common;
 
+import java.util.ArrayList;
+
 public class GlobalStaticValuesMassageNearby {
 	
 	public static final String KEY_IS_ENABLED_MASSEUR="MasseurIsEnabled";
@@ -12,10 +14,5 @@ public class GlobalStaticValuesMassageNearby {
 	public static final int ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_3 = 1003;
 	public static final int ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_4 = 1004;
 	
-	public static final int[] PHOTO_RESULT_IDS = new int[] {
-		ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_1,
-		ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_2,
-		ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_3,
-		ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_4,
-	};
+	public static ArrayList<Integer> PHOTO_RESULT_IDS = new ArrayList<Integer>();
 }

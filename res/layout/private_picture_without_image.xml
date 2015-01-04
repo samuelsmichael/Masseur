@@ -9,14 +9,14 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:src="@drawable/plussign"
-        android:layout_marginTop="29dip"
+        android:layout_marginTop="19dip"
         android:id="@+id/ivplussign"
         ></ImageView>
 	<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dip"
+        android:layout_marginTop="10dip"
         android:id="@+id/tvaddphoto"
         android:text="Add Photo"
         android:layout_below="@+id/ivplussign"
@@ -28,7 +28,7 @@
        android:id="@+id/btnPrivateNoImageFromCamera"
        android:layout_centerHorizontal="true"
        android:layout_below="@+id/tvaddphoto"
-       android:layout_marginTop="20dip"
+       android:layout_marginTop="10dip"
        android:text="From Camera" />
    	<Button
        style="@style/ButtonMasseur"
@@ -37,6 +37,6 @@
        android:id="@+id/btnPrivateNoImageFromGallery"
        android:layout_centerHorizontal="true"
        android:layout_below="@+id/btnPrivateNoImageFromCamera"
-       android:layout_marginTop="20dip"
+       android:layout_marginTop="10dip"
        android:text="From Gallery" />
 </RelativeLayout>

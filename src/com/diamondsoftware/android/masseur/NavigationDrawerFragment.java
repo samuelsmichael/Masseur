@@ -95,7 +95,7 @@ public class NavigationDrawerFragment extends Fragment {
             Bundle savedInstanceState) {
     	ViewGroup viewGroup=(ViewGroup) inflater.inflate(R.layout.fragment_navigation_drawer_masseur, container,false);
         mDrawerListView = (ListView)viewGroup.findViewById(R.id.listView1);
-        Button home=(Button)viewGroup.findViewById(R.id.button1);
+        Button home=(Button)viewGroup.findViewById(R.id.btnNavDrawerFrag_Home);
         home.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

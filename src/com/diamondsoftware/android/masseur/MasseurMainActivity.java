@@ -221,8 +221,17 @@ public class MasseurMainActivity extends FragmentActivity
 			                .replace(R.id.container, PrivatePicturesFragment.newInstance(mSettingsManager))
 			                .addToBackStack(null)
 			                .commit();
+				} else {
+					if(position==2) {
+						//disable the toggle menu and show up carat
+						mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+				        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+				        fragmentManager.beginTransaction()
+				                .replace(R.id.container, UpdateInfoFragment.newInstance(mSettingsManager,mItemMasseur_me))
+				                .addToBackStack(null)
+				                .commit();
+					}
 				}
-				
 			}
 		}
     }
@@ -459,5 +468,6 @@ public class MasseurMainActivity extends FragmentActivity
 		} catch (Exception e) {}
 		
 	}
+
 
 }

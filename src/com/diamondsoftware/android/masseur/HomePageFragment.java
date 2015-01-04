@@ -13,6 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.diamondsoftware.android.common.ManagesFileUploads;
 import com.diamondsoftware.android.common.HttpFileUpload;
 import com.diamondsoftware.android.common.HttpFileUploadParameters;
+import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDrawerCallbacks;
@@ -41,6 +42,7 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 	TextView tvBio;
 	TextView tvCertified;
 	TextView tvGetCertified;
+	TextView tvRenewSubscription;
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -124,14 +126,26 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 				R.layout.fragment_homepage, container, false);
 		Button upload = (Button) viewGroup.findViewById(R.id.btnUploadNewPhoto);
 		Button privatePictures=(Button) viewGroup.findViewById(R.id.btnManagePrivatePhotos);
+		Button updateInfo=(Button) viewGroup.findViewById(R.id.btnUpdateInfo);
 		tvHeight = (TextView) viewGroup.findViewById(R.id.tvHomeHeight);
 		tvEthnicity = (TextView) viewGroup.findViewById(R.id.tvHomeEthnicity);
 		tvServices = (TextView) viewGroup.findViewById(R.id.tvHomeServices);
 		tvBio = (TextView) viewGroup.findViewById(R.id.tvHomeBio);
 		tvCertified=(TextView)viewGroup.findViewById(R.id.tvHomeCertified);
 		tvGetCertified=(TextView)viewGroup.findViewById(R.id.tvHomeGetCertified);
+		tvRenewSubscription=(TextView)viewGroup.findViewById(R.id.tvHomeSubscriptionExpireDate);
 		mImageMasseur = (ImageView) viewGroup.findViewById(R.id.imageMasseur);
 		mTvAge = (TextView) viewGroup.findViewById(R.id.tvHomeAge);
+		updateInfo.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+		        if (mCallbacks != null) {
+		            mCallbacks.onNavigationDrawerItemSelected(2);
+		        }
+			}
+		});
+		
 		privatePictures.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -213,6 +227,9 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 				&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
 			ItemMasseur im = MasseurMainActivity.mSingleton.mItemMasseur_me;
 			tvHeight.setText(im.getHeight());
+			if(!Utils.isNullDate(im.getSubscriptionEndDate())) {
+				tvRenewSubscription.setText(Utils.mLocaleDateFormat.format(im.getSubscriptionEndDate().getTime()));
+			}
 			bdate = im.getBirthdate();
 			Date now = new Date();
 			long millisecondsAlive = now.getTime() - bdate.getTimeInMillis();
@@ -227,7 +244,7 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 				for (String svc : services) {
 					if (svc.trim().length() > 0) {
 						sb.append(newLine + svc);
-						newLine = "\n\n";
+						newLine = "\n";
 					}
 				}
 			}
