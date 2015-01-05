@@ -20,7 +20,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,7 +39,9 @@ import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.common.HttpFileUpload;
 import com.diamondsoftware.android.common.HttpFileUploadParameters;
 import com.diamondsoftware.android.common.Logger;
+import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.common.ChatPageManager;
+import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
@@ -59,7 +63,6 @@ public class MasseurMainActivity extends FragmentActivity
 	public static final String ACTION_STARTING_FROM_BOOTUP_MASSEUR="StartingFromBootupMasseur";
 	public static final String ACTION_STARTING_FROM_ACTIVITY_MASSEUR="StartingFromActivityMasseur";
 	public static final String ACTION_NEW_CLIENT_CONNECTION="actionnewclientconnection";
-	public static final String ACTION_CLIENT_IS_NOW_AVAILABLE = "actionisnowavailable";
 
     public static final String TAG="MasseurMain";
 
@@ -93,6 +96,14 @@ public class MasseurMainActivity extends FragmentActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         
+        
+        
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, SplashFragment.newInstance(mSettingsManager))
+                .commit();
+
+/*        
         if(mSettingsManager.getMasseurName()==null) {
 		    android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 		    android.app.Fragment prev = getFragmentManager().findFragmentByTag("login");
@@ -105,10 +116,10 @@ public class MasseurMainActivity extends FragmentActivity
     		new Logger(mSettingsManager.getLoggingLevel(),"MasseurMainActivity",this).log("Telling socket I'm here", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
 
             Intent intent=new Intent(this,MasseurSocketService.class);
-            intent.setAction(ACTION_CLIENT_IS_NOW_AVAILABLE);
+            intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
             startService(intent);
         }
-        
+  */      
     }
     
     public class Login extends DialogFragment {
@@ -140,7 +151,7 @@ public class MasseurMainActivity extends FragmentActivity
 		                	   MasseurMainActivity.mSingleton.mSettingsManager.setMasseurName(mEditText.getText().toString().trim());		    
 		                       
 		                       Intent intent=new Intent(MasseurMainActivity.this,MasseurSocketService.class);
-		                       intent.setAction(ACTION_CLIENT_IS_NOW_AVAILABLE);
+		                       intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
 		                       startService(intent);
 
 		                  }
@@ -230,6 +241,16 @@ public class MasseurMainActivity extends FragmentActivity
 				                .replace(R.id.container, UpdateInfoFragment.newInstance(mSettingsManager,mItemMasseur_me))
 				                .addToBackStack(null)
 				                .commit();
+					} else {
+						if(position==3) {
+							//disable the toggle menu and show up carat
+							mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+					        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+					        fragmentManager.beginTransaction()
+					                .replace(R.id.container, CertifyFragment.newInstance(mSettingsManager,mItemMasseur_me))
+					                .addToBackStack(null)
+					                .commit();
+						}	
 					}
 				}
 			}
@@ -468,6 +489,4 @@ public class MasseurMainActivity extends FragmentActivity
 		} catch (Exception e) {}
 		
 	}
-
-
 }

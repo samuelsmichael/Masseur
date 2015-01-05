@@ -23,8 +23,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +46,7 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 	TextView tvBio;
 	TextView tvCertified;
 	TextView tvGetCertified;
+	TextView tvSubscriptionExpireDate;
 	TextView tvRenewSubscription;
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -133,7 +138,24 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 		tvBio = (TextView) viewGroup.findViewById(R.id.tvHomeBio);
 		tvCertified=(TextView)viewGroup.findViewById(R.id.tvHomeCertified);
 		tvGetCertified=(TextView)viewGroup.findViewById(R.id.tvHomeGetCertified);
-		tvRenewSubscription=(TextView)viewGroup.findViewById(R.id.tvHomeSubscriptionExpireDate);
+		tvGetCertified.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+		        if (mCallbacks != null) {
+		            mCallbacks.onNavigationDrawerItemSelected(3);
+		        }
+			}
+		});
+		tvSubscriptionExpireDate=(TextView)viewGroup.findViewById(R.id.tvHomeSubscriptionExpireDate);
+		tvRenewSubscription=(TextView)viewGroup.findViewById(R.id.tvHomeRenewNow);
+		tvRenewSubscription.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				
+			}
+		});
 		mImageMasseur = (ImageView) viewGroup.findViewById(R.id.imageMasseur);
 		mTvAge = (TextView) viewGroup.findViewById(R.id.tvHomeAge);
 		updateInfo.setOnClickListener(new View.OnClickListener() {
@@ -211,6 +233,52 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 		}
 	}
 
+	private void finishOnViewCreated() {
+		displayMasseurImage(false);
+		GregorianCalendar bdate;
+		ItemMasseur im = MasseurMainActivity.mSingleton.mItemMasseur_me;
+		tvHeight.setText(im.getHeight());
+		if(!Utils.isNullDate(im.getSubscriptionEndDate())) {
+			tvSubscriptionExpireDate.setText(Utils.mLocaleDateFormat.format(im.getSubscriptionEndDate().getTime()));
+		}
+		bdate = im.getBirthdate();
+		Date now = new Date();
+		long millisecondsAlive = now.getTime() - bdate.getTimeInMillis();
+		int age = (int) (millisecondsAlive / 3.15569e10);
+		mTvAge.setText(String.valueOf(age));
+		tvEthnicity.setText(im.getEthnicity());
+		StringBuilder sb = new StringBuilder();
+		String newLine = "";
+		if (im.getServices() != null
+				&& im.getServices().trim().length() > 0) {
+			String[] services = im.getServices().split("\\^", -1);
+			for (String svc : services) {
+				if (svc.trim().length() > 0) {
+					sb.append(newLine + svc);
+					newLine = "\n";
+				}
+			}
+		}
+
+		tvServices.setText(sb.toString());
+		tvBio.setText(im.getBio());
+		tvCertified.setText(
+				im.isIsCertified()?"Yes":TextUtils.isEmpty(im.getCertifiedPictureURL())? "No":"Pending");
+		if(!im.isIsCertified()) {
+			tvGetCertified.setVisibility(View.VISIBLE);
+			SpannableString content=null;
+			if(!TextUtils.isEmpty(im.getCertifiedPictureURL())) {
+				content = new SpannableString(getActivity().getString(R.string.homepage_renewsubscriptionResend));
+			} else {
+				content = new SpannableString(getActivity().getString(R.string.homepage_renewsubscription));
+			}
+			content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+			tvGetCertified.setText(content);
+		} else {
+			tvGetCertified.setVisibility(View.INVISIBLE);
+		}
+
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -221,44 +289,27 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
-		displayMasseurImage(false);
-		GregorianCalendar bdate;
 		if (MasseurMainActivity.mSingleton != null
 				&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
-			ItemMasseur im = MasseurMainActivity.mSingleton.mItemMasseur_me;
-			tvHeight.setText(im.getHeight());
-			if(!Utils.isNullDate(im.getSubscriptionEndDate())) {
-				tvRenewSubscription.setText(Utils.mLocaleDateFormat.format(im.getSubscriptionEndDate().getTime()));
-			}
-			bdate = im.getBirthdate();
-			Date now = new Date();
-			long millisecondsAlive = now.getTime() - bdate.getTimeInMillis();
-			int age = (int) (millisecondsAlive / 3.15569e10);
-			mTvAge.setText(String.valueOf(age));
-			tvEthnicity.setText(im.getEthnicity());
-			StringBuilder sb = new StringBuilder();
-			String newLine = "";
-			if (im.getServices() != null
-					&& im.getServices().trim().length() > 0) {
-				String[] services = im.getServices().split("\\^", -1);
-				for (String svc : services) {
-					if (svc.trim().length() > 0) {
-						sb.append(newLine + svc);
-						newLine = "\n";
+			finishOnViewCreated();
+		} else {
+			new CountDownTimer(10000, 1000) {
+				@Override
+				public void onTick(long millisUntilFinished) {
+					if (MasseurMainActivity.mSingleton != null
+							&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
+						finishOnViewCreated();
+						cancel();
 					}
 				}
-			}
-
-			tvServices.setText(sb.toString());
-			tvBio.setText(im.getBio());
-			this.tvCertified.setText(
-					im.getCertifiedPictureURL()==null || im.getCertifiedPictureURL().trim().length()==0?"No":"Yes"
-			);
-			if(im.getCertifiedPictureURL()==null || im.getCertifiedPictureURL().trim().length()==0) {
-				tvGetCertified.setVisibility(View.VISIBLE);
-			} else {
-				tvGetCertified.setVisibility(View.INVISIBLE);
-			}
+				@Override
+				public void onFinish() {
+					if (MasseurMainActivity.mSingleton != null
+							&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
+						finishOnViewCreated();
+					}
+				}
+			}.start();
 		}
 	}
 

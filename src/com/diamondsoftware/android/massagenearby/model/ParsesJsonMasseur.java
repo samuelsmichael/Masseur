@@ -24,6 +24,8 @@ public class ParsesJsonMasseur extends ParsesJson {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 			item.setmIsOnline(jsonObject.getBoolean("IsOnline"));
 			item.setmMasserId(jsonObject.getInt("MasseurId"));
+			item.setIsCertified(jsonObject.getBoolean("IsCertified"));
+			item.setCertificationNumber(jsonObject.getInt("CertificationNumber"));
 			item.setmName(jsonObject.getString("Name"));
 			item.setmURL(jsonObject.getString("URL"));
 			item.setmUserId(jsonObject.getInt("UserId"));
@@ -41,6 +43,7 @@ public class ParsesJsonMasseur extends ParsesJson {
 			item.setPrivatePicture2URL(jsonObject.getString("PrivatePicture2URL"));
 			item.setPrivatePicture3URL(jsonObject.getString("PrivatePicture3URL"));
 			item.setPrivatePicture4URL(jsonObject.getString("PrivatePicture4URL"));
+			item.setPassword(jsonObject.getString("Password"));
 			items.add(item);
 		}
 		return items;

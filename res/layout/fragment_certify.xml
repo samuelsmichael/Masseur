@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/masseur_background_main" >
+    
+        <TextView 
+        android:id="@+id/tvCertifyHeading1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextMasseurUpdateInfoValue"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="15dip"
+        android:text="Certification"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true"
+		                />
+    <TextView android:id="@+id/tvCertifyHeading2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvCertifyHeading1"
+        android:text="@string/certify_instructions"
+        android:layout_marginTop="25dip"
+        ></TextView>
+    <TextView android:id="@+id/tvCertifyNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvCertifyHeading2"
+        android:layout_marginTop="25dip"
+        ></TextView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        >
+        
+   	<Button 
+        style="@style/ButtonMasseur"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+        android:id="@+id/btnCertifyCamera"
+        android:text="Take a picture with your camera"
+        android:layout_marginBottom="15dip"
+        android:layout_gravity="center_horizontal"
+        android:alpha=".5" />
+    <Button 
+        style="@style/ButtonMasseur"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+       	android:layout_gravity="center_horizontal"       	
+        android:id="@+id/btnCertifyGallery"
+        android:text="Choose a picture from your gallery"
+        android:alpha=".5" />
+   	
+        
+    </LinearLayout>
+   	<Button 
+        style="@style/ButtonMasseur"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+        android:id="@+id/btnCertifyContinue"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Continue" />
+    
+</RelativeLayout>

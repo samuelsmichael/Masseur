@@ -23,6 +23,8 @@
     <string name="action_settings">Settings</string>
     <string name="homepage_getcertified"><u>Get Certified</u></string>
     <string name="homepage_renewsubscription"><u>Renew Now</u></string>
-    <string name="homepage_renewSubcriptionTitle">![CDATA[Subscription<br />expire<br />date]]</string>
+    <string name="homepage_renewsubscriptionResend"><u>Resend</u></string>
+    <string name="homepage_renewSubcriptionTitle">Subscription\nexpire\ndate</string>
+    <string name="certify_instructions">Upload a picture of yourself\nholding the following code:</string>
 
 </resources>

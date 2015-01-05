@@ -25,6 +25,7 @@ import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.common.LocationHelper;
 import com.diamondsoftware.android.common.LocationWanter;
 import com.diamondsoftware.android.common.Logger;
+import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 
@@ -75,7 +76,7 @@ public class MasseurSocketService extends Service implements
 		if(intent!=null) {
 			String action=intent.getAction();
 			if(action!=null) {
-				if(action.equals(MasseurMainActivity.ACTION_CLIENT_IS_NOW_AVAILABLE)) {
+				if(action.equals(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE)) {
 					doActivityIsNowAvailableActions();
 				} else {
 					if(action.equals(MasseurMainActivity.ACTION_STARTING_FROM_ACTIVITY_MASSEUR)) {

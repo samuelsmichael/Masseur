@@ -24,6 +24,16 @@ public class SettingsManager {
 		editor.putString(key,value);
 		editor.commit();				
 	}
+	public boolean getIsRememberMe() {
+		String value= getValue("jdRememberMe","true");
+		return value.equals("true")?true:false;		
+	}
+	public void setIsRememberMe(boolean value) {
+		Editor editor=mSharedPreferences.edit();
+		editor.putString("jdRememberMe", value?"true":"false");
+		editor.commit();
+
+	}
 	public boolean getIsEnabledMasseur() {
 		String value= getValue(GlobalStaticValuesMassageNearby.KEY_IS_ENABLED_MASSEUR,"true");
 		return value.equals("true")?true:false;

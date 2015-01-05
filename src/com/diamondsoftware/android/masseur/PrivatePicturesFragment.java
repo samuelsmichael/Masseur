@@ -1,8 +1,10 @@
 package com.diamondsoftware.android.masseur;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.zip.Inflater;
 import com.diamondsoftware.android.common.Utils;
 
@@ -26,6 +28,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -45,6 +49,9 @@ public class PrivatePicturesFragment extends Fragment implements ManagesFileUplo
 com.diamondsoftware.android.common.WaitingForDataAcquiredAsynchronously,
 com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 	private SettingsManager mSettingsManager;
+	private Uri imageUri;
+	private static final int TAKE_PICTURE = 10102;    
+
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -103,7 +110,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 					al.add("1");
 					al.add(im);
 					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
-							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove1");
+							getActivity(), PrivatePicturesFragment.this, al,null).show(getActivity().getFragmentManager(), "Remove1");
 				}
 			});
 			GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.add(GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_1);
@@ -122,7 +129,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 					al.add("2");
 					al.add(im);
 					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
-							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove2");
+							getActivity(), PrivatePicturesFragment.this, al,null).show(getActivity().getFragmentManager(), "Remove2");
 				}
 			});
 			cellsLeftToRightTopToBottom.add(view);
@@ -141,7 +148,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 					al.add("3");
 					al.add(im);
 					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
-							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove3");
+							getActivity(), PrivatePicturesFragment.this, al,null).show(getActivity().getFragmentManager(), "Remove3");
 
 				}
 			});
@@ -161,7 +168,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 					al.add("4");
 					al.add(im);
 					new Utils.Confirmer("Confirm remove picture", "Are you sure that you wish do remove this picture?",
-							getActivity(), PrivatePicturesFragment.this, al).show(getActivity().getFragmentManager(), "Remove4");
+							getActivity(), PrivatePicturesFragment.this, al,null).show(getActivity().getFragmentManager(), "Remove4");
 
 				}
 			});
@@ -175,12 +182,24 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 			View zView=mInflater.inflate(R.layout.private_picture_without_image, null,false);
 			
 			Button btnFromGallery=(Button)zView.findViewById((R.id.btnPrivateNoImageFromGallery));
+			Button btnFromPhoto=(Button)zView.findViewById(R.id.btnPrivateNoImageFromCamera);
 			
 			GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.add(leftOvers.get(i++));
 
-			Integer theId=com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.get(c);
+			final Integer theId=com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.get(c);
 			ArrayList<Object> aa=new ArrayList<Object>();
 			aa.add(theId);
+			btnFromPhoto.setOnClickListener(new OnClickListenerWithData(aa) {				
+				@Override
+				public void onClick(View v) {
+				    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+				    File photo = new File(Environment.getExternalStorageDirectory(),  "PrivatePic_"+theId+"_"+new Date().getTime()+".jpg");
+				    intent.putExtra(MediaStore.EXTRA_OUTPUT,
+				            Uri.fromFile(photo));
+				    imageUri = Uri.fromFile(photo);
+				    startActivityForResult(intent, ((Integer)mData.get(0)).intValue());
+				}
+			});
 			btnFromGallery.setOnClickListener(new OnClickListenerWithData(aa) {
 			
 				@Override
@@ -242,11 +261,17 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 	public void onActivityResult(int requestCode, int resultCode,
 			Intent imageReturnedIntent) {
 		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+		Uri resultant;
+		if(imageReturnedIntent==null) {
+			resultant=imageUri; // when taken from camera
+		} else {
+			resultant=imageReturnedIntent.getData();;
+		}
 		ItemMasseur im=MasseurMainActivity.mSingleton.mItemMasseur_me;
 		switch (requestCode) {
 		case com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_1:
 			if (resultCode == Activity.RESULT_OK) {
-				Uri selectedImage = imageReturnedIntent.getData();
+				Uri selectedImage = resultant;
 				try {
 					InputStream imageStream = getActivity()
 							.getContentResolver()
@@ -279,7 +304,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 			break;
 		case com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_2:
 			if (resultCode == Activity.RESULT_OK) {
-				Uri selectedImage = imageReturnedIntent.getData();
+				Uri selectedImage = resultant;
 				try {
 					InputStream imageStream = getActivity()
 							.getContentResolver()
@@ -312,7 +337,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 			break;
 		case com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_3:
 			if (resultCode == Activity.RESULT_OK) {
-				Uri selectedImage = imageReturnedIntent.getData();
+				Uri selectedImage = resultant;
 				try {
 					InputStream imageStream = getActivity()
 							.getContentResolver()
@@ -345,7 +370,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 			break;
 		case com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_4:
 			if (resultCode == Activity.RESULT_OK) {
-				Uri selectedImage = imageReturnedIntent.getData();
+				Uri selectedImage = resultant;
 				try {
 					InputStream imageStream = getActivity()
 							.getContentResolver()

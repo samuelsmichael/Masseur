@@ -20,6 +20,7 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ob
 	private String twoHyphens = "--";
 	private String boundary = "*****";
 	private String Tag="fSnd";
+	private String sResponse;
 	
 	@Override
 	protected Exception doInBackground(HttpFileUploadParameters... params) {
@@ -54,7 +55,7 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ob
 	        
 	        
 	        if(mParameters.mParameters!=null) {
-	        	int whichPrivatePicture=0;
+	        	int whichPrivatePicture=-1;
 				for(NameValuePair nvp: mParameters.mParameters) {
 					writeAField(nvp.getName(),nvp.getValue(),dos);
 					if(nvp.getName().equals("pnbr")) {
@@ -65,7 +66,12 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ob
                 if(whichPrivatePicture==0) {
                 	dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+this.mParameters.mUserId+"_XMainPicture_" + String.valueOf(new Date().getTime()) +"\"" + lineEnd);
                 } else {
-                	dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+this.mParameters.mUserId+"_XPrivatePicture_" +String.valueOf(whichPrivatePicture)+"_"+ String.valueOf(new Date().getTime()) +"\"" + lineEnd);
+                	if(whichPrivatePicture>0) {
+                		dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+this.mParameters.mUserId+"_XPrivatePicture_" +String.valueOf(whichPrivatePicture)+"_"+ String.valueOf(new Date().getTime()) +"\"" + lineEnd);
+                	} else {
+                		dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + "MesseurUserId_"+this.mParameters.mUserId+"_XCertifyPicture_" + String.valueOf(new Date().getTime()) +"\"" + lineEnd);
+                	}
+                	
                 }
                 dos.writeBytes(lineEnd);
 
@@ -106,11 +112,10 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ob
 	
 	        StringBuffer b =new StringBuffer();
 	        while( ( ch = is.read() ) != -1 ){ b.append( (char)ch ); }
-	        String s=b.toString();
+	        sResponse=b.toString();
 	        
 	        dos.close();
 	
-	        mParameters.mCanShowAlert.heresTheResponse(s,(ArrayList<NameValuePair>) mParameters.mParameters);
 		} catch (MalformedURLException mex) {
 			e=mex;
 		} catch (IOException ioex) {
@@ -124,6 +129,9 @@ public class HttpFileUpload extends AsyncTask<HttpFileUploadParameters, Void, Ob
 		}
 		if(result!=null && result instanceof Exception) {
 			mParameters.mCanShowAlert.alert(result.toString());
+		} else {
+	        mParameters.mCanShowAlert.heresTheResponse(sResponse,(ArrayList<NameValuePair>) mParameters.mParameters);
+
 		}
 	}
 	private void writeAField(String name, String value, DataOutputStream dos) throws IOException {
