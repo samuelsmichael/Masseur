@@ -27,6 +27,4 @@
         android:layout_below="@+id/textView1"
         android:dividerHeight="0dp" />
 
-
-
 </RelativeLayout>

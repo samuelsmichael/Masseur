@@ -42,6 +42,7 @@ import com.diamondsoftware.android.common.Logger;
 import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.common.ChatPageManager;
 import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
+import com.diamondsoftware.android.massagenearby.common.LoginFragment;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
@@ -250,7 +251,19 @@ public class MasseurMainActivity extends FragmentActivity
 					                .replace(R.id.container, CertifyFragment.newInstance(mSettingsManager,mItemMasseur_me))
 					                .addToBackStack(null)
 					                .commit();
-						}	
+						} else {
+							if(position==10) {
+								//disable the toggle menu and show up carat
+								mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+						        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+						        fragmentManager.beginTransaction()
+						                .replace(R.id.container, LoginFragment.newInstance(mSettingsManager))
+						                .addToBackStack(null)
+						                .commit();
+							} else {
+							
+							}
+						}
 					}
 				}
 			}

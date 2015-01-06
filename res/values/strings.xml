@@ -26,5 +26,7 @@
     <string name="homepage_renewsubscriptionResend"><u>Resend</u></string>
     <string name="homepage_renewSubcriptionTitle">Subscription\nexpire\ndate</string>
     <string name="certify_instructions">Upload a picture of yourself\nholding the following code:</string>
-
+    <string name="login_tvDontRememberYourUserName"><u>Don\'t remember your User Name?</u></string>
+    <string name="login_tvDontRememberYourPassword"><u>Don\'t remember your Password?</u></string>
+    
 </resources>

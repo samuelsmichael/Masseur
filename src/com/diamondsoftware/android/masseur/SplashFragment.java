@@ -40,11 +40,9 @@ public class SplashFragment extends Fragment {
         try {
             mCallbacks = (NavigationDrawerCallbacks) activity;
             if(mSettingsManager.getMasseurName()!=null) {
-            	if(mSettingsManager.getIsRememberMe()) {
-                    Intent intent=new Intent(activity,MasseurSocketService.class);
-                    intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
-                    activity.startService(intent);
-            	}
+                Intent intent=new Intent(activity,MasseurSocketService.class);
+                intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
+                activity.startService(intent);
             }
     		mHandler.post(new Runnable() {
 
@@ -61,7 +59,15 @@ public class SplashFragment extends Fragment {
     							@Override
     							public void run() {
     								mCountdownTimer=null;
-    								mCallbacks.onNavigationDrawerItemSelected(0);
+    					            if(mSettingsManager.getMasseurName()!=null) {
+    					            	if(mSettingsManager.getIsRememberMe()) {
+    					            		mCallbacks.onNavigationDrawerItemSelected(0);
+    					            	} else {
+    					            		mCallbacks.onNavigationDrawerItemSelected(10); // login
+    					            	}
+    					            } else {
+    					            	mCallbacks.onNavigationDrawerItemSelected(10); // login 
+    					            }
     							}
     							
     						});

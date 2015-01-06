@@ -15,6 +15,10 @@
       <item name="android:textSize">17sp</item>
       <item name="android:layout_width">0dp</item>
   </style>
+  <style name="TextMasseurFieldHeading" parent="TextMasseurHomePage">
+      <item name="android:textColor">#ffffff</item>
+      </style>
+  
   <style name="TextMasseurHomePageHeading" parent="TextMasseurHomePage">
       <item name="android:layout_weight">1.39</item>
       <item name="android:textColor">#ffffff</item>

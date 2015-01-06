@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/masseur_background_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+        <TextView 
+        android:id="@+id/tvLoginHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#2f5172"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dip"
+        android:text="Login"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="17sp"
+        android:layout_centerHorizontal="true"
+		                />
+        <LinearLayout android:id="@+id/llLoginBody"
+	        android:layout_height="wrap_content"
+	        android:layout_width="wrap_content"
+	        android:layout_below="@+id/tvLoginHeading"
+	        android:orientation="vertical"
+	        android:layout_centerHorizontal="true"
+            >
+	        <TextView
+			    style="@style/TextMasseurFieldHeading"
+			    android:text="User Name"
+			    android:layout_gravity="left"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		    />
+			<EditText android:id="@+id/etLoginUserName"
+		        android:layout_width="300dip"
+		        android:inputType="none"
+		        android:layout_height="30dip"
+		 		style="@style/TextMasseurUpdateInfoValue"
+		 		android:background="@color/white"
+		 		
+			/>
+	        <TextView 
+	            android:layout_marginTop="5dip"
+	            android:textColor="#2f5172"	
+	            android:id="@+id/tvDontRememberYourUserName"
+	            android:textSize="12sp"
+	            android:clickable="true"
+	            android:text="@string/login_tvDontRememberYourUserName"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="right"
+	            android:gravity="right"
+		        style="@style/TextMasseurHomePageHeading"
+	            />	 
+	        <TextView
+			    style="@style/TextMasseurFieldHeading"
+			    android:text="Password"
+			    android:layout_gravity="left"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="15dip"
+		    />
+           							
+			<EditText android:id="@+id/etLoginPassword"
+			    android:background="@color/white"
+		        android:layout_width="match_parent"
+		        android:layout_height="30dip"
+		        android:inputType="textPassword"
+		 		style="@style/TextMasseurUpdateInfoValue"		        			    
+			/>
+	        <TextView 
+	            style="@style/TextMasseurHomePageHeading"
+	            android:id="@+id/tvDontRememberYourPassword"
+	            android:textSize="12sp"
+	            android:clickable="true"
+	            android:text="@string/login_tvDontRememberYourPassword" 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="right"
+	            android:gravity="right"
+	            android:textColor="#2f5172"	            
+	            android:layout_marginTop="5dip"
+	            />	 
+	        <CheckBox android:id="@+id/cbLoginRememberMe"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"	
+	            android:text="Remember me on this phone"	  
+	            android:layout_gravity="center_horizontal"
+	            android:layout_marginTop="55dip"
+            />
+		   	<Button 
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		       	android:layout_height="wrap_content"
+		        android:id="@+id/btnLoginContinue"
+		        android:layout_gravity="center_horizontal"
+		        android:text="Submit" />
+	        	        
+	</LinearLayout>
+	<LinearLayout
+       	android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
+       	android:orientation="horizontal"
+       	android:layout_centerHorizontal="true"
+       	android:layout_alignParentBottom="true"
+	    >
+    		<Button 
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		       	android:layout_height="wrap_content"
+		        android:id="@+id/btnLoginCreateANewClientAccount"
+		        android:layout_marginRight="8dip"
+		        android:layout_weight="1"
+		        android:text="Create Client Account" />
+   		   	<Button 
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		       	android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:id="@+id/btnLoginCreateANewMasseurAccount"
+		        android:text="Create Masseur Account" />
+	    		   	
+	</LinearLayout>
+</RelativeLayout>

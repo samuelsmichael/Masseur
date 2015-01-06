@@ -25,7 +25,7 @@ public class SettingsManager {
 		editor.commit();				
 	}
 	public boolean getIsRememberMe() {
-		String value= getValue("jdRememberMe","true");
+		String value= getValue("jdRememberMe","false");
 		return value.equals("true")?true:false;		
 	}
 	public void setIsRememberMe(boolean value) {

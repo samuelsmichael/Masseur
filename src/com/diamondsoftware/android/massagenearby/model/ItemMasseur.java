@@ -58,6 +58,19 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 	String PrivatePicture3URL;
 	String PrivatePicture4URL;
 	String Password;
+	String Email;
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return Email;
+	}
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		Email = email;
+	}
 	/**
 	 * @return the password
 	 */
@@ -409,7 +422,12 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 		if(!TextUtils.isEmpty(Bio)) {
 			sb.append("&Bio="+Bio);
 		}
-		if(!TextUtils.isEmpty(PrivatePicture1URL)) {
+		if(!TextUtils.isEmpty(Password)) {
+			sb.append("&Password="+Password);
+		}		
+		if(!TextUtils.isEmpty(Email)) {
+			sb.append("&Email="+Email);
+		}		if(!TextUtils.isEmpty(PrivatePicture1URL)) {
 			sb.append("&PrivatePicture1URL="+PrivatePicture1URL);
 		} else {
 			sb.append("&PrivatePicture1URL="+"^"); // by convention
