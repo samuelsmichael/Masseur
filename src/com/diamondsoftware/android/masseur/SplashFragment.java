@@ -1,6 +1,7 @@
 package com.diamondsoftware.android.masseur;
 
 import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
+import com.diamondsoftware.android.massagenearby.common.LoginFragment;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDrawerCallbacks;
@@ -29,6 +30,14 @@ public class SplashFragment extends Fragment {
 		return frag;
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -63,7 +72,11 @@ public class SplashFragment extends Fragment {
     					            	if(mSettingsManager.getIsRememberMe()) {
     					            		mCallbacks.onNavigationDrawerItemSelected(0);
     					            	} else {
-    					            		mCallbacks.onNavigationDrawerItemSelected(10); // login
+    					        	        android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+    					        	        fragmentManager.beginTransaction()
+    					        	                .replace(R.id.container, LoginFragment.newInstance(mSettingsManager))
+    					        	                .commit();
+//    					            		mCallbacks.onNavigationDrawerItemSelected(10); // login
     					            	}
     					            } else {
     					            	mCallbacks.onNavigationDrawerItemSelected(10); // login 

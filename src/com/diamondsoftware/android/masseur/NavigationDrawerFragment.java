@@ -72,7 +72,7 @@ public class NavigationDrawerFragment extends Fragment {
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, true);
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
@@ -95,15 +95,6 @@ public class NavigationDrawerFragment extends Fragment {
             Bundle savedInstanceState) {
     	ViewGroup viewGroup=(ViewGroup) inflater.inflate(R.layout.fragment_navigation_drawer_masseur, container,false);
         mDrawerListView = (ListView)viewGroup.findViewById(R.id.listView1);
-        Button home=(Button)viewGroup.findViewById(R.id.btnNavDrawerFrag_Home);
-        home.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				selectItem(0);
-				
-			}
-		});
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -257,6 +248,8 @@ public class NavigationDrawerFragment extends Fragment {
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
+
+    
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

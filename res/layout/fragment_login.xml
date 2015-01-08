@@ -33,10 +33,11 @@
 		    />
 			<EditText android:id="@+id/etLoginUserName"
 		        android:layout_width="300dip"
-		        android:inputType="none"
+		        android:inputType="text"
 		        android:layout_height="30dip"
 		 		style="@style/TextMasseurUpdateInfoValue"
 		 		android:background="@color/white"
+		 		android:imeOptions="actionNext"
 		 		
 			/>
 	        <TextView 
@@ -66,7 +67,8 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="30dip"
 		        android:inputType="textPassword"
-		 		style="@style/TextMasseurUpdateInfoValue"		        			    
+		 		style="@style/TextMasseurUpdateInfoValue"		
+		 		android:imeOptions="actionGo"
 			/>
 	        <TextView 
 	            style="@style/TextMasseurHomePageHeading"

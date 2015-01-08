@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.NameValuePair;
 
@@ -22,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
@@ -59,11 +61,16 @@ public class MasseurMainActivity extends FragmentActivity
 	public static MasseurMainActivity mSingleton=null;
 	private SettingsManager mSettingsManager;
 	public ItemMasseur mItemMasseur_me;
+	public ItemMasseur mItemMasseur_beingCreated=null;
 	private String profileClientId;
 	private Handler mHandler;
 	public static final String ACTION_STARTING_FROM_BOOTUP_MASSEUR="StartingFromBootupMasseur";
 	public static final String ACTION_STARTING_FROM_ACTIVITY_MASSEUR="StartingFromActivityMasseur";
 	public static final String ACTION_NEW_CLIENT_CONNECTION="actionnewclientconnection";
+	public static boolean IS_ALREADY_IN_LOGIN=false;
+    Uri mSelectedImageNewMasseurPublicPhoto;
+    Uri mCertifiedImage;
+
 
     public static final String TAG="MasseurMain";
 
@@ -101,7 +108,7 @@ public class MasseurMainActivity extends FragmentActivity
         
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, SplashFragment.newInstance(mSettingsManager))
+                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
                 .commit();
 
 /*        
@@ -221,8 +228,12 @@ public class MasseurMainActivity extends FragmentActivity
 		} else {
 			if(position==0) {
 		        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+		        for(int c=0;c<fragmentManager.getBackStackEntryCount();c++) 
+		        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		        mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
 		        fragmentManager.beginTransaction()
 		                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
+		                .addToBackStack(null)
 		                .commit();
 			} else {
 				if(position==1) {
@@ -257,11 +268,55 @@ public class MasseurMainActivity extends FragmentActivity
 								mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
 						        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 						        fragmentManager.beginTransaction()
+						        		
 						                .replace(R.id.container, LoginFragment.newInstance(mSettingsManager))
-						                .addToBackStack(null)
 						                .commit();
 							} else {
-							
+								if(position==11) {
+									//disable the toggle menu and show up carat
+									mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+							        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+							        fragmentManager.beginTransaction()
+							                .replace(R.id.container, NewMasseurScreen1Fragment.newInstance(mSettingsManager))
+							        		.addToBackStack(null)
+							                .commit();
+								} else {
+									if(position==14) {
+										//disable the toggle menu and show up carat
+										mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+								        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+								        fragmentManager.beginTransaction()
+								        		.addToBackStack(null)
+								                .replace(R.id.container, NewMasseurScreen3Fragment.newInstance(mSettingsManager))
+								                .commit();
+									} else {
+
+										if(position==16) { // how's the uploaded photo look?
+											//disable the toggle menu and show up carat
+											mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+									        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+									        fragmentManager.beginTransaction()
+									        		.addToBackStack(null)
+									                .replace(R.id.container, ConfirmPublicPhotoFragment.newInstance(mSettingsManager))
+									                .commit();
+										} else {
+										
+											if(position==17) { // Photo looks fine ... onto ConfirmationPhoto
+												//disable the toggle menu and show up carat
+												mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
+										        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+										        fragmentManager.beginTransaction()
+										        		.addToBackStack(null)
+										                .replace(R.id.container, CertifyFragment.newInstance(mSettingsManager, 
+										                		MasseurMainActivity.mSingleton.mItemMasseur_beingCreated!=null?MasseurMainActivity.mSingleton.mItemMasseur_beingCreated: MasseurMainActivity.mSingleton.mItemMasseur_me))
+										                .commit();
+											} else {
+											
+											}								
+										}								
+									
+									}								
+								}								
 							}
 						}
 					}

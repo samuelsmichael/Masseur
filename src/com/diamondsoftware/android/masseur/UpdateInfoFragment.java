@@ -7,8 +7,10 @@ import java.util.GregorianCalendar;
 import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
+import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDrawerCallbacks;
 import com.diamondsoftware.android.common.*;
 
+import android.app.Activity;
 import android.net.ParseException;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,8 +23,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.TextView;
 
-public class UpdateInfoFragment extends Fragment implements
+public class UpdateInfoFragment extends Fragment_Abstract_NewMasseur implements
 	WaitingForDataAcquiredAsynchronously,
 	DataGetter {
 	private SettingsManager mSettingsManager;
@@ -34,6 +37,9 @@ public class UpdateInfoFragment extends Fragment implements
 	private EditText mService2;
 	private EditText mService3;
 	private EditText mBio;
+	private TextView mHeading;
+	private TextView mSubheading;
+    private NavigationDrawerCallbacks mCallbacks;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -50,34 +56,42 @@ public class UpdateInfoFragment extends Fragment implements
 		mService2=(EditText)viewGroup.findViewById(R.id.etUpdateInfo_Service2);
 		mService3=(EditText)viewGroup.findViewById(R.id.etUpdateInfo_Service3);
 		mBio=(EditText)viewGroup.findViewById(R.id.etUpdateInfo_Bio);
-		if(!Utils.isNullDate(mItemMasseur.getBirthdate())) {
-			mBirthdate.setText(Utils.mDateFormatYYYYMMDD.format(mItemMasseur.getBirthdate().getTime()));
-		}
-		mHeight.setText(mItemMasseur.getHeight());
-		mEthnicity.setText(mItemMasseur.getEthnicity());
-		mBio.setText(mItemMasseur.getBio());
-		if(!TextUtils.isEmpty(mItemMasseur.getServices())) {
-			for(int c=0;c<mItemMasseur.getServicesAsArrayList().size();c++) {
-				switch (c) {
-				case 0:
-					mService1.setText(mItemMasseur.getServicesAsArrayList().get(c));
-					break;
-				case 1:
-					mService2.setText(mItemMasseur.getServicesAsArrayList().get(c));
-					break;
-				case 2:
-					mService3.setText(mItemMasseur.getServicesAsArrayList().get(c));
-					break;
-				default:
-					break;
+		mHeading=(TextView)viewGroup.findViewById(R.id.tvUpdateInfoHeading);
+		mSubheading=(TextView)viewGroup.findViewById(R.id.tvNewMasseurSubHeading);
+		if(!isNewMasseur()) {
+			if(!Utils.isNullDate(mItemMasseur.getBirthdate())) {
+				mBirthdate.setText(Utils.mDateFormatYYYYMMDD.format(mItemMasseur.getBirthdate().getTime()));
+			}
+			mHeight.setText(mItemMasseur.getHeight());
+			mEthnicity.setText(mItemMasseur.getEthnicity());
+			mBio.setText(mItemMasseur.getBio());
+			if(!TextUtils.isEmpty(mItemMasseur.getServices())) {
+				for(int c=0;c<mItemMasseur.getServicesAsArrayList().size();c++) {
+					switch (c) {
+					case 0:
+						mService1.setText(mItemMasseur.getServicesAsArrayList().get(c));
+						break;
+					case 1:
+						mService2.setText(mItemMasseur.getServicesAsArrayList().get(c));
+						break;
+					case 2:
+						mService3.setText(mItemMasseur.getServicesAsArrayList().get(c));
+						break;
+					default:
+						break;
+					}
 				}
 			}
+		} else {
+			mHeading.setText("New Masseur");
+			mSubheading.setVisibility(View.VISIBLE);
 		}
 		Button jdContinue=(Button)viewGroup.findViewById(R.id.btnUpdateInfoContinue);
 		jdContinue.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				ItemMasseur zMasseur=isNewMasseur()?MasseurMainActivity.mSingleton.mItemMasseur_beingCreated:mItemMasseur;
 				Date bDate=null;
 				try {
 					String bDateStr=mBirthdate.getText().toString();
@@ -88,11 +102,11 @@ public class UpdateInfoFragment extends Fragment implements
 				if(bDate!=null) {
 					GregorianCalendar gc=new GregorianCalendar();
 					gc.setTime(bDate);
-					mItemMasseur.setBirthdate(gc);
+					zMasseur.setBirthdate(gc);
 				}
-				mItemMasseur.setHeight(mHeight.getText().toString());
-				mItemMasseur.setEthnicity(mEthnicity.getText().toString());
-				mItemMasseur.setBio(mBio.getText().toString());
+				zMasseur.setHeight(mHeight.getText().toString());
+				zMasseur.setEthnicity(mEthnicity.getText().toString());
+				zMasseur.setBio(mBio.getText().toString());
 				int c=0;
 				ArrayList<String>services=new ArrayList<String>();
 				if(!TextUtils.isEmpty(mService1.getText().toString())) {
@@ -104,8 +118,13 @@ public class UpdateInfoFragment extends Fragment implements
 				if(!TextUtils.isEmpty(mService3.getText().toString())) {
 					services.add(mService3.getText().toString());
 				}
-				mItemMasseur.setServicesAsArrayList(services);
-				flushMasseurToDB(UpdateInfoFragment.this.mItemMasseur);
+				zMasseur.setServicesAsArrayList(services);
+				if(!isNewMasseur()) {
+					flushMasseurToDB(UpdateInfoFragment.this.mItemMasseur);
+					getActivity().onBackPressed();
+				} else {
+					UpdateInfoFragment.this.mCallbacks.onNavigationDrawerItemSelected(14);
+				}
 				
 			}
 		});
@@ -128,6 +147,11 @@ public class UpdateInfoFragment extends Fragment implements
 			}
 			getActivity().onBackPressed();
 		}
+	}
+	private boolean isNewMasseur() {
+		return
+				MasseurMainActivity.mSingleton!=null &&
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated!=null;
 	}
 	@Override
 	public ArrayList<Object> getRemoteData(String keyname) {

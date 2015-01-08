@@ -10,10 +10,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.diamondsoftware.android.common.ConfirmerClient;
+import com.diamondsoftware.android.common.DataGetter;
 import com.diamondsoftware.android.common.HttpFileUpload;
 import com.diamondsoftware.android.common.HttpFileUploadParameters;
 import com.diamondsoftware.android.common.ManagesFileUploads;
 import com.diamondsoftware.android.common.Utils;
+import com.diamondsoftware.android.common.WaitingForDataAcquiredAsynchronously;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur;
@@ -39,7 +41,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CertifyFragment extends Fragment implements ManagesFileUploads, ConfirmerClient {
+public class CertifyFragment extends Fragment_Abstract_NewMasseur implements ManagesFileUploads, ConfirmerClient,
+		WaitingForDataAcquiredAsynchronously,
+		DataGetter {
 	Button btnContinue;
 	Button btnGallery;
 	Button btnPhoto;
@@ -48,8 +52,9 @@ public class CertifyFragment extends Fragment implements ManagesFileUploads, Con
 	private ItemMasseur mItemMasseur;
 	Uri mSelectedImage;
 	private static final int TAKE_PICTURE = 10101;    
+	private static final int TAKE_FIRST_PUBLIC_PICTURE = 10203;
 	private Uri imageUri;
-
+	private String imDealingWithANewMasseurHere=null;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -65,7 +70,7 @@ public class CertifyFragment extends Fragment implements ManagesFileUploads, Con
 			@Override
 			public void onClick(View view) {
 				    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-				    File photo = new File(Environment.getExternalStorageDirectory(),  "CertifyPic_"+new Date().getTime()+".jpg");
+				    File photo = new File(Environment.getExternalStorageDirectory(),  "Masseur_XMainPicture_"+new Date().getTime()+".jpg");
 				    intent.putExtra(MediaStore.EXTRA_OUTPUT,
 				            Uri.fromFile(photo));
 				    imageUri = Uri.fromFile(photo);
@@ -95,16 +100,7 @@ public class CertifyFragment extends Fragment implements ManagesFileUploads, Con
 		
 		return viewGroup;
 	}
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home) {
-        	getActivity().onBackPressed();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    } 	
 	public static CertifyFragment newInstance(SettingsManager setMan, ItemMasseur im) {
 		CertifyFragment frag=new CertifyFragment();
 		frag.mSettingsManager=setMan;
@@ -151,41 +147,135 @@ public class CertifyFragment extends Fragment implements ManagesFileUploads, Con
 			if(massers.size()>0) {
 				mItemMasseur=(ItemMasseur)massers.get(0);
 				((ManagesFileUploads) getActivity()).heresTheResponse(response, parms);
-				getActivity().onBackPressed();
+				if(!isNewMasseur()) {
+					getActivity().onBackPressed();
+				} else {
+					this.mCallbacks.onNavigationDrawerItemSelected(0); // go to HomePage
+				}
 			}
 		} catch (Exception e) {}
 	}
+	private boolean isNewMasseur() {
+		if (imDealingWithANewMasseurHere==null) {
+			 boolean retBool=MasseurMainActivity.mSingleton!=null &&
+					MasseurMainActivity.mSingleton.mItemMasseur_beingCreated!=null;
+			 if(retBool){
+				 imDealingWithANewMasseurHere="yes";
+			 } else {
+				 imDealingWithANewMasseurHere="no";
+			 }
+		}
+		return
+			imDealingWithANewMasseurHere.equals("yes");
+	}
+
 	@Override
 	public void heresYourAnswer(boolean saidYes, ArrayList<Object> otherData) {
 		if(saidYes) {
-			try {
-				InputStream imageStream = getActivity()
-						.getContentResolver()
-						.openInputStream(mSelectedImage);
-				ArrayList<NameValuePair> parms = new ArrayList<NameValuePair>();
-				parms.add(new BasicNameValuePair("Transaction",
-						"MasseurUploadCertifiedPicture"));
-				parms.add(new BasicNameValuePair(
-						"UserId",
-						String.valueOf(MasseurMainActivity.mSingleton.mItemMasseur_me
-								.getmUserId())));
-	
-				HttpFileUploadParameters params = new HttpFileUploadParameters(
-						"http://"
-								+ com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())
-								+ "/MassageNearby/FileUpload.aspx", parms,
-						ProgressDialog.show(getActivity(), "Working ...",
-								"Uploading " + mSelectedImage.getPath(),
-								true, false, null), imageStream, this,
-						MasseurMainActivity.mSingleton.mItemMasseur_me
-								.getmUserId());
-				new HttpFileUpload().execute(params);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+			if(!isNewMasseur()) {
+				try {
+					InputStream imageStream = getActivity()
+							.getContentResolver()
+							.openInputStream(mSelectedImage);
+					ArrayList<NameValuePair> parms = new ArrayList<NameValuePair>();
+					parms.add(new BasicNameValuePair("Transaction",
+							"MasseurUploadCertifiedPicture"));
+					parms.add(new BasicNameValuePair(
+							"UserId",
+							String.valueOf(MasseurMainActivity.mSingleton.mItemMasseur_me
+									.getmUserId())));
+		
+					HttpFileUploadParameters params = new HttpFileUploadParameters(
+							"http://"
+									+ com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())
+									+ "/MassageNearby/FileUpload.aspx", parms,
+							ProgressDialog.show(getActivity(), "Working ...",
+									"Uploading " + mSelectedImage.getPath(),
+									true, false, null), imageStream, this,
+							MasseurMainActivity.mSingleton.mItemMasseur_me
+									.getmUserId());
+					new HttpFileUpload().execute(params);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			} else { // is new masseur
+				// I need to store the uri for a later upload
+				MasseurMainActivity.mSingleton.mCertifiedImage=mSelectedImage;
+				// Now ... do a update using mItemMasseur_beingCreated, and on its return, go to HomePageFragment
+		       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("UpdateMasseur~"+MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName()+"~"+ MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getDBQueryStringEncoded(),this, this);
+
 			}
 		} else {
 			
 		}
+	}
+
+	@Override
+	public ArrayList<Object> getRemoteData(String keyname) {
+		ArrayList<Object> data=null;
+		String[] array = keyname.split("\\~", -1);
+		String key=array[0];
+		if(key.equals("UpdateMasseur")) {
+			String name=array[1];
+			String masseurQueryString=array[2];
+			String url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?"+masseurQueryString;
+			try {
+				data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
+						new com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur(name), 
+						url
+						).parse();
+			} catch (Exception e) {
+				e=e;
+			}
+		}
+		return data;
+	}
+
+	@Override
+	public void gotMyData(String name, ArrayList<Object> data) {
+		String[] array = name.split("\\~", -1);
+		String key=array[0];
+		if(key.equals("UpdateMasseur")) {
+			if(data!=null && data.size()>0) {				
+				((MasseurMainActivity)getActivity()).mItemMasseur_me=(ItemMasseur)data.get(0);
+				mItemMasseur=(ItemMasseur)data.get(0);
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated=null;
+				// Send out the certified image
+				mSelectedImage=MasseurMainActivity.mSingleton.mCertifiedImage;
+				heresYourAnswer(true, null);
+				// Send out main image
+				Uri selectedImage = MasseurMainActivity.mSingleton.mSelectedImageNewMasseurPublicPhoto;
+				try {
+					InputStream imageStream = getActivity()
+							.getContentResolver()
+							.openInputStream(selectedImage);
+					ArrayList<NameValuePair> parms = new ArrayList<NameValuePair>();
+					parms.add(new BasicNameValuePair("Transaction",
+							"MasseurUploadMainPicture"));
+					parms.add(new BasicNameValuePair(
+							"UserId",
+							String.valueOf(MasseurMainActivity.mSingleton.mItemMasseur_me
+									.getmUserId())));
+
+					HttpFileUploadParameters params = new HttpFileUploadParameters(
+							"http://"
+									+ com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())
+									+ "/MassageNearby/FileUpload.aspx", parms,
+							ProgressDialog.show(getActivity(), "Working ...",
+									"Uploading " + selectedImage.getPath(),
+									true, false, null), imageStream, this,
+							MasseurMainActivity.mSingleton.mItemMasseur_me
+									.getmUserId());
+					new HttpFileUpload().execute(params);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			getActivity().onBackPressed();
+		}
+		
 	}
 
 }

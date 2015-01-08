@@ -1,24 +1,40 @@
 package com.diamondsoftware.android.massagenearby.common;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
+import com.diamondsoftware.android.common.Utils;
+import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.MasseurMainActivity;
+import com.diamondsoftware.android.masseur.MasseurSocketService;
 import com.diamondsoftware.android.masseur.R;
 import com.diamondsoftware.android.masseur.SplashFragment;
 import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDrawerCallbacks;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements
+com.diamondsoftware.android.common.WaitingForDataAcquiredAsynchronously,
+com.diamondsoftware.android.common.DataGetter {
 	private SettingsManager mSettingsManager;
     private NavigationDrawerCallbacks mCallbacks;
     Button btnCreateClientAccount;
@@ -26,12 +42,25 @@ public class LoginFragment extends Fragment {
     EditText etUserName;
     EditText etPassword;
     CheckBox cbRememberMe;
+    Button btnSubmit;
+    ProgressDialog mProgressDialog;
     
 	public static LoginFragment newInstance(SettingsManager setMan) {
 		LoginFragment frag=new LoginFragment();
 		frag.mSettingsManager=setMan;
 		return frag;
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,24 +85,91 @@ public class LoginFragment extends Fragment {
 				R.layout.fragment_login, container, false);
 		btnCreateClientAccount=(Button)viewGroup.findViewById(R.id.btnLoginCreateANewClientAccount);
 		btnCreateMasseurAccount=(Button)viewGroup.findViewById(R.id.btnLoginCreateANewMasseurAccount);
+		btnCreateMasseurAccount.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mCallbacks.onNavigationDrawerItemSelected(11);
+				
+			}
+		});
 		etUserName=(EditText)viewGroup.findViewById(R.id.etLoginUserName);
+		etUserName.setOnEditorActionListener(new EditText.OnEditorActionListener(){  
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				if(actionId==EditorInfo.IME_ACTION_NEXT) {
+					etPassword.requestFocus();
+					return true;
+				}
+				return false;
+			} 
+
+		}); 
 		etPassword=(EditText)viewGroup.findViewById(R.id.etLoginPassword);
+		etPassword.setOnEditorActionListener(new EditText.OnEditorActionListener(){  
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				if(actionId==EditorInfo.IME_ACTION_GO) {
+					doSubmitAction();
+					return true;
+				}
+				return false;
+			} 
+
+		}); 
+
 		cbRememberMe=(CheckBox)viewGroup.findViewById(R.id.cbLoginRememberMe);
+		btnSubmit=(Button)viewGroup.findViewById(R.id.btnLoginContinue);
+		btnSubmit.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				doSubmitAction();
+			}
+		});
 		return viewGroup;
 	}
+	private void doSubmitAction() {
+		if(TextUtils.isEmpty(etUserName.getText().toString())||TextUtils.isEmpty(etPassword.getText().toString())) {
+			
+			new Utils.Complainer("Invalid Data","Please enter both User Name and Password",getActivity()).show(getActivity().getFragmentManager(), "unamepwdblank");
+			if(TextUtils.isEmpty(etPassword.getText().toString())) {
+				etPassword.requestFocus();
+			}
+			if(TextUtils.isEmpty(etUserName.getText().toString())) {
+				etUserName.requestFocus();
+			}
+		}
+		mProgressDialog=ProgressDialog.show(getActivity(), "Working ...",
+				"Verifying credentials...",
+				true, false, null);
+		this.btnSubmit.setEnabled(false);
+       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("login~"+ etUserName.getText().toString(), this, this);
+
+	}
 	private void finishOnViewCreated() {
-		if (MasseurMainActivity.mSingleton != null
-				&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
-			btnCreateClientAccount.setEnabled(false);
-			btnCreateMasseurAccount.setEnabled(false);
-			etUserName.setText(MasseurMainActivity.mSingleton.mItemMasseur_me.getmName());
-			etPassword.requestFocus();
-		} else {
-			etUserName.requestFocus();
-		}
-		if(mSettingsManager.getIsRememberMe()) {
-			cbRememberMe.setChecked(true);
-		}
+		try {
+			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+			imm.showSoftInput(etUserName, InputMethodManager.SHOW_IMPLICIT);
+			imm.showSoftInput(etPassword, InputMethodManager.SHOW_IMPLICIT);
+			if (MasseurMainActivity.mSingleton != null
+					&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
+				btnCreateClientAccount.setEnabled(false);
+				btnCreateMasseurAccount.setEnabled(false);
+				etUserName.setText(MasseurMainActivity.mSingleton.mItemMasseur_me.getmName());
+				etPassword.requestFocus();
+			} else {
+				etPassword.requestFocus();
+				etUserName.requestFocus();
+			}
+			if(mSettingsManager.getIsRememberMe()) {
+				cbRememberMe.setChecked(true);
+			}
+		} catch (Exception e) {}
 	}
 	
 	/* (non-Javadoc)
@@ -109,5 +205,98 @@ public class LoginFragment extends Fragment {
 			finishOnViewCreated();
 		}
 	}
-	
+/*
+ * 		                	   MasseurMainActivity.mSingleton.mSettingsManager.setMasseurName(mEditText.getText().toString().trim());		    
+		                       
+		                       Intent intent=new Intent(MasseurMainActivity.this,MasseurSocketService.class);
+		                       intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
+		                       startService(intent);
+
+ */
+
+
+	@Override
+	public ArrayList<Object> getRemoteData(String keyname) {
+		String[] array = keyname.split("\\~", -1);
+		String key=array[0];
+		String name=array[1];
+		// 10.0.0.253 when wifi on my computer
+		String url=null;
+		if(key.equals("login")) {
+			url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&IsDoingLogin=true";
+		}
+		ArrayList<Object> data=null;
+		try {
+			data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
+				new com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur(name), 
+				url
+				).parse();
+		} catch (Exception e) {}
+		return data;
+	}
+
+
+	@Override
+	public void gotMyData(String keyname, ArrayList<Object> data) {
+		String[] array = keyname.split("\\~", -1);
+		String key=array[0];
+		String name=array[1];
+		boolean wereGood=false;
+		ItemMasseur masseur=null;
+		if(key.equals("login")) {
+
+			if(data!=null && data.size()>0) {
+				masseur=(ItemMasseur)data.get(0);
+				if(masseur.getPassword().equals(this.etPassword.getText().toString())) {
+					wereGood=true;
+				}
+			}
+			if(wereGood) {
+				mSettingsManager.setMasseurName(masseur.getmName());	
+				if (MasseurMainActivity.mSingleton != null) {
+					MasseurMainActivity.mSingleton.mItemMasseur_me=masseur;
+				}
+                Intent intent=new Intent(getActivity(),MasseurSocketService.class);
+                intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
+                getActivity().startService(intent);
+                getActivity().runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(LoginFragment.this.etPassword.getWindowToken(), 0);
+						if(mProgressDialog!=null) {
+							mProgressDialog.dismiss();
+							mProgressDialog=null;
+						}
+						mSettingsManager.setIsRememberMe(cbRememberMe.isChecked());
+	        	     //   android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+	        	       // fragmentManager.beginTransaction()
+	        	        //	.remove(LoginFragment.this)
+	        	        	//.commit();
+	        	        	
+						//LoginFragment.this.getActivity().onBackPressed();
+		                LoginFragment.this.mCallbacks.onNavigationDrawerItemSelected(0);
+					}
+                	
+                });
+			} else {
+	               getActivity().runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							if(mProgressDialog!=null) {
+								mProgressDialog.dismiss();
+								mProgressDialog=null;
+							}
+							LoginFragment.this.btnSubmit.setEnabled(true);
+							LoginFragment.this.etUserName.requestFocus();
+							LoginFragment.this.etUserName.selectAll();
+							new Utils.Complainer("Invalid Credentials", "Please try again", getActivity()).show(getActivity().getFragmentManager(), "failedlogin");
+						}
+	                	
+	                });
+			}
+		}
+	}
 }

@@ -2,19 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#bbaaaaaa"
     tools:context="com.diamondsoftware.android.masseur.NavigationDrawerFragment" >
-    <Button
-        android:id="@+id/btnNavDrawerFrag_Home"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:text="Home" />
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnNavDrawerFrag_Home"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="8dip"
+        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:text="Chats" />
 
     <ListView

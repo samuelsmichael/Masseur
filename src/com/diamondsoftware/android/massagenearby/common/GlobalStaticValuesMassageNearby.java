@@ -10,6 +10,8 @@ public class GlobalStaticValuesMassageNearby {
 	
 	public static final int ACTIVITY_RESULT_SELECT_PHOTO = 100;
 	public static final int ACTIVITY_RESULT_SELECT_PHOTO_CERTIFY = 1000;
+	public static final int PICK_FIRST_PUBLIC_PICTURE_GALLERY = 10203;	
+	public static final int TAKE_FIRST_PUBLIC_PICTURE_CAMERA = 10204;	
 	
 	public static final int ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_1 = 1001;
 	public static final int ACTIVITY_RESULT_SELECT_PHOTO_PRIVATE_PHOTO_2 = 1002;

@@ -293,23 +293,32 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 				&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
 			finishOnViewCreated();
 		} else {
-			new CountDownTimer(10000, 1000) {
-				@Override
-				public void onTick(long millisUntilFinished) {
-					if (MasseurMainActivity.mSingleton != null
-							&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
-						finishOnViewCreated();
-						cancel();
+			if(!MasseurMainActivity.IS_ALREADY_IN_LOGIN) {
+				MasseurMainActivity.IS_ALREADY_IN_LOGIN=true;
+		        android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+		        fragmentManager.beginTransaction()
+	                .replace(R.id.container, SplashFragment.newInstance(mSettingsManager))
+	             //   .addToBackStack(null)
+	                .commit();
+			} else {
+				new CountDownTimer(10000, 1000) {
+					@Override
+					public void onTick(long millisUntilFinished) {
+						if (MasseurMainActivity.mSingleton != null
+								&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
+							finishOnViewCreated();
+							cancel();
+						}
 					}
-				}
-				@Override
-				public void onFinish() {
-					if (MasseurMainActivity.mSingleton != null
-							&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
-						finishOnViewCreated();
+					@Override
+					public void onFinish() {
+						if (MasseurMainActivity.mSingleton != null
+								&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
+							finishOnViewCreated();
+						}
 					}
-				}
-			}.start();
+				}.start();
+			}
 		}
 	}
 

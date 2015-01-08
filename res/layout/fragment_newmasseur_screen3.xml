@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/masseur_background_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+     <TextView 
+        android:id="@+id/tvNewMasseur3Heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#2f5172"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dip"
+        android:text="New Masseur"
+        android:textSize="22sp"
+        android:textStyle="bold"
+		                />
+    <TextView 
+        android:id="@+id/tvNewMasseur3SubHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#2f5172"
+        android:layout_below="@+id/tvNewMasseur3Heading"
+        android:layout_marginTop="15dip"
+        android:text="Part 3 of 4"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="17sp"
+        android:layout_centerHorizontal="true"
+		                />
+        <TextView android:id="@+id/tvTakeAPhotoHeading"
+            style="@style/TextMasseurUpdateInfoHeading"
+	        android:layout_height="wrap_content"
+	        android:layout_width="wrap_content"
+	        android:layout_below="@+id/tvNewMasseur3SubHeading"
+	      	android:layout_marginTop="15sp"
+            android:text="Upload your Public Photo" />"
+        <LinearLayout android:id="@+id/llLoginBody"
+	        android:layout_height="wrap_content"
+	        android:layout_width="wrap_content"
+	      	android:layout_marginTop="15sp"
+	        android:layout_below="@+id/tvTakeAPhotoHeading"
+	        android:orientation="vertical"
+	        android:layout_centerInParent="true"
+            >
+            <Button
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		       	android:layout_height="wrap_content"
+		        android:id="@+id/btnNewMasseur3Camera"
+		        android:layout_gravity="center_horizontal"
+		        android:alpha="50"
+		        android:text="Take a picture with your camera" />
+            <Button
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		        android:layout_marginTop="30dip"
+		       	android:layout_height="wrap_content"
+		        android:id="@+id/btnNewMasseur3Gallery"
+		        android:alpha="50"
+		        android:layout_gravity="center_horizontal"
+		        android:text="Choose a picture from your Gallery" />	             
+	</LinearLayout>
+		   	<Button 
+		        style="@style/ButtonMasseur"
+		       	android:layout_width="wrap_content"
+		       	android:layout_height="wrap_content"
+		        android:id="@+id/btnNewMasseur3Later"
+		        android:layout_centerHorizontal="true"
+		        android:layout_alignParentBottom="true"
+		        android:text="Later" />
+        
+</RelativeLayout>

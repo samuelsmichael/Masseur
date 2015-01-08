@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.diamondsoftware.android.masseur.MasseurMainActivity;
 import com.diamondsoftware.android.masseur.R;
@@ -157,6 +159,57 @@ public class Utils {
            iv.setColorFilter(colorFilter);
            
        }
+    /**
+     * method is used for checking valid email id format.
+     * 
+     * @param email
+     * @return boolean true for valid false for invalid
+     */
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
+    }
+    
+    public static class Complainer extends DialogFragment{
+		private String mTitle;
+		private String mMessage;
+		private Activity mActivity;
+		public Complainer(String title, String message,
+				Activity activity) {
+			super();
+			mTitle = title;
+			mMessage = message;
+			mActivity = activity;
+		}
+		
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle(mTitle)
+            			.setMessage(mMessage)
+						.setPositiveButton("Okay",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dismiss();
+									}
+								});
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    
+
+    }
     public static class Confirmer extends DialogFragment {
 		private String mTitle;
 		private String mMessage;

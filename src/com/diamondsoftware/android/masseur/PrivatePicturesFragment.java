@@ -94,6 +94,7 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 
         return super.onOptionsItemSelected(item);
     } 
+    
     private void showThePictures(final ItemMasseur im) {
     	GlobalStaticValuesMassageNearby.PHOTO_RESULT_IDS.clear();
     	ArrayList<Integer> leftOvers=new ArrayList<Integer>();
@@ -403,7 +404,11 @@ com.diamondsoftware.android.common.DataGetter, ConfirmerClient {
 			break;
 		}
 	}
-
+	private boolean isNewMasseur() {
+		return
+				MasseurMainActivity.mSingleton!=null &&
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated!=null;
+	}
 	
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onViewCreated(android.view.View, android.os.Bundle)
