@@ -18,6 +18,7 @@ import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDr
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,8 +42,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class NewMasseurScreen3Fragment extends Fragment_Abstract_NewMasseur  {
-	private SettingsManager mSettingsManager;
-    private NavigationDrawerCallbacks mCallbacks;
     Button btnLater;
     Button btnCamera;
     Button btnGallery;
@@ -78,6 +77,8 @@ public class NewMasseurScreen3Fragment extends Fragment_Abstract_NewMasseur  {
 			}
 		});
 		btnGallery=(Button)viewGroup.findViewById(R.id.btnNewMasseur3Gallery);
+
+		
 		btnGallery.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -95,7 +96,7 @@ public class NewMasseurScreen3Fragment extends Fragment_Abstract_NewMasseur  {
 			
 			@Override
 			public void onClick(View v) {
-				getActivity().onBackPressed();
+				mCallbacks.onNavigationDrawerItemSelected(17);
 				
 			}
 		});

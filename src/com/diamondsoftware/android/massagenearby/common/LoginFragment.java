@@ -143,6 +143,7 @@ com.diamondsoftware.android.common.DataGetter {
 			if(TextUtils.isEmpty(etUserName.getText().toString())) {
 				etUserName.requestFocus();
 			}
+			return;
 		}
 		mProgressDialog=ProgressDialog.show(getActivity(), "Working ...",
 				"Verifying credentials...",
@@ -158,8 +159,8 @@ com.diamondsoftware.android.common.DataGetter {
 			imm.showSoftInput(etPassword, InputMethodManager.SHOW_IMPLICIT);
 			if (MasseurMainActivity.mSingleton != null
 					&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
-				btnCreateClientAccount.setEnabled(false);
-				btnCreateMasseurAccount.setEnabled(false);
+		//		btnCreateClientAccount.setEnabled(false);
+			//	btnCreateMasseurAccount.setEnabled(false);
 				etUserName.setText(MasseurMainActivity.mSingleton.mItemMasseur_me.getmName());
 				etPassword.requestFocus();
 			} else {

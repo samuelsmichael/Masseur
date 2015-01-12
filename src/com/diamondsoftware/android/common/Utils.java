@@ -109,6 +109,8 @@ public class Utils {
 	}
 	public static final DateFormat mDateFormatYYYYMMDD=new SimpleDateFormat(
 			"yyyy.mm.dd");
+	public static final DateFormat mDateFormatMMDDYYYY=new SimpleDateFormat(
+			"mm.dd.yyyy");
 	public static final DateFormat mLocaleDateFormat=new SimpleDateFormat("MM/dd/yyyy",Locale.US);
 	public static final DateFormat mDateFormat = new SimpleDateFormat(
 	"yyyy-MM-dd HH:mm:ss");

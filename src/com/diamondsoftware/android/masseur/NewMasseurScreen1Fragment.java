@@ -1,7 +1,14 @@
 package com.diamondsoftware.android.masseur;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
 
 import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
@@ -21,6 +28,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -55,11 +63,25 @@ com.diamondsoftware.android.common.DataGetter {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		MasseurMainActivity.mSingleton.mItemMasseur_beingCreated=new ItemMasseur();
-		if(savedInstanceState!=null) {
-			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmName(savedInstanceState.getString("UserName"));
-			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setEmail(savedInstanceState.getString("Email"));
-			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setPassword(savedInstanceState.getString("Password"));
+		if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated==null) {
+			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated=new ItemMasseur();
+			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setCertificationNumber((int)(Math.random()*100000));
+			GregorianCalendar cal = new GregorianCalendar(); 
+			cal.add(Calendar.MONTH, 3);
+			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setSubscriptionEndDate(cal);
+		}
+
+		if(((MasseurMainActivity)getActivity()).IS_FORCE_NEWMASSEUR_VALUES) {
+			if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName())) {
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmName("zz"+new Date().getTime());
+			}
+			if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail())) {
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setEmail("samuelsmichael222@gmail.com");
+			}
+			if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword())) {
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setPassword("p");
+			}
+		
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -182,7 +204,7 @@ com.diamondsoftware.android.common.DataGetter {
 					etEmail.selectAll();
 				} else {
 					mProgressDialog=ProgressDialog.show(getActivity(), "Working ...",
-							"Checking to be sure that this name isn't already begin used ...",
+							"Checking to be sure that this name isn't already being used ...",
 							true, false, null);
 					this.btnSubmit.setEnabled(false);
 			       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("newmasseur~"+ etUserName.getText().toString(), this, this);
@@ -248,6 +270,7 @@ com.diamondsoftware.android.common.DataGetter {
 						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmName(etUserName.getText().toString());
 						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setPassword(etPassword.getText().toString());
 						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setEmail(etEmail.getText().toString());
+						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmURL(getLocalIpAddress());
 
 		                NewMasseurScreen1Fragment.this.mCallbacks.onNavigationDrawerItemSelected(2); // go to next screen
 					}
@@ -272,11 +295,22 @@ com.diamondsoftware.android.common.DataGetter {
 			}
 		}
 	}
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("UserName", MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName());
-        outState.putString("Email",  MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail());
-        outState.putString("Password", MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword());
+
+    private String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                    	String hostAddress=inetAddress.getHostAddress().toString();
+                    	return hostAddress; 
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            
+        }
+        return null;
     }
 }

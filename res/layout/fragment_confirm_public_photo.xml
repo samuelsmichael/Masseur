@@ -7,11 +7,11 @@
         android:id="@+id/ivMasseurConfirmNewMasseur"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha=".35"
+        android:alpha=".55"
         android:scaleType="centerCrop"
         />
    <LinearLayout 
-       android:layout_width="wrap_content"
+       android:layout_width="fill_parent"
        android:layout_height="wrap_content"
        android:background="#88333333"
        android:layout_marginTop="27dip"
@@ -23,13 +23,15 @@
 	       style="@style/TextMasseurFieldHeading"
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
-	       android:gravity="center_horizontal"
+	       android:layout_gravity="center_horizontal"
 	       android:text="@string/this_is_how_youll_appear"
+	       android:textSize="14sp"
            />
        <LinearLayout 
-       		android:layout_width="fill_parent"
-       		android:layout_marginTop="70dip"
+       		android:layout_width="wrap_content"
+       		android:layout_marginTop="10dip"
        		android:layout_height="wrap_content"
+       		android:layout_gravity="center_horizontal"
             android:orientation="horizontal"
             >
                <Button
@@ -37,15 +39,13 @@
 			       	android:layout_width="wrap_content"
 			       	android:layout_height="wrap_content"
 			        android:id="@+id/btnConfirmPhoto_TryAgain"
-			        android:layout_gravity="left"
-			        android:layout_marginLeft="10dip"
+			        android:layout_marginRight="10dip"
 			        android:text="Try Again" />
                <Button
 			        style="@style/ButtonMasseur"
 			       	android:layout_width="wrap_content"
 			       	android:layout_height="wrap_content"
 			        android:id="@+id/btnConfirmPhoto_Continue"
-			        android:layout_gravity="right"
 			        android:alpha="50"
 			        android:layout_marginRight="10dip"
 			        android:text="Continue" />

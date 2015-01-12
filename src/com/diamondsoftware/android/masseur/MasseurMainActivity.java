@@ -70,6 +70,7 @@ public class MasseurMainActivity extends FragmentActivity
 	public static boolean IS_ALREADY_IN_LOGIN=false;
     Uri mSelectedImageNewMasseurPublicPhoto;
     Uri mCertifiedImage;
+    public static final boolean IS_FORCE_NEWMASSEUR_VALUES=true;
 
 
     public static final String TAG="MasseurMain";
@@ -228,8 +229,9 @@ public class MasseurMainActivity extends FragmentActivity
 		} else {
 			if(position==0) {
 		        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-		        for(int c=0;c<fragmentManager.getBackStackEntryCount();c++) 
-		        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//		        for(int c=0;c<fragmentManager.getBackStackEntryCount();c++) {
+	//	        	fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		//        }
 		        mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
 		        fragmentManager.beginTransaction()
 		                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
@@ -286,8 +288,8 @@ public class MasseurMainActivity extends FragmentActivity
 										mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
 								        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 								        fragmentManager.beginTransaction()
-								        		.addToBackStack(null)
 								                .replace(R.id.container, NewMasseurScreen3Fragment.newInstance(mSettingsManager))
+								        		.addToBackStack(null)
 								                .commit();
 									} else {
 
@@ -296,8 +298,8 @@ public class MasseurMainActivity extends FragmentActivity
 											mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
 									        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 									        fragmentManager.beginTransaction()
-									        		.addToBackStack(null)
 									                .replace(R.id.container, ConfirmPublicPhotoFragment.newInstance(mSettingsManager))
+									        		.addToBackStack(null)
 									                .commit();
 										} else {
 										
@@ -306,7 +308,6 @@ public class MasseurMainActivity extends FragmentActivity
 												mNavigationDrawerFragment.setDrawerIndicatorEnabled(false);
 										        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 										        fragmentManager.beginTransaction()
-										        		.addToBackStack(null)
 										                .replace(R.id.container, CertifyFragment.newInstance(mSettingsManager, 
 										                		MasseurMainActivity.mSingleton.mItemMasseur_beingCreated!=null?MasseurMainActivity.mSingleton.mItemMasseur_beingCreated: MasseurMainActivity.mSingleton.mItemMasseur_me))
 										                .commit();

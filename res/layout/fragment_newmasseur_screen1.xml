@@ -6,36 +6,29 @@
     
      <TextView 
         android:id="@+id/tvNewMasseurHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#2f5172"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="15dip"
+        style="@style/NewMasseurPageHeading"
         android:text="New Masseur"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
 		                />
     <TextView 
         android:id="@+id/tvNewMasseurSubHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#2f5172"
-        android:layout_below="@+id/tvNewMasseurHeading"
-        android:layout_marginTop="15dip"
+        style="@style/NewMasseurPageSubheading"
         android:text="Part 1 of 4"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="17sp"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvNewMasseurHeading"
 		                />
-        
+        <ScrollView android:id="@+id/svUpdateInfo"
+	        android:fillViewport="true"
+		   	android:layout_width="match_parent"
+		 	android:layout_height="wrap_content"
+		 	android:layout_below="@+id/tvNewMasseurSubHeading"
+		 	android:paddingTop="11dip"
+		 	android:layout_above="@+id/btnLoginContinue"
+		 	>
         <LinearLayout android:id="@+id/llLoginBody"
 	        android:layout_height="wrap_content"
 	        android:layout_width="wrap_content"
 	        android:layout_below="@+id/tvNewMasseurSubHeading"
 	        android:orientation="vertical"
-	        android:layout_centerHorizontal="true"
+	        android:layout_gravity="center_horizontal"
             >
 	        <TextView
 			    style="@style/TextMasseurFieldHeading"
@@ -107,6 +100,7 @@
 			/>
 	        	        
 	</LinearLayout>
+	</ScrollView>
 		   	<Button 
 		        style="@style/ButtonMasseur"
 		       	android:layout_width="wrap_content"

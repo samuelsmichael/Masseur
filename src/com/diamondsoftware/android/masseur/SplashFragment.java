@@ -22,6 +22,7 @@ public class SplashFragment extends Fragment {
 	private CountDownTimer mCountdownTimer;
 	private Handler mHandler;
     private NavigationDrawerCallbacks mCallbacks;
+    private static int LENGTH_OF_SPLASHPAGE_MILLISECONDS=1000;
 
 	public static SplashFragment newInstance(SettingsManager setMan) {
 		SplashFragment frag=new SplashFragment();
@@ -57,7 +58,7 @@ public class SplashFragment extends Fragment {
 
     			@Override
     			public void run() {
-    				SplashFragment.this.mCountdownTimer=new CountDownTimer(5000, 1000) {
+    				SplashFragment.this.mCountdownTimer=new CountDownTimer(LENGTH_OF_SPLASHPAGE_MILLISECONDS, 1000) {
     					@Override
     					public void onTick(long millisUntilFinished) {
     					}

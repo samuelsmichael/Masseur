@@ -16,13 +16,19 @@
         android:textStyle="bold"
         android:layout_marginBottom="17sp"
         android:layout_centerHorizontal="true"
-		                />
+		 />
+       	<ScrollView android:id="@+id/svLoginScroll"
+		   	android:layout_width="match_parent"
+		 	android:layout_height="wrap_content"
+	        android:layout_below="@+id/tvLoginHeading"
+		 	android:paddingTop="11dip"
+		 	android:layout_above="@+id/llBottomLogin"
+		 	>
         <LinearLayout android:id="@+id/llLoginBody"
 	        android:layout_height="wrap_content"
 	        android:layout_width="wrap_content"
-	        android:layout_below="@+id/tvLoginHeading"
 	        android:orientation="vertical"
-	        android:layout_centerHorizontal="true"
+	        android:layout_gravity="center_horizontal"
             >
 	        <TextView
 			    style="@style/TextMasseurFieldHeading"
@@ -35,10 +41,13 @@
 		        android:layout_width="300dip"
 		        android:inputType="text"
 		        android:layout_height="30dip"
-		 		style="@style/TextMasseurUpdateInfoValue"
 		 		android:background="@color/white"
 		 		android:imeOptions="actionNext"
 		 		
+		 		android:textColor="#2f5172"
+		 		android:paddingRight="18dip"
+		 		android:textStyle="bold"
+		 		android:textSize="17sp"		
 			/>
 	        <TextView 
 	            android:layout_marginTop="5dip"
@@ -67,8 +76,12 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="30dip"
 		        android:inputType="textPassword"
-		 		style="@style/TextMasseurUpdateInfoValue"		
 		 		android:imeOptions="actionGo"
+		 				 		
+		 		android:textColor="#2f5172"
+		 		android:paddingRight="18dip"
+		 		android:textStyle="bold"
+		 		android:textSize="17sp"		
 			/>
 	        <TextView 
 	            style="@style/TextMasseurHomePageHeading"
@@ -88,23 +101,31 @@
 	            android:layout_height="wrap_content"	
 	            android:text="Remember me on this phone"	  
 	            android:layout_gravity="center_horizontal"
-	            android:layout_marginTop="55dip"
+	            android:layout_marginTop="40dip"
             />
+	        	        
+	</LinearLayout>
+	</ScrollView>
+	<LinearLayout  android:id="@+id/llBottomLogin"
+       	android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
+       	android:orientation="vertical"
+       	android:layout_centerHorizontal="true"
+       	android:layout_alignParentBottom="true"
+	    >
 		   	<Button 
 		        style="@style/ButtonMasseur"
 		       	android:layout_width="wrap_content"
 		       	android:layout_height="wrap_content"
 		        android:id="@+id/btnLoginContinue"
+		        android:layout_marginBottom="15dip"
 		        android:layout_gravity="center_horizontal"
 		        android:text="Submit" />
-	        	        
-	</LinearLayout>
-	<LinearLayout
+	    	<LinearLayout 
        	android:layout_width="match_parent"
        	android:layout_height="wrap_content"
        	android:orientation="horizontal"
-       	android:layout_centerHorizontal="true"
-       	android:layout_alignParentBottom="true"
+       	android:layout_gravity="center_horizontal"
 	    >
     		<Button 
 		        style="@style/ButtonMasseur"
@@ -122,5 +143,6 @@
 		        android:id="@+id/btnLoginCreateANewMasseurAccount"
 		        android:text="Create Masseur Account" />
 	    		   	
+	</LinearLayout>
 	</LinearLayout>
 </RelativeLayout>

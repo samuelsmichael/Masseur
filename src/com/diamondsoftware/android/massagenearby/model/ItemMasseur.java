@@ -318,6 +318,19 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 		StringBuilder sb=new StringBuilder();
 		sb.append("Action=set&UserId="+mUserId);
 		
+		if(!TextUtils.isEmpty(mName)) {
+			sb.append("&Name="+URLEncoder.encode(mName));
+		}
+		if(!TextUtils.isEmpty(mURL)) {
+			sb.append("&URL="+URLEncoder.encode(this.getmURL()));
+		}
+
+		if(!TextUtils.isEmpty(Password)) {
+			sb.append("&Password="+URLEncoder.encode(Password));
+		}		
+		if(!TextUtils.isEmpty(Email)) {
+			sb.append("&Email="+URLEncoder.encode(Email));
+		}	
 		if(!TextUtils.isEmpty(MainPictureURL)) {
 			sb.append("&MainPictureURL="+URLEncoder.encode(MainPictureURL));
 		} else {
@@ -383,7 +396,9 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 	public String getDBQueryString() {
 		StringBuilder sb=new StringBuilder();
 		sb.append("Action=set&UserId="+mUserId);
-		
+		if(!TextUtils.isEmpty(mName)) {
+			sb.append("&Name="+mName);
+		}
 		if(MainPictureURL!=null) {
 			sb.append("&MainPictureURL="+MainPictureURL);
 		} else {
@@ -427,7 +442,8 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 		}		
 		if(!TextUtils.isEmpty(Email)) {
 			sb.append("&Email="+Email);
-		}		if(!TextUtils.isEmpty(PrivatePicture1URL)) {
+		}		
+		if(!TextUtils.isEmpty(PrivatePicture1URL)) {
 			sb.append("&PrivatePicture1URL="+PrivatePicture1URL);
 		} else {
 			sb.append("&PrivatePicture1URL="+"^"); // by convention
@@ -447,7 +463,10 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 		} else {
 			sb.append("&PrivatePicture4URL="+"^"); // by convention
 		}
-
+		sb.append("&CertificationNumber="+this.getCertificationNumber());
+		if(!TextUtils.isEmpty(mURL)) {
+			sb.append("&URL="+this.getmURL());
+		}
 		return sb.toString();
 	}
 }

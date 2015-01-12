@@ -6,35 +6,27 @@
     
      <TextView 
         android:id="@+id/tvNewMasseur3Heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#2f5172"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="15dip"
         android:text="New Masseur"
-        android:textSize="22sp"
-        android:textStyle="bold"
+        style="@style/NewMasseurPageHeading"
+        
+        android:layout_alignParentTop="true"
+        
+        
 		                />
     <TextView 
         android:id="@+id/tvNewMasseur3SubHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#2f5172"
         android:layout_below="@+id/tvNewMasseur3Heading"
-        android:layout_marginTop="15dip"
         android:text="Part 3 of 4"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="17sp"
-        android:layout_centerHorizontal="true"
+        style="@style/NewMasseurPageSubheading"
 		                />
+    
         <TextView android:id="@+id/tvTakeAPhotoHeading"
             style="@style/TextMasseurUpdateInfoHeading"
 	        android:layout_height="wrap_content"
 	        android:layout_width="wrap_content"
 	        android:layout_below="@+id/tvNewMasseur3SubHeading"
 	      	android:layout_marginTop="15sp"
+	      	android:layout_centerInParent="true"
             android:text="Upload your Public Photo" />"
         <LinearLayout android:id="@+id/llLoginBody"
 	        android:layout_height="wrap_content"

@@ -78,10 +78,17 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 			}
 		});
 		btnContinue=(Button)viewGroup.findViewById(R.id.btnCertifyContinue);
+		if(isNewMasseur()) {
+			btnContinue.setText("Later");
+		}
 		btnContinue.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				getActivity().onBackPressed();			
+				if(isNewMasseur()) {
+					writeTheNewMasseur();
+				} else {
+					getActivity().onBackPressed();
+				}
 			}
 		});
 		tvCode=(TextView)viewGroup.findViewById(R.id.tvCertifyNumber);
@@ -121,7 +128,7 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 				al.add(mItemMasseur);
 				new Utils.Confirmer2("Confirm Certification Picture", "Do you wish to use this picture?",
 						getActivity(), this, al,mSelectedImage,"Yes","No").show(getActivity().getFragmentManager(), "Confirm2_1");
-
+				break;
 			}
 	    case TAKE_PICTURE:
 	        if (resultCode == Activity.RESULT_OK) {
@@ -130,8 +137,8 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 				al.add("1");
 				al.add(mItemMasseur);
 				new Utils.Confirmer2("Confirm Certification Picture", "Do you wish to use this picture?",
-						getActivity(), this, al,mSelectedImage,"Yes","No").show(getActivity().getFragmentManager(), "Confirm2_1");
-
+						getActivity(), this, al,mSelectedImage,"Yes","No").show(getActivity().getFragmentManager(), "Confirm2_2");
+				break;
 	        }
 		}
 		
@@ -150,7 +157,7 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 				if(!isNewMasseur()) {
 					getActivity().onBackPressed();
 				} else {
-					this.mCallbacks.onNavigationDrawerItemSelected(0); // go to HomePage
+					///this.mCallbacks.onNavigationDrawerItemSelected(0); // go to HomePage
 				}
 			}
 		} catch (Exception e) {}
@@ -201,9 +208,7 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 			} else { // is new masseur
 				// I need to store the uri for a later upload
 				MasseurMainActivity.mSingleton.mCertifiedImage=mSelectedImage;
-				// Now ... do a update using mItemMasseur_beingCreated, and on its return, go to HomePageFragment
-		       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("UpdateMasseur~"+MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName()+"~"+ MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getDBQueryStringEncoded(),this, this);
-
+				this.writeTheNewMasseur();
 			}
 		} else {
 			
@@ -215,7 +220,7 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 		ArrayList<Object> data=null;
 		String[] array = keyname.split("\\~", -1);
 		String key=array[0];
-		if(key.equals("UpdateMasseur")) {
+		if(key.equals("UpdateMasseur")||key.equals("WriteMasseur")) {
 			String name=array[1];
 			String masseurQueryString=array[2];
 			String url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?"+masseurQueryString;
@@ -274,8 +279,34 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 				
 			}
 			getActivity().onBackPressed();
+		} else {
+			if(key.equals("WriteMasseur")) {
+				((MasseurMainActivity)getActivity()).mItemMasseur_me=(ItemMasseur)data.get(0);
+				mItemMasseur=(ItemMasseur)data.get(0);
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated=null;		
+				
+				if(MasseurMainActivity.mSingleton.mSelectedImageNewMasseurPublicPhoto!=null
+						|| MasseurMainActivity.mSingleton.mCertifiedImage!=null) {
+					new NewMasseurPhotoUploadManager(getActivity(),mSettingsManager);
+				} else {
+					mSettingsManager.setMasseurName(mItemMasseur.getmName());
+					this.mCallbacks.onNavigationDrawerItemSelected(0);
+				}
+				
+			}
 		}
 		
 	}
+	private void writeTheNewMasseur() {
+       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("WriteMasseur~"+MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName()+"~"+ MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getDBQueryStringEncoded(),this, this);
 
+		//TODO: 
+		/*
+		 * 
+		 * 1. write the record
+		 * 2. on return, update mMymasseur object
+		 * 3. send photos
+		 * 3. go Home
+		 */
+	}
 }

@@ -33,11 +33,13 @@ public class ConfirmPublicPhotoFragment extends Fragment_Abstract_NewMasseur {
 			
 			@Override
 			public void onClick(View v) {
+				MasseurMainActivity.mSingleton.mSelectedImageNewMasseurPublicPhoto=null;
 				getActivity().onBackPressed();
 				
 			}
 		});
 		btnContinue=(Button)viewGroup.findViewById(R.id.btnConfirmPhoto_Continue);
+
 		btnContinue.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -48,4 +50,5 @@ public class ConfirmPublicPhotoFragment extends Fragment_Abstract_NewMasseur {
 		
 		return viewGroup;
 	}
+
 }
