@@ -1,6 +1,6 @@
 package com.diamondsoftware.android.massagenearby.common;
 
-import com.diamondsoftware.android.masseur.ApplicationMasseur;
+import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.MasseurMainActivity;
 
 import android.app.Activity;

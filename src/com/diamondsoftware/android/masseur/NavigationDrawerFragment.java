@@ -105,7 +105,7 @@ public class NavigationDrawerFragment extends Fragment {
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                ((ApplicationMasseur)getActivity().getApplication()).getAllClientsAsStringArray()
+                ((ApplicationMassageNearby)getActivity().getApplication()).getAllClientsAsStringArray()
         		));
         if(mCurrentSelectedPosition>=100) {
         	mDrawerListView.setItemChecked(mCurrentSelectedPosition-100, true);
@@ -117,7 +117,7 @@ public class NavigationDrawerFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) // called when drawer opens
     {
       if (mDrawerLayout != null && isDrawerOpen()) {
-          String[] allMs=((ApplicationMasseur)getActivity().getApplication()).getAllClientsAsStringArray();
+          String[] allMs=((ApplicationMassageNearby)getActivity().getApplication()).getAllClientsAsStringArray();
           if(allMs==null) {
           	allMs=new String[]{"Client list"};
           }

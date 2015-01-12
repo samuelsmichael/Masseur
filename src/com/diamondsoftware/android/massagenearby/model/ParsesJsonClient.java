@@ -21,7 +21,7 @@ public class ParsesJsonClient extends ParsesJson {
 		for(int i=0;i<c;i++) {
 			ItemClient item=new ItemClient();
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
-			item.setmClientId(jsonObject.getInt("MasseurId"));
+			item.setmClientId(jsonObject.getInt("ClientId"));
 			item.setmName(jsonObject.getString("Name"));
 			item.setmURL(jsonObject.getString("URL"));
 			item.setmUserId(jsonObject.getInt("UserId"));

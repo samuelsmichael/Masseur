@@ -203,7 +203,7 @@ public class MasseurSocketService extends Service implements
 				mInetAddress=mPendingLocalIpAddress;
 				mPendingLocalIpAddress=null;
 		       	try {
-		       		mServerSocket = new ServerSocket(ApplicationMasseur.SERVERPORT);
+		       		mServerSocket = new ServerSocket(ApplicationMassageNearby.SERVERPORT);
 		       		mSocketListenerThread=new SocketListenerThread();
 		       		Thread thread=new Thread(mSocketListenerThread);
 		       		thread.start();
@@ -336,7 +336,7 @@ public class MasseurSocketService extends Service implements
 					 }
 				}
 			}
-		}, ApplicationMasseur.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS, ApplicationMasseur.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS);
+		}, ApplicationMassageNearby.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS, ApplicationMassageNearby.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS);
 	}
 	@Override
 	public void heresYourLocation(Location location) {

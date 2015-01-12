@@ -18,7 +18,7 @@ import android.util.Log;
 import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
-import com.diamondsoftware.android.masseur.ApplicationMasseur;
+import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.MasseurMainActivity;
 import com.diamondsoftware.android.masseur.MasseurSocketService;
 
@@ -125,8 +125,8 @@ public class SocketCommunicationsManager  {
 				startMyTimer();
 			}
 		}
-    	long backoff = ApplicationMasseur.BACKOFF_MILLI_SECONDS +  ApplicationMasseur.random.nextInt(1000);
-    	for (int i = 1; i <=  ApplicationMasseur.MAX_ATTEMPTS; i++) {
+    	long backoff = ApplicationMassageNearby.BACKOFF_MILLI_SECONDS +  ApplicationMassageNearby.random.nextInt(1000);
+    	for (int i = 1; i <=  ApplicationMassageNearby.MAX_ATTEMPTS; i++) {
     		try {
                 PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket
                         .getOutputStream())), true);

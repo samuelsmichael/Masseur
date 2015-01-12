@@ -205,18 +205,18 @@ public class MasseurMainActivity extends FragmentActivity
 	@Override
 	protected void onDestroy() {
 		mSingleton=null;
-		ArrayList<SocketCommunicationsManager> aL=((ApplicationMasseur)getApplication()).mClients;
+		ArrayList<SocketCommunicationsManager> aL=((ApplicationMassageNearby)getApplication()).mClients;
 		for(SocketCommunicationsManager ic: aL) {
 			ic.close();
 		}
-		((ApplicationMasseur)getApplication()).mClients.clear();
+		((ApplicationMassageNearby)getApplication()).mClients.clear();
 		super.onDestroy();
 	}
 
 	@Override
     public void onNavigationDrawerItemSelected(int position) {
 		if(position>=100) {
-			ArrayList<SocketCommunicationsManager> aL=((ApplicationMasseur)getApplication()).mClients;
+			ArrayList<SocketCommunicationsManager> aL=((ApplicationMassageNearby)getApplication()).mClients;
 			if(aL.size()>0) {
 				SocketCommunicationsManager smc=aL.get(position-100);
 				profileClientId=String.valueOf(smc.getmItemUserClient().getmUserId());
@@ -335,9 +335,9 @@ public class MasseurMainActivity extends FragmentActivity
 	}
 	
     public void onSectionAttached(int number) {
-    	ArrayList<SocketCommunicationsManager> allMs=((ApplicationMasseur)getApplication()).mClients;
+    	ArrayList<SocketCommunicationsManager> allMs=((ApplicationMassageNearby)getApplication()).mClients;
     	if(allMs!=null && allMs.size()>0) {
-    		ItemUser ic= ((ApplicationMasseur)getApplication()).getItemClientWhoseUserIdEquals(number).getmItemUserClient();
+    		ItemUser ic= ((ApplicationMassageNearby)getApplication()).getItemClientWhoseUserIdEquals(number).getmItemUserClient();
     		if(ic!=null) {
     			mTitle = ic.getmName();
     		} else {
@@ -500,8 +500,8 @@ public class MasseurMainActivity extends FragmentActivity
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						((ApplicationMasseur)getApplication()).removeUserFromList(itemUser);
-						if(((ApplicationMasseur)getApplication()).mClients.size()==0) {
+						((ApplicationMassageNearby)getApplication()).removeUserFromList(itemUser);
+						if(((ApplicationMassageNearby)getApplication()).mClients.size()==0) {
 							finish();
 						} else {
 							android.support.v4.app.Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
@@ -528,10 +528,10 @@ public class MasseurMainActivity extends FragmentActivity
 	@Override
 	// Note: this does not occur on the UI thread
 	public void weveGotANewChat(SocketCommunicationsManager ctr) {
-		if(((ApplicationMasseur)getApplication()).getItemClientWhoseUserIdEquals(ctr.getmItemUserClient().getmUserId())!=null) {
-			((ApplicationMasseur)getApplication()).updateListWithNewSCM(ctr);
+		if(((ApplicationMassageNearby)getApplication()).getItemClientWhoseUserIdEquals(ctr.getmItemUserClient().getmUserId())!=null) {
+			((ApplicationMassageNearby)getApplication()).updateListWithNewSCM(ctr);
 		} else {
-			((ApplicationMasseur)getApplication()).mClients.add(ctr);
+			((ApplicationMassageNearby)getApplication()).mClients.add(ctr);
 		}
 		mHandler.post(new Runnable() {
 

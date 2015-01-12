@@ -12,8 +12,8 @@
 		    application to stop. Please help us fix this by sending us error data,
 		    all you have to do is click OK.  The data will be formatted into an email</string>
     
-    
-    
+    <string name="title_activity_activity_chat">ActivityChat</string>
+    <string name="title_masseur_detail">Masseur Detail</string>
     <string name="app_name">Masseur</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>

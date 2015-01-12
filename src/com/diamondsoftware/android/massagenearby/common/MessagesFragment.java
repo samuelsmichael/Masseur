@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import com.diamondsoftware.android.masseur.ApplicationMasseur;
+import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.DataProvider;
 import com.diamondsoftware.android.masseur.R;
 

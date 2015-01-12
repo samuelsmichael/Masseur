@@ -28,7 +28,7 @@ import android.app.Application;
         mailTo = "diamondsoftware222@gmail.com"	
 )
 
-public class ApplicationMasseur extends Application {
+public class ApplicationMassageNearby extends Application {
 	
 	/* (non-Javadoc)
 	 * @see android.app.Application#onCreate()
