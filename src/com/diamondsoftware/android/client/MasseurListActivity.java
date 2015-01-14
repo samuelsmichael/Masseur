@@ -91,6 +91,7 @@ public class MasseurListActivity extends Activity
     	   }
        } else {
     	   mSettingsManager.setChatId(String.valueOf(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmUserId()));
+    	   getActionBar().setTitle(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmName());
        }
 
         if (findViewById(R.id.masseur_detail_container) != null) {
@@ -236,6 +237,8 @@ public class MasseurListActivity extends Activity
 				ApplicationMassageNearby.mSingletonApp.mItemClientMe=(ItemClient)data.get(0);
 	        	mSettingsManager.setChatId(String.valueOf(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmUserId()));
 				mSettingsManager.setCurrentClientUserName(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmName());
+  	    	   getActionBar().setTitle(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmName());
+
 			} else {
 				if(key.equals("all")) {
 					mAllMasseurs=data;

@@ -87,11 +87,20 @@ com.diamondsoftware.android.common.DataGetter {
 		ViewGroup viewGroup= (ViewGroup) inflater.inflate(
 				R.layout.fragment_login, container, false);
 		btnCreateClientAccount=(Button)viewGroup.findViewById(R.id.btnLoginCreateANewClientAccount);
+		btnCreateClientAccount.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur=false;
+				mCallbacks.onNavigationDrawerItemSelected(11);
+			}
+		});
 		btnCreateMasseurAccount=(Button)viewGroup.findViewById(R.id.btnLoginCreateANewMasseurAccount);
 		btnCreateMasseurAccount.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur=false;
 				mCallbacks.onNavigationDrawerItemSelected(11);
 				
 			}

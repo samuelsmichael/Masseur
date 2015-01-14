@@ -42,7 +42,13 @@
             </intent-filter>
             
         </activity>
-
+        <activity
+            android:name="com.diamondsoftware.android.client.ActivityChat"
+            android:label="@string/title_activity_activity_chat" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.diamondsoftware.android.client.MasseurDetailActivity" />
+        </activity>
         <service
             android:name=".MasseurSocketService"
             android:enabled="true"
@@ -73,13 +79,7 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Dialog" />
-        <activity
-            android:name="com.diamondsoftware.android.client..ActivityChat"
-            android:label="@string/title_activity_activity_chat" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.diamondsoftware.android.client.MasseurDetailActivity" />
-        </activity>
+
   
         
     </application>

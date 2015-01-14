@@ -50,7 +50,7 @@ public class SocketCommunicationsManager  {
 		stopMyTimer();
 		try {
 			mSocket.close();
-		} catch (IOException e) {}
+		} catch (Exception e) {}
 		mSocket=null;
 		mChatPageManager.lostCommunicationsWith(this);
 	}

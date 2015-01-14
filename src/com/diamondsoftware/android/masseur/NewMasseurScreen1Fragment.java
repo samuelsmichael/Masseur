@@ -10,8 +10,10 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 
+import com.diamondsoftware.android.client.MasseurListActivity;
 import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
+import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.MasseurMainActivity;
 import com.diamondsoftware.android.masseur.MasseurSocketService;
@@ -63,25 +65,44 @@ com.diamondsoftware.android.common.DataGetter {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated==null) {
-			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated=new ItemMasseur();
-			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setCertificationNumber((int)(Math.random()*100000));
-			GregorianCalendar cal = new GregorianCalendar(); 
-			cal.add(Calendar.MONTH, 3);
-			MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setSubscriptionEndDate(cal);
+		if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+			if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated==null) {
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated=new ItemMasseur();
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setCertificationNumber((int)(Math.random()*100000));
+				GregorianCalendar cal = new GregorianCalendar(); 
+				cal.add(Calendar.MONTH, 3);
+				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setSubscriptionEndDate(cal);
+			}
+		} else {
+			if(MasseurMainActivity.mSingleton.mItemClient_beingCreated==null) {
+				MasseurMainActivity.mSingleton.mItemClient_beingCreated=new ItemClient();
+			}
+			
 		}
 
 		if(((MasseurMainActivity)getActivity()).IS_FORCE_NEWMASSEUR_VALUES) {
-			if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName())) {
-				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmName("zz"+new Date().getTime());
+			if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+				if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName())) {
+					MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmName("zz"+new Date().getTime());
+				}
+				if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail())) {
+					MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setEmail("samuelsmichael222@gmail.com");
+				}
+				if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword())) {
+					MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setPassword("p");
+				}
+			} else {
+				if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getmName())) {
+					MasseurMainActivity.mSingleton.mItemClient_beingCreated.setmName("cc"+new Date().getTime());
+				}
+				if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getEmail())) {
+					MasseurMainActivity.mSingleton.mItemClient_beingCreated.setEmail("samuelsmichael222@gmail.com");
+				}
+				if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getPassword())) {
+					MasseurMainActivity.mSingleton.mItemClient_beingCreated.setPassword("p");
+				}
+				
 			}
-			if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail())) {
-				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setEmail("samuelsmichael222@gmail.com");
-			}
-			if(TextUtils.isEmpty(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword())) {
-				MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setPassword("p");
-			}
-		
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -101,9 +122,21 @@ com.diamondsoftware.android.common.DataGetter {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		ViewGroup viewGroup= (ViewGroup) inflater.inflate(
 				R.layout.fragment_newmasseur_screen1, container, false);
+		if(!ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+			TextView heading1=(TextView)viewGroup.findViewById(R.id.tvNewMasseurHeading);
+			heading1.setText("New Client");
+			TextView headding2=(TextView)viewGroup.findViewById(R.id.tvNewMasseurSubHeading);
+			headding2.setText("");
+		}
 		etUserName=(EditText)viewGroup.findViewById(R.id.etNewMasseurUserName);
-		if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName()!=null) {
-			etUserName.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName());
+		if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+			if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName()!=null) {
+				etUserName.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getmName());
+			}
+		} else {
+			if(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getmName()!=null) {
+				etUserName.setText(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getmName());
+			}
 		}
 		etUserName.setOnEditorActionListener(new EditText.OnEditorActionListener(){  
 
@@ -119,8 +152,14 @@ com.diamondsoftware.android.common.DataGetter {
 
 		}); 
 		etPassword=(EditText)viewGroup.findViewById(R.id.etNewMasseurPassword);
-		if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword()!=null) {
-			etPassword.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword());
+		if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+			if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword()!=null) {
+				etPassword.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword());
+			}
+		} else {
+			if(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getPassword()!=null) {
+				etPassword.setText(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getPassword());
+			}
 		}
 		etPassword.setOnEditorActionListener(new EditText.OnEditorActionListener(){  
 
@@ -136,8 +175,14 @@ com.diamondsoftware.android.common.DataGetter {
 
 		}); 
 		etConfirmPassword=(EditText)viewGroup.findViewById(R.id.etNewMasseurConfirmPassword);
-		if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword()!=null) {
-			etConfirmPassword.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword());
+		if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+			if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword()!=null) {
+				etConfirmPassword.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getPassword());
+			}
+		} else {
+			if(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getPassword()!=null) {
+				etConfirmPassword.setText(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getPassword());
+			}
 		}
 		etConfirmPassword.setOnEditorActionListener(new EditText.OnEditorActionListener(){  
 
@@ -153,8 +198,14 @@ com.diamondsoftware.android.common.DataGetter {
 
 		}); 
 		etEmail=(EditText)viewGroup.findViewById(R.id.etNewMasseurEmail);
-		if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail()!=null) {
-			etEmail.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail());
+		if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+			if(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail()!=null) {
+				etEmail.setText(MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.getEmail());
+			}
+		} else {
+			if(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getEmail()!=null) {
+				etEmail.setText(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getEmail());
+			}			
 		}
 		etEmail.setOnEditorActionListener(new EditText.OnEditorActionListener(){  
 
@@ -230,13 +281,31 @@ com.diamondsoftware.android.common.DataGetter {
 		String url=null;
 		if(key.equals("newmasseur")) {
 			url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&IsDoingLogin=true";
+		} else {
+			if(key.equals("newclient")) {
+				url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Client.aspx"+"?Action=set"+
+						"&Name="+URLEncoder.encode(name)+
+						"&IsDoingLogin=true"+
+						"&URL="+URLEncoder.encode(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getmURL())+
+						"&Email="+URLEncoder.encode(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getEmail())+
+						"&Password="+URLEncoder.encode(MasseurMainActivity.mSingleton.mItemClient_beingCreated.getPassword())
+						;
+			}
 		}
 		ArrayList<Object> data=null;
+		
 		try {
-			data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
-				new com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur(name), 
-				url
-				).parse();
+			if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+				data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
+					new com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur(name), 
+					url
+					).parse();
+			} else {
+				data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
+						new com.diamondsoftware.android.massagenearby.model.ParsesJsonClient(name), 
+						url
+						).parse();
+			}
 		} catch (Exception e) {}
 		return data;
 	}
@@ -267,12 +336,20 @@ com.diamondsoftware.android.common.DataGetter {
 							mProgressDialog.dismiss();
 							mProgressDialog=null;
 						}
-						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmName(etUserName.getText().toString());
-						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setPassword(etPassword.getText().toString());
-						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setEmail(etEmail.getText().toString());
-						MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmURL(getLocalIpAddress());
-
-		                NewMasseurScreen1Fragment.this.mCallbacks.onNavigationDrawerItemSelected(2); // go to next screen
+						if(ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur) {
+							MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmName(etUserName.getText().toString());
+							MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setPassword(etPassword.getText().toString());
+							MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setEmail(etEmail.getText().toString());
+							MasseurMainActivity.mSingleton.mItemMasseur_beingCreated.setmURL(getLocalIpAddress());
+	
+			                NewMasseurScreen1Fragment.this.mCallbacks.onNavigationDrawerItemSelected(2); // go to next screen
+						} else {
+							MasseurMainActivity.mSingleton.mItemClient_beingCreated.setmName(etUserName.getText().toString());
+							MasseurMainActivity.mSingleton.mItemClient_beingCreated.setPassword(etPassword.getText().toString());
+							MasseurMainActivity.mSingleton.mItemClient_beingCreated.setEmail(etEmail.getText().toString());
+							MasseurMainActivity.mSingleton.mItemClient_beingCreated.setmURL(getLocalIpAddress());
+					       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("newclient~"+ etUserName.getText().toString(), NewMasseurScreen1Fragment.this, NewMasseurScreen1Fragment.this);
+						}
 					}
                 	
                 });
@@ -293,6 +370,14 @@ com.diamondsoftware.android.common.DataGetter {
 	                	
 	                });
 			}
+		} else {
+			if(data!=null && data.size()>0) {
+				ApplicationMassageNearby.mSingletonApp.mItemClientMe=MasseurMainActivity.mSingleton.mItemClient_beingCreated;
+				MasseurMainActivity.mSingleton.mItemClient_beingCreated=null;
+				Intent intent = new Intent(getActivity(),MasseurListActivity.class);
+				getActivity().startActivity(intent);
+				getActivity().finish();
+			}			
 		}
 	}
 

@@ -62,6 +62,7 @@ public class MasseurMainActivity extends FragmentActivity
 	private SettingsManager mSettingsManager;
 	public ItemMasseur mItemMasseur_me;
 	public ItemMasseur mItemMasseur_beingCreated=null;
+	public ItemClient mItemClient_beingCreated=null;
 	private String profileClientId;
 	private Handler mHandler;
 	public static final String ACTION_STARTING_FROM_BOOTUP_MASSEUR="StartingFromBootupMasseur";

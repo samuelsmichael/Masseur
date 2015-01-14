@@ -7,8 +7,10 @@ import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassag
 import com.diamondsoftware.android.massagenearby.common.MessagesFragment;
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.common.TellMeWhenYouveGotNewMesseurs;
+import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
 import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
+import com.diamondsoftware.android.masseur.DataProvider;
 import com.diamondsoftware.android.masseur.R;
 
 import android.app.Activity;
@@ -34,6 +36,7 @@ public class ActivityChat extends FragmentActivity implements
 	SocketCommunicationsManager mSCM;
 	Button mBtnSend;
 	EditText mEditText;
+	ItemMasseur mItemMasseur;
 
 	@Override
 	public String getProfileChatId() {
@@ -65,17 +68,20 @@ public class ActivityChat extends FragmentActivity implements
 				ContentValues values=new ContentValues(2);
 				values.put(DataProvider.COL_MSG, msg);
 				values.put(DataProvider.COL_TO, String.valueOf(mSCM.getmItemUserClient().getmUserId()));
-				getContentResolver().insert(com.diamondsoftware.android.client.DataProvider.CONTENT_URI_MESSAGES, values);
+				getContentResolver().insert(DataProvider.CONTENT_URI_MESSAGES, values);
 				
 				mEditText.setText(null);
 				mBtnSend.setEnabled(true);
 			}
 		});
 		mProfileChatId=this.getIntent().getExtras().getString(GlobalStaticValuesMassageNearby.KEY_CHAT_ID);
+		mItemMasseur=MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId));
+		getActionBar().setTitle(mItemMasseur.getmName());
+
 		mSCM=new SocketCommunicationsManager(
 				null, 
 				this, 
-				MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId)), 
+				mItemMasseur, 
 				ApplicationMassageNearby.mSingletonApp.mItemClientMe);
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.beginTransaction()

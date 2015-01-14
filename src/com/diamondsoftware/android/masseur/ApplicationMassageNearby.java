@@ -50,6 +50,7 @@ public class ApplicationMassageNearby extends Application {
     public static final Random random = new Random();
 
 	public ItemClient mItemClientMe;
+	public boolean isSettingUpMasseur;
 
 	public static ApplicationMassageNearby mSingletonApp=null;
 	public ArrayList<SocketCommunicationsManager> mClients=new ArrayList<SocketCommunicationsManager>();
