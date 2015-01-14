@@ -57,32 +57,7 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 	String PrivatePicture2URL;
 	String PrivatePicture3URL;
 	String PrivatePicture4URL;
-	String Password;
-	String Email;
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return Email;
-	}
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		Email = email;
-	}
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return Password;
-	}
-	/**
-	 * @param password the password to set
-	 */
-	public void setPassword(String password) {
-		Password = password;
-	}
+
 	/**
 	 * @return the isCertified
 	 */

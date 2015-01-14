@@ -37,6 +37,7 @@ public class ApplicationMassageNearby extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		mSingletonApp=this;
 
         // The following line triggers the initialization of ACRA
        // ACRA.init(this);
@@ -48,7 +49,9 @@ public class ApplicationMassageNearby extends Application {
     public static final int BACKOFF_MILLI_SECONDS = 2000;
     public static final Random random = new Random();
 
-	
+	public ItemClient mItemClientMe;
+
+	public static ApplicationMassageNearby mSingletonApp=null;
 	public ArrayList<SocketCommunicationsManager> mClients=new ArrayList<SocketCommunicationsManager>();
 	public Hashtable<Integer,Socket> mPendingSockets=new Hashtable<Integer,Socket>();
 	String[] getAllClientsAsStringArray() {

@@ -3,8 +3,11 @@ package com.diamondsoftware.android.massagenearby.common;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import com.diamondsoftware.android.client.MasseurListActivity;
 import com.diamondsoftware.android.common.Utils;
+import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
+import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.MasseurMainActivity;
 import com.diamondsoftware.android.masseur.MasseurSocketService;
 import com.diamondsoftware.android.masseur.R;
@@ -157,15 +160,21 @@ com.diamondsoftware.android.common.DataGetter {
 			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
 			imm.showSoftInput(etUserName, InputMethodManager.SHOW_IMPLICIT);
 			imm.showSoftInput(etPassword, InputMethodManager.SHOW_IMPLICIT);
-			if (MasseurMainActivity.mSingleton != null
-					&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
+			if (mSettingsManager.getMasseurName() != null) {
 		//		btnCreateClientAccount.setEnabled(false);
 			//	btnCreateMasseurAccount.setEnabled(false);
-				etUserName.setText(MasseurMainActivity.mSingleton.mItemMasseur_me.getmName());
+				etUserName.setText(mSettingsManager.getMasseurName());
 				etPassword.requestFocus();
 			} else {
-				etPassword.requestFocus();
-				etUserName.requestFocus();
+				if(mSettingsManager.getCurrentClientUserName()!=null) {
+					//		btnCreateClientAccount.setEnabled(false);
+					//	btnCreateMasseurAccount.setEnabled(false);
+					etUserName.setText(mSettingsManager.getCurrentClientUserName());
+					etPassword.requestFocus();					 
+				} else {
+					etPassword.requestFocus();
+					etUserName.requestFocus();
+				}
 			}
 			if(mSettingsManager.getIsRememberMe()) {
 				cbRememberMe.setChecked(true);
@@ -224,7 +233,8 @@ com.diamondsoftware.android.common.DataGetter {
 		// 10.0.0.253 when wifi on my computer
 		String url=null;
 		if(key.equals("login")) {
-			url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&IsDoingLogin=true";
+			String ipAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress();
+			url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&IsDoingLogin=true&IPAddress="+URLEncoder.encode(ipAddress);
 		}
 		ArrayList<Object> data=null;
 		try {
@@ -232,7 +242,17 @@ com.diamondsoftware.android.common.DataGetter {
 				new com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur(name), 
 				url
 				).parse();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			try {
+				data = new com.diamondsoftware.android.common.JsonReaderFromRemotelyAcquiredJson(
+					new com.diamondsoftware.android.massagenearby.model.ParsesJsonClient(name), 
+					url
+					).parse();
+			} catch (Exception e2) {
+				
+			}
+			
+		}
 		return data;
 	}
 
@@ -244,22 +264,49 @@ com.diamondsoftware.android.common.DataGetter {
 		String name=array[1];
 		boolean wereGood=false;
 		ItemMasseur masseur=null;
+		ItemClient client=null;
+		boolean isMasseur=false;
 		if(key.equals("login")) {
+			mSettingsManager.setCurrentClientUserName(null);
+			mSettingsManager.setMasseurName(null);
+			if (MasseurMainActivity.mSingleton != null) {
+				MasseurMainActivity.mSingleton.mItemMasseur_me=null;
+			}
+			if(ApplicationMassageNearby.mSingletonApp!=null) {
+				ApplicationMassageNearby.mSingletonApp.mItemClientMe=null;
+			}			
 
 			if(data!=null && data.size()>0) {
-				masseur=(ItemMasseur)data.get(0);
-				if(masseur.getPassword().equals(this.etPassword.getText().toString())) {
-					wereGood=true;
+				try {
+					masseur=(ItemMasseur)data.get(0);
+					if(masseur.getPassword().equals(this.etPassword.getText().toString())) {
+						wereGood=true;
+						isMasseur=true;
+					}
+				} catch (Exception e) {
+					client=(ItemClient)data.get(0);
+					if(client.getPassword().equals(this.etPassword.getText().toString())) {
+						wereGood=true;
+						isMasseur=false;
+					}
 				}
 			}
 			if(wereGood) {
-				mSettingsManager.setMasseurName(masseur.getmName());	
-				if (MasseurMainActivity.mSingleton != null) {
-					MasseurMainActivity.mSingleton.mItemMasseur_me=masseur;
+				if(isMasseur) {
+					mSettingsManager.setMasseurName(masseur.getmName());	
+					if (MasseurMainActivity.mSingleton != null) {
+						MasseurMainActivity.mSingleton.mItemMasseur_me=masseur;
+					}
+	                Intent intent=new Intent(getActivity(),MasseurSocketService.class);
+	                intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
+	                getActivity().startService(intent);
+				} else {
+					mSettingsManager.setCurrentClientUserName(client.getmName());
+					if(ApplicationMassageNearby.mSingletonApp!=null) {
+						ApplicationMassageNearby.mSingletonApp.mItemClientMe=client;
+					}
 				}
-                Intent intent=new Intent(getActivity(),MasseurSocketService.class);
-                intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
-                getActivity().startService(intent);
+				final boolean finalIsMasseur=isMasseur;
                 getActivity().runOnUiThread(new Runnable() {
 
 					@Override
@@ -277,7 +324,13 @@ com.diamondsoftware.android.common.DataGetter {
 	        	        	//.commit();
 	        	        	
 						//LoginFragment.this.getActivity().onBackPressed();
-		                LoginFragment.this.mCallbacks.onNavigationDrawerItemSelected(0);
+						if(finalIsMasseur) {
+							LoginFragment.this.mCallbacks.onNavigationDrawerItemSelected(0);
+						} else {
+		    				Intent intent = new Intent(getActivity(),MasseurListActivity.class);
+		    				getActivity().startActivity(intent);
+		    				getActivity().finish();
+						}
 					}
                 	
                 });

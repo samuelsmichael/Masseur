@@ -8,6 +8,7 @@ import com.diamondsoftware.android.massagenearby.common.MessagesFragment;
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.common.TellMeWhenYouveGotNewMesseurs;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
+import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.R;
 
 import android.app.Activity;
@@ -75,7 +76,7 @@ public class ActivityChat extends FragmentActivity implements
 				null, 
 				this, 
 				MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId)), 
-				MasseurListActivity.mSingleton.mItemClientMe);
+				ApplicationMassageNearby.mSingletonApp.mItemClientMe);
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.beginTransaction()
 				.add(R.id.container, MessagesFragment.newInstance(mSCM)).commit();
@@ -120,7 +121,7 @@ public class ActivityChat extends FragmentActivity implements
 				null, 
 				this, 
 				MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId)), 
-				MasseurListActivity.mSingleton.mItemClientMe);		
+				ApplicationMassageNearby.mSingletonApp.mItemClientMe);		
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		MessagesFragment theOldOne = (MessagesFragment)fragmentManager.findFragmentById(R.id.container);
 		fragmentManager.beginTransaction()

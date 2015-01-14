@@ -16,6 +16,7 @@ import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.massagenearby.model.ParsesJsonClient;
 import com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur;
+import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.R;
 
 
@@ -68,7 +69,6 @@ public class MasseurListActivity extends Activity
 	ProgressDialog mProgressDialog;
 	ArrayList<Object> mAllMasseurs=new ArrayList<Object>();
 	Handler mHandler;
-	ItemClient mItemClientMe;
 	private TellMeWhenYouveGotNewMesseurs mTellNewMasseurs;
 
 	public void updateMasseursList(TellMeWhenYouveGotNewMesseurs needsToKnowAboutNewMasseurs) {
@@ -83,7 +83,15 @@ public class MasseurListActivity extends Activity
         mSettingsManager=new SettingsManager(this);
         mHandler=new Handler();
         mSingleton=this;
-  	   new AcquireDataRemotelyAsynchronously("all~", this, this);
+   	   new AcquireDataRemotelyAsynchronously("all~", this, this);
+       if(ApplicationMassageNearby.mSingletonApp.mItemClientMe==null) {
+    	   if(mSettingsManager.getCurrentClientUserName()!=null) {
+        	   new AcquireDataRemotelyAsynchronously("moi~"+ mSettingsManager.getCurrentClientUserName(), this, this);
+   			   mProgressDialog = ProgressDialog.show(this,"Working ...","Logging in "+mSettingsManager.getCurrentClientUserName().trim(),true,false,null);
+    	   }
+       } else {
+    	   mSettingsManager.setChatId(String.valueOf(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmUserId()));
+       }
 
         if (findViewById(R.id.masseur_detail_container) != null) {
             // The detail container view will be present only in the
@@ -99,7 +107,7 @@ public class MasseurListActivity extends Activity
                     .setActivateOnItemClick(true);
         }
 
-
+/*
 	    android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 	    android.app.Fragment prev = getFragmentManager().findFragmentByTag("login");
 	    if (prev != null) {
@@ -107,6 +115,7 @@ public class MasseurListActivity extends Activity
 	    }
 	    Login selectLogin=new Login();
 		selectLogin.show(ft,"login");
+		*/
     }
 
     /**
@@ -148,7 +157,7 @@ public class MasseurListActivity extends Activity
 		        LayoutInflater inflater = getActivity().getLayoutInflater();
 		        mView = inflater.inflate(R.layout.login, null);
 		        mEditText=(EditText)mView.findViewById(R.id.edittextloginid);
-		        mEditText.setText(mSettingsManager.getCurrentUserName());
+		        mEditText.setText(mSettingsManager.getCurrentClientUserName());
 		        mEditText.selectAll();
 		        builder.setView(mView);
 	
@@ -224,9 +233,9 @@ public class MasseurListActivity extends Activity
 		}
 		if(data!=null && data.size()>0) {
 			if(key.equals("moi")) {
-				mItemClientMe=(ItemClient)data.get(0);
-	        	mSettingsManager.setChatId(String.valueOf(mItemClientMe.getmUserId()));
-				mSettingsManager.setCurrentUserName(mItemClientMe.getmName());
+				ApplicationMassageNearby.mSingletonApp.mItemClientMe=(ItemClient)data.get(0);
+	        	mSettingsManager.setChatId(String.valueOf(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmUserId()));
+				mSettingsManager.setCurrentClientUserName(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmName());
 			} else {
 				if(key.equals("all")) {
 					mAllMasseurs=data;

@@ -1,8 +1,5 @@
 package com.diamondsoftware.android.massagenearby.common;
 
-import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
-import com.diamondsoftware.android.masseur.MasseurMainActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -63,10 +60,10 @@ public class SettingsManager {
 	public void setChatId(String chatId) {
 		setValue("chat_id",chatId);
 	}
-    public String getCurrentUserName() {
+    public String getCurrentClientUserName() {
     	return getValue(GlobalStaticValuesMassageNearby.KEY_CURRENT_USER_NAME, null);
     }
-    public void setCurrentUserName(String name) {
+    public void setCurrentClientUserName(String name) {
     	setValue(GlobalStaticValuesMassageNearby.KEY_CURRENT_USER_NAME, name);
     }
 }

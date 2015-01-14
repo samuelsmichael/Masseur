@@ -1,5 +1,6 @@
 package com.diamondsoftware.android.masseur;
 
+import com.diamondsoftware.android.client.MasseurListActivity;
 import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.LoginFragment;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
@@ -80,6 +81,13 @@ public class SplashFragment extends Fragment {
 //    					            		mCallbacks.onNavigationDrawerItemSelected(10); // login
     					            	}
     					            } else {
+    					            	if(mSettingsManager.getCurrentClientUserName()!=null) {
+        					            	if(mSettingsManager.getIsRememberMe()) {
+	    					    				Intent intent = new Intent(getActivity(),MasseurListActivity.class);
+	    					    				getActivity().startActivity(intent);
+	    					    				getActivity().finish();
+        					            	}
+    					            	}
     					            	mCallbacks.onNavigationDrawerItemSelected(10); // login 
     					            }
     							}
