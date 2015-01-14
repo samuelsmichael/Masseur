@@ -16,6 +16,7 @@ import com.diamondsoftware.android.common.HttpFileUploadParameters;
 import com.diamondsoftware.android.common.ManagesFileUploads;
 import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.common.WaitingForDataAcquiredAsynchronously;
+import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur;
@@ -289,6 +290,9 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 						|| MasseurMainActivity.mSingleton.mCertifiedImage!=null) {
 					new NewMasseurPhotoUploadManager(getActivity(),mSettingsManager);
 				} else {
+	                Intent intent=new Intent(getActivity(),MasseurSocketService.class);
+	                intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
+	                getActivity().startService(intent);
 					mSettingsManager.setMasseurName(mItemMasseur.getmName());
 					this.mCallbacks.onNavigationDrawerItemSelected(0);
 				}

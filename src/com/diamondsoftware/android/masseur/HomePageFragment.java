@@ -238,6 +238,7 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 		displayMasseurImage(false);
 		GregorianCalendar bdate;
 		ItemMasseur im = MasseurMainActivity.mSingleton.mItemMasseur_me;
+		getActivity().getActionBar().setTitle(im.getmName());
 		tvHeight.setText(im.getHeight());
 		if(!Utils.isNullDate(im.getSubscriptionEndDate())) {
 			tvSubscriptionExpireDate.setText(Utils.mLocaleDateFormat.format(im.getSubscriptionEndDate().getTime()));

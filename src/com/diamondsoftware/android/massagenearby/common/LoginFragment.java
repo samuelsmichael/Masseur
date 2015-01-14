@@ -100,7 +100,7 @@ com.diamondsoftware.android.common.DataGetter {
 			
 			@Override
 			public void onClick(View v) {
-				ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur=false;
+				ApplicationMassageNearby.mSingletonApp.isSettingUpMasseur=true;
 				mCallbacks.onNavigationDrawerItemSelected(11);
 				
 			}

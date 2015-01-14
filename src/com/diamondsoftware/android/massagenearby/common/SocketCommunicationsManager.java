@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -43,9 +46,53 @@ public class SocketCommunicationsManager  {
         mItemUserClient=itemUserClient;
         mPendingACKs=0;
         mCountdownAwaitingACKs=0;
+		if(mSocket==null) {
+        	Semaphore stick2=new Semaphore(0);
+        	com.diamondsoftware.android.massagenearby.model.ItemMasseur itemMasseur=(com.diamondsoftware.android.massagenearby.model.ItemMasseur)itemUserClient;
+        	ClientThread ct=new ClientThread(itemMasseur,stick2);
+            Thread cThread = new Thread(ct);
+            cThread.start();
+            try {
+            	stick2.acquire();
+            } catch (InterruptedException e) {
+            	return;
+            }
+			mSocket=itemMasseur.getmSocket();
+		}        
+
         new Thread(new ClientThreadReceive()).start();
 	}
-	
+	   public class ClientThread implements Runnable {
+	    	String mIpAddress;
+	    	com.diamondsoftware.android.massagenearby.model.ItemMasseur mMasseur;
+	    	Semaphore mStick2;
+	    	String errMessage=null;
+	    	public ClientThread(com.diamondsoftware.android.massagenearby.model.ItemMasseur masseur,Semaphore stick2) {
+	    		mIpAddress=masseur.getmURL();
+	    		mMasseur=masseur;
+	    		mStick2=stick2;
+	    	}
+	  
+	        public void run() {
+	            try {
+	                InetAddress serverAddr = InetAddress.getByName(mIpAddress);
+	                Log.d("ClientActivity", "C: Connecting...");
+	                Socket soket= new Socket(serverAddr, com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.SERVERPORT);
+	                mMasseur.setmSocket(soket);
+	                mMasseur.setmConnected(true);
+	            } catch (UnknownHostException e) {
+	                Log.e("ClientActivity", "C: Error", e);
+	                mMasseur.setmConnected(false);         
+	                errMessage=e.getMessage();
+	            } catch (IOException e) {
+	                Log.e("ClientActivity", "C: Error", e);
+	                mMasseur.setmConnected(false);                    
+	                errMessage=e.getMessage();
+	            }
+	           	mStick2.release();               
+	        }
+	    }
+
 	public void close() {
 		stopMyTimer();
 		try {

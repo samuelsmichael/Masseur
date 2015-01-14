@@ -51,13 +51,13 @@ public class RemoteDataReader {
 			conn.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
 			conn.setRequestProperty("Accept","*/*");
 			conn.setUseCaches(false);
-			conn.setConnectTimeout(2000);
-			conn.setReadTimeout(3000);
+			conn.setConnectTimeout(8000);
+			conn.setReadTimeout(10000);
 			long start = System.nanoTime();
 			conn.connect();
 			long end=System.nanoTime();
 			long diff2=end-start;
-			if (diff2 > 2508117678l) {
+			if (diff2 > 4508117678l) {
 				try {
 					conn.disconnect();
 				}

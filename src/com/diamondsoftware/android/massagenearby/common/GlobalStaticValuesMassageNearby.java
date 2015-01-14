@@ -20,6 +20,7 @@ public class GlobalStaticValuesMassageNearby {
 	public static final String ACTION_CLIENT_IS_NOW_AVAILABLE = "actionisnowavailable";
 	
 	public static final String KEY_CHAT_ID="KEY_chat_id";
+	public static final int SERVERPORT = 8080;
 
 	
 	public static ArrayList<Integer> PHOTO_RESULT_IDS = new ArrayList<Integer>();
