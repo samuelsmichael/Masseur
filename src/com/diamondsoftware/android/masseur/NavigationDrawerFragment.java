@@ -275,7 +275,9 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+            MasseurMainActivity.mSingleton.mItemMasseur_me=null;
+            ApplicationMassageNearby.mSingletonApp.mItemClientMe=null;
+            MasseurMainActivity.mSingleton.onNavigationDrawerItemSelected(10);
             return true;
         }
 

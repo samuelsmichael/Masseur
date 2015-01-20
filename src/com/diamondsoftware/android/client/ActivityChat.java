@@ -1,6 +1,14 @@
 package com.diamondsoftware.android.client;
 
-import java.net.Socket;
+import android.content.ContentValues;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.diamondsoftware.android.massagenearby.common.ChatPageManager;
 import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
@@ -8,26 +16,9 @@ import com.diamondsoftware.android.massagenearby.common.MessagesFragment;
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.common.TellMeWhenYouveGotNewMesseurs;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
-import com.diamondsoftware.android.massagenearby.model.ItemUser;
 import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.DataProvider;
 import com.diamondsoftware.android.masseur.R;
-
-import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.content.ContentValues;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.os.Build;
 
 public class ActivityChat extends FragmentActivity implements
 		MessagesFragment.OnFragmentInteractionListener,
@@ -82,7 +73,7 @@ public class ActivityChat extends FragmentActivity implements
 				null, 
 				this, 
 				mItemMasseur, 
-				ApplicationMassageNearby.mSingletonApp.mItemClientMe);
+				ApplicationMassageNearby.mSingletonApp.mItemClientMe,this);
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.beginTransaction()
 				.add(R.id.container, MessagesFragment.newInstance(mSCM)).commit();
@@ -127,7 +118,7 @@ public class ActivityChat extends FragmentActivity implements
 				null, 
 				this, 
 				MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId)), 
-				ApplicationMassageNearby.mSingletonApp.mItemClientMe);		
+				ApplicationMassageNearby.mSingletonApp.mItemClientMe,this);		
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		MessagesFragment theOldOne = (MessagesFragment)fragmentManager.findFragmentById(R.id.container);
 		fragmentManager.beginTransaction()

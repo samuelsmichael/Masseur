@@ -23,7 +23,7 @@ public class SplashFragment extends Fragment {
 	private CountDownTimer mCountdownTimer;
 	private Handler mHandler;
     private NavigationDrawerCallbacks mCallbacks;
-    private static int LENGTH_OF_SPLASHPAGE_MILLISECONDS=1000;
+    private static int LENGTH_OF_SPLASHPAGE_MILLISECONDS=2400;
 
 	public static SplashFragment newInstance(SettingsManager setMan) {
 		SplashFragment frag=new SplashFragment();

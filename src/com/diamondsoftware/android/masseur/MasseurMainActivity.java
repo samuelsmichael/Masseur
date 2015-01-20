@@ -71,7 +71,7 @@ public class MasseurMainActivity extends FragmentActivity
 	public static boolean IS_ALREADY_IN_LOGIN=false;
     Uri mSelectedImageNewMasseurPublicPhoto;
     Uri mCertifiedImage;
-    public static final boolean IS_FORCE_NEWMASSEUR_VALUES=true;
+    public static final boolean IS_FORCE_NEWMASSEUR_VALUES=false;
 
 
     public static final String TAG="MasseurMain";
@@ -194,7 +194,7 @@ public class MasseurMainActivity extends FragmentActivity
 		mItemMasseur_me.setmName(name);
     	mSettingsManager.setChatId(String.valueOf(userId));
     	ItemClient ic=new ItemClient();
-    	SocketCommunicationsManager ctr=new SocketCommunicationsManager(socket, this, ic, mItemMasseur_me);
+    	SocketCommunicationsManager ctr=new SocketCommunicationsManager(socket, this, ic, mItemMasseur_me,this);
 
     }
     

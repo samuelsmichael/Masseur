@@ -44,6 +44,7 @@ public class ParsesJsonMasseur extends ParsesJson {
 			item.setPrivatePicture3URL(jsonObject.getString("PrivatePicture3URL"));
 			item.setPrivatePicture4URL(jsonObject.getString("PrivatePicture4URL"));
 			item.setPassword(jsonObject.getString("Password"));
+			item.setPort(jsonObject.getInt("Port"));
 			items.add(item);
 		}
 		return items;

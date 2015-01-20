@@ -290,9 +290,7 @@ public class CertifyFragment extends Fragment_Abstract_NewMasseur implements Man
 						|| MasseurMainActivity.mSingleton.mCertifiedImage!=null) {
 					new NewMasseurPhotoUploadManager(getActivity(),mSettingsManager);
 				} else {
-	                Intent intent=new Intent(getActivity(),MasseurSocketService.class);
-	                intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
-	                getActivity().startService(intent);
+
 					mSettingsManager.setMasseurName(mItemMasseur.getmName());
 					this.mCallbacks.onNavigationDrawerItemSelected(0);
 				}

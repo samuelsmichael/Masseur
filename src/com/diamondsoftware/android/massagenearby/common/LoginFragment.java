@@ -344,6 +344,7 @@ com.diamondsoftware.android.common.DataGetter {
                 	
                 });
 			} else {
+				final ArrayList<Object> dataFinal=data;
 	               getActivity().runOnUiThread(new Runnable() {
 
 						@Override
@@ -355,7 +356,12 @@ com.diamondsoftware.android.common.DataGetter {
 							LoginFragment.this.btnSubmit.setEnabled(true);
 							LoginFragment.this.etUserName.requestFocus();
 							LoginFragment.this.etUserName.selectAll();
-							new Utils.Complainer("Invalid Credentials", "Please try again", getActivity()).show(getActivity().getFragmentManager(), "failedlogin");
+							if(dataFinal!=null) {
+								new Utils.Complainer("Invalid Credentials", "Please try again", getActivity()).show(getActivity().getFragmentManager(), "failedlogin");
+							} else {
+								new Utils.Complainer("Failure connecting to the data server.", "Please try again", getActivity()).show(getActivity().getFragmentManager(), "failedlogin");
+								
+							}
 						}
 	                	
 	                });

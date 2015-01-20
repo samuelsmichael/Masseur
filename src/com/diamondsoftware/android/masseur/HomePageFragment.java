@@ -15,6 +15,7 @@ import com.diamondsoftware.android.common.ManagesFileUploads;
 import com.diamondsoftware.android.common.HttpFileUpload;
 import com.diamondsoftware.android.common.HttpFileUploadParameters;
 import com.diamondsoftware.android.common.Utils;
+import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDrawerCallbacks;
@@ -116,6 +117,11 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		if(MasseurMainActivity.mSingleton!=null) {
+            Intent intent=new Intent(getActivity(),MasseurSocketService.class);
+            intent.setAction(MasseurMainActivity.ACTION_STARTING_FROM_ACTIVITY_MASSEUR);
+            getActivity().startService(intent);			
+		}
 	}
 
 	/*

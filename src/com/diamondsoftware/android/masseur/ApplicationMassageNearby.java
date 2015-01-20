@@ -40,9 +40,9 @@ public class ApplicationMassageNearby extends Application {
 		mSingletonApp=this;
 
         // The following line triggers the initialization of ACRA
-       // ACRA.init(this);
+        ACRA.init(this);
 	}
-	public static final int SERVERPORT = 8080;
+	//public static final int SERVERPORT = 8080;
 	public static final int NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS=5000;
 	
     public static final int MAX_ATTEMPTS = 5;

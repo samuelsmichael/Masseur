@@ -90,6 +90,7 @@ public class MasseurListActivity extends Activity
    			   mProgressDialog = ProgressDialog.show(this,"Working ...","Logging in "+mSettingsManager.getCurrentClientUserName().trim(),true,false,null);
     	   }
        } else {
+    	   new AcquireDataRemotelyAsynchronously("moi~"+ mSettingsManager.getCurrentClientUserName(), this, this);
     	   mSettingsManager.setChatId(String.valueOf(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmUserId()));
     	   getActionBar().setTitle(ApplicationMassageNearby.mSingletonApp.mItemClientMe.getmName());
        }
@@ -229,7 +230,7 @@ public class MasseurListActivity extends Activity
 		String[] array = keyname.split("\\~", -1);
 		String key=array[0];
 		String name=array[1];
-		if(key.equals("moi")) {
+		if(key.equals("moi") && mProgressDialog!=null) {
 			this.mProgressDialog.dismiss();
 		}
 		if(data!=null && data.size()>0) {

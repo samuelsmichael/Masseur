@@ -57,7 +57,20 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 	String PrivatePicture2URL;
 	String PrivatePicture3URL;
 	String PrivatePicture4URL;
+	int Port;
 
+	/**
+	 * @return the port
+	 */
+	public int getPort() {
+		return Port;
+	}
+	/**
+	 * @param port the port to set
+	 */
+	public void setPort(int port) {
+		Port = port;
+	}
 	/**
 	 * @return the isCertified
 	 */
@@ -176,9 +189,11 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 	public String getServices() {
 		StringBuilder sb=new StringBuilder();
 		String carrot="";
-		for(String svc: Services) {
-			sb.append(carrot+svc);
-			carrot="^";
+		if(Services!=null) {
+			for(String svc: Services) {
+				sb.append(carrot+svc);
+				carrot="^";
+			}
 		}
 		return sb.toString();
 	}

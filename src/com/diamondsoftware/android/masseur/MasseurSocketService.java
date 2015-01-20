@@ -28,6 +28,7 @@ import com.diamondsoftware.android.common.Logger;
 import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
+import com.google.android.gms.common.data.e;
 
 
 public class MasseurSocketService extends Service implements 
@@ -47,6 +48,7 @@ public class MasseurSocketService extends Service implements
 	Hashtable<Integer,Socket> pendingSockets = new Hashtable<Integer,Socket>();
 	String mPendingLocalIpAddress;
 	LocationHelper mLocationHelper;
+	int mServerSocketPort;
 
 	public MasseurSocketService() {
 	}
@@ -161,9 +163,12 @@ public class MasseurSocketService extends Service implements
 						String bbLong=array[3];
 						url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(this)+"/MassageNearby/Masseur.aspx"+"?Action=set&UserId="+ mItemMasseurMe.getmUserId()+"&Latitude="+bbLat + "&Longitude="+bbLong;
 					} else {
-						
-					
-					return null;
+						if(key.equals("registerport")) {
+							String port=array[2];
+							url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(this)+"/MassageNearby/Masseur.aspx"+"?Action=set&UserId="+ mItemMasseurMe.getmUserId()+"&Port="+port;
+						} else {				
+							return null;
+						}
 					}
 				}
 			}
@@ -203,11 +208,27 @@ public class MasseurSocketService extends Service implements
 				mInetAddress=mPendingLocalIpAddress;
 				mPendingLocalIpAddress=null;
 		       	try {
-		       		mServerSocket = new ServerSocket(ApplicationMassageNearby.SERVERPORT);
+		       		if(mServerSocket != null) {
+		       			mServerSocket.close();
+		       		}
+		       		mServerSocket = new ServerSocket(0);//ApplicationMassageNearby.SERVERPORT);
+		    		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",this).log("About ready to create a ServerSocket", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+
+		       		mServerSocketPort=mServerSocket.getLocalPort();
+		           	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously(
+		           			"registerport~"+ 
+		           					mSettingsManager.getMasseurName()+"~"+
+		           					String.valueOf(mServerSocketPort), 
+		           			MasseurSocketService.this, MasseurSocketService.this);
+
+		    		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",this).log("Created ServerSocket on port: "+mServerSocketPort, com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 		       		mSocketListenerThread=new SocketListenerThread();
 		       		Thread thread=new Thread(mSocketListenerThread);
 		       		thread.start();
 		       	} catch (IOException e) {
+		       		Log.e("e","Failed procurring a socket listener. Msg: "+ e.toString());
+		    		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",this).log("Failed creating port. Msg: "+e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+
 		       		// TODO What if we're not connected to the Internet?  We didn't do any of this until we got connectivity, so this shouldn't happen.
 		       	}		
 		    	mLocationHelper.getNextLocationReadingJustOnce(this);
@@ -219,6 +240,10 @@ public class MasseurSocketService extends Service implements
 				} else {
 					if(key.equals("newlocation")) {
 						mItemMasseurMe=(ItemMasseur)data.get(jdIndex);
+					} else {
+						if(key.equals("registerport")) {
+							mItemMasseurMe=(ItemMasseur)data.get(jdIndex);
+						}
 					}
 				}
 			}
@@ -233,7 +258,10 @@ public class MasseurSocketService extends Service implements
             	int zz=3;
             	int qqa=zz;
             	try {
+		    		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",MasseurSocketService.this).log("About ready to issue ServerSocket.accept()", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+
             		Socket clientSocket = mServerSocket.accept();
+		    		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",MasseurSocketService.this).log("Accepted client: "+clientSocket.toString(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
             		
         	    	if(this.isMyActivityRunning()) {
         	    		MasseurMainActivity.mSingleton.addNewClientSocket(clientSocket, mItemMasseurMe.getmName(), mItemMasseurMe.getmUserId());
@@ -256,7 +284,7 @@ public class MasseurSocketService extends Service implements
         	    	int bbhbb=andsowhyarentwegettinghere;
             	} catch (IOException e) {
             		mInetAddress=null;
-            		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_INFORMATION);
+            		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
             		keepGoing=false;
             	}
             }
@@ -320,11 +348,13 @@ public class MasseurSocketService extends Service implements
 			mNetworkPollingTimer = null;
 		}
 	}	
+	int nbrOfConsecutiveDontReenters=0;
 	private void startMyNetworkPollingTimer() {
 		stopMyNetworkPollingTimer();
 		getMyNetWorkPollingTimer().schedule(new TimerTask() {
 			public void run() {				
 				if(!mDontReenter) {
+					nbrOfConsecutiveDontReenters=0;
 					 NetworkInfo networkInfo =mConnectivityManager.getActiveNetworkInfo ();
 					 if(networkInfo!=null && networkInfo.isConnected()) {
 						 mPendingLocalIpAddress=getLocalIpAddress();
@@ -334,6 +364,11 @@ public class MasseurSocketService extends Service implements
 					       	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously("moi~"+ mSettingsManager.getMasseurName(), MasseurSocketService.this, MasseurSocketService.this);
 						 }
 					 }
+				} else {
+					nbrOfConsecutiveDontReenters++;
+					if(nbrOfConsecutiveDontReenters>50) {
+						mDontReenter=false;
+					}
 				}
 			}
 		}, ApplicationMassageNearby.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS, ApplicationMassageNearby.NETWORK_STATUS_POLLING_INTERVAL_IN_MILLISECONDS);

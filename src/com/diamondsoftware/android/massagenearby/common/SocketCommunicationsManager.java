@@ -15,10 +15,12 @@ import java.util.concurrent.Semaphore;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.diamondsoftware.android.common.GlobalStaticValues;
+import com.diamondsoftware.android.common.Logger;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
 import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
@@ -36,10 +38,12 @@ public class SocketCommunicationsManager  {
 	private int mPendingACKs;
 	private Object mSyncObject=new Object();
 	private int mCountdownAwaitingACKs;
+	private Context mContext;
 	private static final String TAG="TAG_SocketCommunicationsManager";
 	
 	
-	public SocketCommunicationsManager(Socket socket, ChatPageManager chatPageManager, ItemUser itemUserClient, ItemUser itemUserMe) {
+	public SocketCommunicationsManager(Socket socket, ChatPageManager chatPageManager, ItemUser itemUserClient, ItemUser itemUserMe, Context context) {
+		mContext=context;
 		mSocket=socket;
 		mChatPageManager=chatPageManager;
 		mItemUserME=itemUserMe;
@@ -77,14 +81,19 @@ public class SocketCommunicationsManager  {
 	            try {
 	                InetAddress serverAddr = InetAddress.getByName(mIpAddress);
 	                Log.d("ClientActivity", "C: Connecting...");
-	                Socket soket= new Socket(serverAddr, com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby.SERVERPORT);
+		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Connecting to ServerSocket off of: ServerAddress-"+serverAddr.toString()+"; Port-"+mMasseur.getPort(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+
+	                Socket soket= new Socket(serverAddr, mMasseur.getPort());
+					new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Success connecting-"+soket.toString(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 	                mMasseur.setmSocket(soket);
 	                mMasseur.setmConnected(true);
 	            } catch (UnknownHostException e) {
+		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Failed connecting. Msg: "+e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 	                Log.e("ClientActivity", "C: Error", e);
 	                mMasseur.setmConnected(false);         
 	                errMessage=e.getMessage();
 	            } catch (IOException e) {
+		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Failed connecting. Msg: "+e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 	                Log.e("ClientActivity", "C: Error", e);
 	                mMasseur.setmConnected(false);                    
 	                errMessage=e.getMessage();

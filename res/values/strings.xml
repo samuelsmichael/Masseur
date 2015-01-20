@@ -14,13 +14,13 @@
     
     <string name="title_activity_activity_chat">ActivityChat</string>
     <string name="title_masseur_detail">Masseur Detail</string>
-    <string name="app_name">Masseur</string>
+    <string name="app_name">Massage Nearby</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
+    <string name="action_example">Log off</string>
     <string name="action_settings">Settings</string>
     <string name="homepage_getcertified"><u>Get Certified</u></string>
     <string name="homepage_renewsubscription"><u>Renew Now</u></string>
