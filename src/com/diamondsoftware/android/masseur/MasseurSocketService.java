@@ -286,6 +286,10 @@ public class MasseurSocketService extends Service implements
             		mInetAddress=null;
             		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
             		keepGoing=false;
+            	} catch (NullPointerException e2) {
+            		mInetAddress=null;
+            		new Logger(mSettingsManager.getLoggingLevel(),"SocketListenerThread",MasseurSocketService.this).log("Failed accepting client socket request: "+ e2.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+            		keepGoing=false;
             	}
             }
 			mSocketListenerThread=null;
@@ -313,23 +317,7 @@ public class MasseurSocketService extends Service implements
 		}
 	}
 
-    private String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                    	String hostAddress=inetAddress.getHostAddress().toString();
-                    	return hostAddress; 
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            Log.e(TAG, ex.toString());
-        }
-        return null;
-    }
+ 
 
     
 	private Timer getMyNetWorkPollingTimer() {
@@ -357,7 +345,7 @@ public class MasseurSocketService extends Service implements
 					nbrOfConsecutiveDontReenters=0;
 					 NetworkInfo networkInfo =mConnectivityManager.getActiveNetworkInfo ();
 					 if(networkInfo!=null && networkInfo.isConnected()) {
-						 mPendingLocalIpAddress=getLocalIpAddress();
+						 mPendingLocalIpAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress();
 						 if(!mPendingLocalIpAddress.equals(mInetAddress)) {
 					        // Tell web server that we're here, and here's my inet address
 							mDontReenter=true;											

@@ -31,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.UnderlineSpan;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

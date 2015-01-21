@@ -332,7 +332,17 @@ public class MasseurMainActivity extends FragmentActivity
 	    super.onBackPressed();
 	    // turn on the Navigation Drawer image; 
 	    // this is called in the LowerLevelFragments
-	    mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
+	    int count=getFragmentManager().getBackStackEntryCount();
+	    if(count==0) {
+	    	mItemMasseur_me = null;
+	    	MasseurMainActivity.IS_ALREADY_IN_LOGIN=false;
+	    	if(ApplicationMassageNearby.mSingletonApp!=null) {
+	    		ApplicationMassageNearby.mSingletonApp.mItemClientMe=null;
+	    	}
+	    	finish();
+	    } else {
+	    	mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
+	    }
 	}
 	
     public void onSectionAttached(int number) {

@@ -17,6 +17,7 @@ import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.massagenearby.model.ParsesJsonClient;
 import com.diamondsoftware.android.massagenearby.model.ParsesJsonMasseur;
 import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
+import com.diamondsoftware.android.masseur.MasseurMainActivity;
 import com.diamondsoftware.android.masseur.R;
 
 
@@ -75,6 +76,28 @@ public class MasseurListActivity extends Activity
 		mTellNewMasseurs=needsToKnowAboutNewMasseurs;
 		new AcquireDataRemotelyAsynchronously("all~", this, this);
 	}
+	
+	@Override
+	public void onBackPressed() {
+	    super.onBackPressed();
+	    // turn on the Navigation Drawer image; 
+	    // this is called in the LowerLevelFragments
+	    int count=getFragmentManager().getBackStackEntryCount();
+	    if(count==0) {
+	    	if(ApplicationMassageNearby.mSingletonApp!=null) {
+	    		ApplicationMassageNearby.mSingletonApp.mItemClientMe=null;
+	    	}
+	    	if(MasseurMainActivity.mSingleton != null
+					&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
+	    		MasseurMainActivity.mSingleton.mItemMasseur_me =null;
+	    	}
+	    	MasseurMainActivity.IS_ALREADY_IN_LOGIN=false;
+
+	    	finish();
+	    }
+	}
+	
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
