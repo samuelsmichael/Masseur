@@ -27,6 +27,7 @@ public class ParsesJsonClient extends ParsesJson {
 			item.setmUserId(jsonObject.getInt("UserId"));
 			item.setPassword(jsonObject.getString("Password"));
 			item.setEmail(jsonObject.getString("Email"));
+			item.setPort(jsonObject.getInt("Port"));
 			items.add(item);
 		}
 		return items;

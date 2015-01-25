@@ -1,5 +1,7 @@
 package com.diamondsoftware.android.massagenearby.model;
 
+import java.net.Socket;
+
 public abstract class ItemUser {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -13,6 +15,27 @@ public abstract class ItemUser {
 	protected String mURL;
 	protected String Password;
 	protected String Email;
+	int Port;
+	Socket mSocket;
+
+	public Socket getmSocket() {
+		return mSocket;
+	}
+	public void setmSocket(Socket mSocket) {
+		this.mSocket = mSocket;
+	}
+	/**
+	 * @return the port
+	 */
+	public int getPort() {
+		return Port;
+	}
+	/**
+	 * @param port the port to set
+	 */
+	public void setPort(int port) {
+		Port = port;
+	}
 	/**
 	 * @return the email
 	 */

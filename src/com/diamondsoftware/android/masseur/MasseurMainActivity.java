@@ -58,6 +58,7 @@ public class MasseurMainActivity extends FragmentActivity
         com.diamondsoftware.android.massagenearby.common.MessagesFragment.OnFragmentInteractionListener,
         ChatPageManager, ManagesFileUploads {
 	
+	public final static String TAG_FRAGMENT_HOME_PAGE="TAG_FRAGMENT_HOME_PAGE";
 	public static MasseurMainActivity mSingleton=null;
 	private SettingsManager mSettingsManager;
 	public ItemMasseur mItemMasseur_me;
@@ -160,10 +161,11 @@ public class MasseurMainActivity extends FragmentActivity
 		                	   //TODO can't allow blanks here
 		                	   MasseurMainActivity.mSingleton.mSettingsManager.setMasseurName(mEditText.getText().toString().trim());		    
 		                       
+		                	   /*
 		                       Intent intent=new Intent(MasseurMainActivity.this,MasseurSocketService.class);
 		                       intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
 		                       startService(intent);
-
+*/
 		                  }
 		               })
 		               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -235,7 +237,7 @@ public class MasseurMainActivity extends FragmentActivity
 		//        }
 		        mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
 		        fragmentManager.beginTransaction()
-		                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
+		                .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager),TAG_FRAGMENT_HOME_PAGE)
 		                .addToBackStack(null)
 		                .commit();
 			} else {
@@ -332,17 +334,19 @@ public class MasseurMainActivity extends FragmentActivity
 	    super.onBackPressed();
 	    // turn on the Navigation Drawer image; 
 	    // this is called in the LowerLevelFragments
-	    int count=getFragmentManager().getBackStackEntryCount();
-	    if(count==0) {
+	    HomePageFragment fragment=null;
+	    try {
+	    	fragment = (HomePageFragment) getSupportFragmentManager().findFragmentByTag(this.TAG_FRAGMENT_HOME_PAGE);
+	    } catch (Exception e) {}
+	    if (fragment != null) { // and then you define a method allowBackPressed with the logic to allow back pressed or not
 	    	mItemMasseur_me = null;
 	    	MasseurMainActivity.IS_ALREADY_IN_LOGIN=false;
 	    	if(ApplicationMassageNearby.mSingletonApp!=null) {
 	    		ApplicationMassageNearby.mSingletonApp.mItemClientMe=null;
 	    	}
-	    	finish();
-	    } else {
-	    	mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
+	        finish();
 	    }
+    	mNavigationDrawerFragment.setDrawerIndicatorEnabled(true);
 	}
 	
     public void onSectionAttached(int number) {

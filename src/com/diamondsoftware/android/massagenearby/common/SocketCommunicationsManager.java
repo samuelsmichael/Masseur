@@ -2,6 +2,7 @@ package com.diamondsoftware.android.massagenearby.common;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import  com.diamondsoftware.android.massagenearby.common.CommonMethods;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -23,6 +24,7 @@ import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.common.Logger;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
+import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.MasseurMainActivity;
 import com.diamondsoftware.android.masseur.MasseurSocketService;
@@ -34,7 +36,7 @@ public class SocketCommunicationsManager  {
 	private ItemUser mItemUserClient;
 	private ItemUser mItemUserME;
 	Timer mTimer;
-	static int NBR_OF_SECONDS_ALLOWED_FOR_RESPONSE=5;
+	static int NBR_OF_SECONDS_ALLOWED_FOR_RESPONSE=15;
 	private int mPendingACKs;
 	private Object mSyncObject=new Object();
 	private int mCountdownAwaitingACKs;
@@ -52,8 +54,8 @@ public class SocketCommunicationsManager  {
         mCountdownAwaitingACKs=0;
 		if(mSocket==null) {
         	Semaphore stick2=new Semaphore(0);
-        	com.diamondsoftware.android.massagenearby.model.ItemMasseur itemMasseur=(com.diamondsoftware.android.massagenearby.model.ItemMasseur)itemUserClient;
-        	ClientThread ct=new ClientThread(itemMasseur,stick2);
+        	ItemUser itemUser=itemUserMe;
+        	ClientThread ct=new ClientThread(itemUser,stick2,mContext);
             Thread cThread = new Thread(ct);
             cThread.start();
             try {
@@ -61,43 +63,54 @@ public class SocketCommunicationsManager  {
             } catch (InterruptedException e) {
             	return;
             }
-			mSocket=itemMasseur.getmSocket();
+			mSocket=itemUser.getmSocket();
 		}        
 
         new Thread(new ClientThreadReceive()).start();
 	}
 	   public class ClientThread implements Runnable {
 	    	String mIpAddress;
-	    	com.diamondsoftware.android.massagenearby.model.ItemMasseur mMasseur;
+	    	Context mContext;
+	    	ItemUser mUser;
 	    	Semaphore mStick2;
 	    	String errMessage=null;
-	    	public ClientThread(com.diamondsoftware.android.massagenearby.model.ItemMasseur masseur,Semaphore stick2) {
-	    		mIpAddress=masseur.getmURL();
-	    		mMasseur=masseur;
+	    	public ClientThread(com.diamondsoftware.android.massagenearby.model.ItemUser user,Semaphore stick2, Context context) {
+	    		mIpAddress=user.getmURL();
+	    		mUser=user;
 	    		mStick2=stick2;
+	    		mContext=context;
 	    	}
 	  
 	        public void run() {
 	            try {
-	                InetAddress serverAddr = InetAddress.getByName(mIpAddress);
+	                InetAddress serverAddr = InetAddress.getByName(CommonMethods.getBaseURLForSocketAttaching(mContext,mIpAddress));
 	                Log.d("ClientActivity", "C: Connecting...");
-		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Connecting to ServerSocket off of: ServerAddress-"+serverAddr.toString()+"; Port-"+mMasseur.getPort(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Connecting to ServerSocket off of: ServerAddress-"+serverAddr.toString()+"; Port-"+mUser.getPort(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 
-	                Socket soket= new Socket(serverAddr, mMasseur.getPort());
+	                Socket soket= new Socket( serverAddr, mUser.getPort());
 					new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Success connecting-"+soket.toString(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
-	                mMasseur.setmSocket(soket);
-	                mMasseur.setmConnected(true);
+	                mUser.setmSocket(soket);
+	                if(mUser instanceof ItemMasseur) {
+	                	((ItemMasseur)mUser).setmConnected(true);
+	                }
 	            } catch (UnknownHostException e) {
 		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Failed connecting. Msg: "+e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 	                Log.e("ClientActivity", "C: Error", e);
-	                mMasseur.setmConnected(false);         
+	                if(mUser instanceof ItemMasseur) {
+	                	((ItemMasseur)mUser).setmConnected(false);
+	                }
 	                errMessage=e.getMessage();
 	            } catch (IOException e) {
 		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Failed connecting. Msg: "+e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 	                Log.e("ClientActivity", "C: Error", e);
-	                mMasseur.setmConnected(false);                    
+	                if(mUser instanceof ItemMasseur) {
+	                	((ItemMasseur)mUser).setmConnected(false);
+	                }
 	                errMessage=e.getMessage();
 	            }
+                if(mUser instanceof ItemMasseur) {
+                	//TODO: indicate online status? or let socket server do it
+                }
 	           	mStick2.release();               
 	        }
 	    }
@@ -125,14 +138,16 @@ public class SocketCommunicationsManager  {
 		            String line = null;
 		            while ((line = in.readLine()) != null) {
                     	String[] sa=line.split("\\~", -1);
-                    	String name=sa[0];
-                    	String id=sa[1];
-                    	String command=sa[2];
+                    	String fromName=sa[0];
+                    	String fromUserId=sa[1];
+                    	String toName=sa[2];
+                    	String toUserId=sa[3];
+                    	String command=sa[4];
                 		if(command.equals(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG)) {
-                        	String msg=sa[3];
+                        	String msg=sa[5];
                         	String remName=mItemUserClient.getmName();
-                    		mItemUserClient.setmName(name);
-                    		mItemUserClient.setmUserId(Integer.valueOf(id));
+                    		mItemUserClient.setmName(fromName);
+                    		mItemUserClient.setmUserId(Integer.valueOf(fromUserId));
                 			ContentValues values = new ContentValues(2);
                 			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_MSG, msg);
                 			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_FROM, String.valueOf(mItemUserClient.getmUserId()));
@@ -173,8 +188,11 @@ public class SocketCommunicationsManager  {
      * Make msg null, if it's not pertinent
      */
 	public void doSend(String transactionType,String msg) throws Exception {
-		String txt=getmItemUserME().getmName()+"~"+getmItemUserME().getmUserId()+"~"+transactionType+"~"+(msg==null?"":msg);   	
-		if(transactionType.equals(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG)) {
+		String txt=
+				getmItemUserME().getmName()+"~"+getmItemUserME().getmUserId()+"~"+ 
+				getmItemUserClient().getmName()+"~"+getmItemUserClient().getmUserId()+ "~"+
+				transactionType+"~"+(msg==null?"":msg)+"\r";   	
+		if(transactionType.equals(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG)||transactionType.equals(GlobalStaticValues.COMMAND_IAM)) {
 			mPendingACKs++;
 			mCountdownAwaitingACKs+=NBR_OF_SECONDS_ALLOWED_FOR_RESPONSE;
 			if(mPendingACKs==1) {
@@ -186,7 +204,8 @@ public class SocketCommunicationsManager  {
     		try {
                 PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket
                         .getOutputStream())), true);
-                out.println(txt);  
+                out.println(txt);
+//                out.flush();
                 return;
     		} catch (IOException e) {
     			Log.e( TAG, "Failed on attempt " + i + ":" + e);

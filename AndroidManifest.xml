@@ -55,14 +55,7 @@
             android:enabled="true"
             android:exported="false" >
         </service>
-        <receiver
-            android:name=".BootCompleteReceiver"
-            android:enabled="true"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+
         <activity
             android:name="com.diamondsoftware.android.client.MasseurListActivity"
             android:label="@string/app_name" >

@@ -211,8 +211,9 @@ public class MasseurSocketService extends Service implements
 		       		if(mServerSocket != null) {
 		       			mServerSocket.close();
 		       		}
-		       		mServerSocket = new ServerSocket(0);//ApplicationMassageNearby.SERVERPORT);
 		    		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",this).log("About ready to create a ServerSocket", com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+		       		mServerSocket = new ServerSocket(0);//ApplicationMassageNearby.SERVERPORT);
+		    		new Logger(mSettingsManager.getLoggingLevel(),"MasseurSocketService",this).log("Created a ServerSocket with port: " + (mServerSocket==null?"":""+mServerSocket.getLocalPort()), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 
 		       		mServerSocketPort=mServerSocket.getLocalPort();
 		           	new com.diamondsoftware.android.common.AcquireDataRemotelyAsynchronously(
@@ -345,7 +346,7 @@ public class MasseurSocketService extends Service implements
 					nbrOfConsecutiveDontReenters=0;
 					 NetworkInfo networkInfo =mConnectivityManager.getActiveNetworkInfo ();
 					 if(networkInfo!=null && networkInfo.isConnected()) {
-						 mPendingLocalIpAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress();
+						 mPendingLocalIpAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress(MasseurSocketService.this);
 						 if(!mPendingLocalIpAddress.equals(mInetAddress)) {
 					        // Tell web server that we're here, and here's my inet address
 							mDontReenter=true;											

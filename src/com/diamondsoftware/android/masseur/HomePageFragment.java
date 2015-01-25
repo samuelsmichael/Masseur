@@ -11,12 +11,15 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.diamondsoftware.android.client.MasseurListActivity;
+import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.common.ManagesFileUploads;
 import com.diamondsoftware.android.common.HttpFileUpload;
 import com.diamondsoftware.android.common.HttpFileUploadParameters;
 import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.SettingsManager;
+import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
+import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
 import com.diamondsoftware.android.masseur.NavigationDrawerFragment.NavigationDrawerCallbacks;
 
@@ -104,6 +107,7 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 		super.onAttach(activity);
         try {
             mCallbacks = (NavigationDrawerCallbacks) activity;
+            
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }		
@@ -119,9 +123,11 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		if(MasseurMainActivity.mSingleton!=null) {
+			/*
             Intent intent=new Intent(getActivity(),MasseurSocketService.class);
             intent.setAction(MasseurMainActivity.ACTION_STARTING_FROM_ACTIVITY_MASSEUR);
             getActivity().startService(intent);			
+            */
 		}
 	}
 
@@ -245,6 +251,17 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 		displayMasseurImage(false);
 		GregorianCalendar bdate;
 		ItemMasseur im = MasseurMainActivity.mSingleton.mItemMasseur_me;
+    	mSettingsManager.setChatId(String.valueOf(im.getmUserId()));
+    	ItemClient ic=new ItemClient();
+
+		SocketCommunicationsManager ctr=new SocketCommunicationsManager(null, (MasseurMainActivity)getActivity(), ic, im,getActivity());
+		try {
+			ctr.doSend(GlobalStaticValues.COMMAND_IAM, "");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		getActivity().getActionBar().setTitle(im.getmName());
 		tvHeight.setText(im.getHeight());
 		if(!Utils.isNullDate(im.getSubscriptionEndDate())) {

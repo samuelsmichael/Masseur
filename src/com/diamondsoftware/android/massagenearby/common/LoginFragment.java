@@ -198,6 +198,9 @@ com.diamondsoftware.android.common.DataGetter {
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {	
 		super.onViewCreated(view, savedInstanceState);
 		if(mSettingsManager.getMasseurName()!=null) {
+				finishOnViewCreated();
+		}
+		/* what is this bs?
 			if (MasseurMainActivity.mSingleton != null
 					&& MasseurMainActivity.mSingleton.mItemMasseur_me != null) {
 				finishOnViewCreated();
@@ -223,6 +226,7 @@ com.diamondsoftware.android.common.DataGetter {
 		} else {
 			finishOnViewCreated();
 		}
+		*/
 	}
 /*
  * 		                	   MasseurMainActivity.mSingleton.mSettingsManager.setMasseurName(mEditText.getText().toString().trim());		    
@@ -242,7 +246,7 @@ com.diamondsoftware.android.common.DataGetter {
 		// 10.0.0.253 when wifi on my computer
 		String url=null;
 		if(key.equals("login")) {
-			String ipAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress();
+			String ipAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress(getActivity());
 			url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(getActivity())+"/MassageNearby/Masseur.aspx"+"?Name="+URLEncoder.encode(name)+"&IsDoingLogin=true&IPAddress="+URLEncoder.encode(ipAddress);
 		}
 		ArrayList<Object> data=null;
@@ -306,9 +310,11 @@ com.diamondsoftware.android.common.DataGetter {
 					if (MasseurMainActivity.mSingleton != null) {
 						MasseurMainActivity.mSingleton.mItemMasseur_me=masseur;
 					}
+					/*
 	                Intent intent=new Intent(getActivity(),MasseurSocketService.class);
 	                intent.setAction(GlobalStaticValuesMassageNearby.ACTION_CLIENT_IS_NOW_AVAILABLE);
 	                getActivity().startService(intent);
+	                */
 				} else {
 					mSettingsManager.setCurrentClientUserName(client.getmName());
 					if(ApplicationMassageNearby.mSingletonApp!=null) {

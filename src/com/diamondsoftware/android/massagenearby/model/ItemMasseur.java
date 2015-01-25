@@ -1,6 +1,6 @@
 package com.diamondsoftware.android.massagenearby.model;
 
-import java.net.Socket;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,15 +35,9 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 	public void setmIsOnline(boolean mIsOnline) {
 		this.mIsOnline = mIsOnline;
 	}
-	public Socket getmSocket() {
-		return mSocket;
-	}
-	public void setmSocket(Socket mSocket) {
-		this.mSocket = mSocket;
-	}
+
 	int mMasserId;
 	boolean mIsOnline;
-	Socket mSocket;
 	boolean mConnected=false;
 	String MainPictureURL;
 	String CertifiedPictureURL;
@@ -57,20 +51,7 @@ public class ItemMasseur extends ItemUser implements ObtainDBUpdateQueryString {
 	String PrivatePicture2URL;
 	String PrivatePicture3URL;
 	String PrivatePicture4URL;
-	int Port;
 
-	/**
-	 * @return the port
-	 */
-	public int getPort() {
-		return Port;
-	}
-	/**
-	 * @param port the port to set
-	 */
-	public void setPort(int port) {
-		Port = port;
-	}
 	/**
 	 * @return the isCertified
 	 */

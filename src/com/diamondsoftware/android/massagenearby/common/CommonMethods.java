@@ -11,4 +11,12 @@ public class CommonMethods {
 			return "listplus.no-ip.org";
 		}
 	}
+	public static String getBaseURLForSocketAttaching(Context context, String mainOne) {
+		 String ssid=com.diamondsoftware.android.common.CommonMethods.getCurrentSsid(context);
+		 if(ssid!=null && ssid.indexOf("HOME-B608")!=-1) {
+			return "10.0.0.253";
+		} else {
+			return mainOne;
+		}
+	}
 }

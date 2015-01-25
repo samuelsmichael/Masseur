@@ -221,7 +221,7 @@ public class MasseurListActivity extends Activity
 			String key=array[0];
 			String name=array[1];
 			// 10.0.0.253 when wifi on my computer
-			String ipAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress();
+			String ipAddress=com.diamondsoftware.android.common.CommonMethods.getLocalIpAddress(this);
 			String url=null;
 			if(key.equals("moi")) {
 				url="http://"+com.diamondsoftware.android.massagenearby.common.CommonMethods.getBaseURL(this)+"/MassageNearby/Client.aspx"+"?Name="+URLEncoder.encode(name)+"&URL="+URLEncoder.encode(ipAddress);
