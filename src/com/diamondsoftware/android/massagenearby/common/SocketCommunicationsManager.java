@@ -196,7 +196,7 @@ public class SocketCommunicationsManager  {
 			mPendingACKs++;
 			mCountdownAwaitingACKs+=NBR_OF_SECONDS_ALLOWED_FOR_RESPONSE;
 			if(mPendingACKs==1) {
-				startMyTimer();
+	//bbhbb			startMyTimer();
 			}
 		}
     	long backoff = ApplicationMassageNearby.BACKOFF_MILLI_SECONDS +  ApplicationMassageNearby.random.nextInt(1000);
