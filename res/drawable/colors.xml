@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="whiteish">#20eeeeee</color>
-    <color name="grayish">#ff2d2d2d</color>
-    <color name="black">#ff000000</color>
-    <color name="white">#FFFFFFFF</color>
+<resources  xmlns:android="http://schemas.android.com/apk/res/android" >
+    <color android:name="whiteish">#20eeeeee</color>
+    <color android:name="grayish">#ff2d2d2d</color>
+    <color android:name="black">#ff000000</color>
+    <color android:name="white">#FFFFFFFF</color>
 </resources>

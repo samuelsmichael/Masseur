@@ -3,6 +3,7 @@ package com.diamondsoftware.android.massagenearby.common;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import  com.diamondsoftware.android.massagenearby.common.CommonMethods;
+import com.diamondsoftware.android.client.MasseurListActivity;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -22,6 +23,7 @@ import android.util.Log;
 
 import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.common.Logger;
+import com.diamondsoftware.android.common.Utils;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
@@ -65,8 +67,9 @@ public class SocketCommunicationsManager  {
             }
 			mSocket=itemUser.getmSocket();
 		}        
-
-        new Thread(new ClientThreadReceive()).start();
+		if(mSocket!=null) {
+			new Thread(new ClientThreadReceive()).start();
+		}
 	}
 	   public class ClientThread implements Runnable {
 	    	String mIpAddress;
@@ -100,6 +103,17 @@ public class SocketCommunicationsManager  {
 	                	((ItemMasseur)mUser).setmConnected(false);
 	                }
 	                errMessage=e.getMessage();
+	                if(MasseurMainActivity.mSingleton!=null) {
+	                	try {
+		                	new Utils.Complainer("Socket connection failure",errMessage,mContext).show(
+		                			((MasseurMainActivity)mContext).getFragmentManager(), "SocketError");
+	                	} catch (Exception ee) {}
+	                } else {
+	                	try {
+		                	new Utils.Complainer("Socket connection failure",errMessage,mContext).show(
+		                			((MasseurListActivity)mContext).getFragmentManager(), "SocketError");
+	                	} catch (Exception ed2) {}
+	                }
 	            } catch (IOException e) {
 		    		new Logger(new SettingsManager(mContext).getLoggingLevel(),"SocketCommunicationsManager",mContext).log("Failed connecting. Msg: "+e.getMessage(), com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 	                Log.e("ClientActivity", "C: Error", e);
@@ -107,6 +121,17 @@ public class SocketCommunicationsManager  {
 	                	((ItemMasseur)mUser).setmConnected(false);
 	                }
 	                errMessage=e.getMessage();
+	                if(MasseurMainActivity.mSingleton!=null) {
+	                	try {
+		                	new Utils.Complainer("Socket connection failure",errMessage,mContext).show(
+		                			((MasseurMainActivity)mContext).getFragmentManager(), "SocketError");
+	                	} catch (Exception ee) {}
+	                } else {
+	                	try {
+		                	new Utils.Complainer("Socket connection failure",errMessage,mContext).show(
+		                			((MasseurListActivity)mContext).getFragmentManager(), "SocketError");
+	                	} catch (Exception ed2) {}
+	                }
 	            }
                 if(mUser instanceof ItemMasseur) {
                 	//TODO: indicate online status? or let socket server do it

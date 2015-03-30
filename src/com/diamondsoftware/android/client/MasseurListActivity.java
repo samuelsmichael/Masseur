@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -77,6 +78,11 @@ public class MasseurListActivity extends Activity
 		new AcquireDataRemotelyAsynchronously("all~", this, this);
 	}
 	
+
+    public android.app.FragmentManager getFraggie() {
+    	return getFragmentManager();
+    }
+    
 	@Override
 	public void onBackPressed() {
 	    super.onBackPressed();

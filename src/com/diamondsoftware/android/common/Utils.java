@@ -184,18 +184,18 @@ public class Utils {
     public static class Complainer extends DialogFragment{
 		private String mTitle;
 		private String mMessage;
-		private Activity mActivity;
+		private Context mContext;
 		public Complainer(String title, String message,
-				Activity activity) {
+				Context context) {
 			super();
 			mTitle = title;
 			mMessage = message;
-			mActivity = activity;
+			mContext = context;
 		}
 		
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(mTitle)
             			.setMessage(mMessage)
 						.setPositiveButton("Okay",
