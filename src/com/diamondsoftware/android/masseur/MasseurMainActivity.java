@@ -216,7 +216,9 @@ public class MasseurMainActivity extends FragmentActivity
 	@Override
 	protected void onDestroy() {
 		mSingleton=null;
-		mSCM.close(SocketCommunicationsManager.REASON_FOR_CLOSE.NORMAL,null);
+		if(mSCM!=null) {
+			mSCM.close(SocketCommunicationsManager.REASON_FOR_CLOSE.NORMAL,null);
+		}
 		((ApplicationMassageNearby)getApplication()).mClients.clear();
 		super.onDestroy();
 	}
@@ -556,16 +558,16 @@ public class MasseurMainActivity extends FragmentActivity
 			((ApplicationMassageNearby)getApplication()).updateListWithNewSCM(user);
 		} else {
 			((ApplicationMassageNearby)getApplication()).mClients.add(user);
-		}
-		mHandler.post(new Runnable() {
+			mHandler.post(new Runnable() {
 
-			@Override
-			public void run() {
-				mNavigationDrawerFragment.openDrawer();
+				@Override
+				public void run() {
+					mNavigationDrawerFragment.openDrawer();
+					
+				}
 				
-			}
-			
-		});
+			});
+		}
 
 		
 	}

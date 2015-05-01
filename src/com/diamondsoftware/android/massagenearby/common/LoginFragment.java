@@ -135,6 +135,7 @@ com.diamondsoftware.android.common.DataGetter {
 		}); 
 
 		cbRememberMe=(CheckBox)viewGroup.findViewById(R.id.cbLoginRememberMe);
+		cbRememberMe.setEnabled(false);
 		btnSubmit=(Button)viewGroup.findViewById(R.id.btnLoginContinue);
 		btnSubmit.setOnClickListener(new View.OnClickListener() {
 			

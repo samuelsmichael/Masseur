@@ -72,7 +72,7 @@ public class ActivityChat extends FragmentActivity implements
 		mItemMasseur=MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId));
 		getActionBar().setTitle(mItemMasseur.getmName());
 
-		if(mSCM!=null) {
+		if(mSCM==null) {
 			try {
 				mSCM=new SocketCommunicationsManager(
 						this, 
