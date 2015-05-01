@@ -2,6 +2,7 @@ package com.diamondsoftware.android.client;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -10,12 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.diamondsoftware.android.common.GlobalStaticValues;
 import com.diamondsoftware.android.massagenearby.common.ChatPageManager;
 import com.diamondsoftware.android.massagenearby.common.GlobalStaticValuesMassageNearby;
 import com.diamondsoftware.android.massagenearby.common.MessagesFragment;
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.common.TellMeWhenYouveGotNewMesseurs;
 import com.diamondsoftware.android.massagenearby.model.ItemMasseur;
+import com.diamondsoftware.android.massagenearby.model.ItemUser;
 import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.DataProvider;
 import com.diamondsoftware.android.masseur.R;
@@ -50,7 +53,7 @@ public class ActivityChat extends FragmentActivity implements
 					mBtnSend.setEnabled(false);
 				}
 				try {
-					mSCM.doSend(com.diamondsoftware.android.common.GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG, msg);
+					mSCM.doSend(com.diamondsoftware.android.common.GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG, msg,mItemMasseur);
 				} catch (Exception e) {
     				mBtnSend.setEnabled(true);
        				return;
@@ -58,7 +61,7 @@ public class ActivityChat extends FragmentActivity implements
 				
 				ContentValues values=new ContentValues(2);
 				values.put(DataProvider.COL_MSG, msg);
-				values.put(DataProvider.COL_TO, String.valueOf(mSCM.getmItemUserClient().getmUserId()));
+				values.put(DataProvider.COL_TO, String.valueOf(mItemMasseur.getmUserId()));
 				getContentResolver().insert(DataProvider.CONTENT_URI_MESSAGES, values);
 				
 				mEditText.setText(null);
@@ -69,14 +72,19 @@ public class ActivityChat extends FragmentActivity implements
 		mItemMasseur=MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId));
 		getActionBar().setTitle(mItemMasseur.getmName());
 
-		mSCM=new SocketCommunicationsManager(
-				null, 
-				this, 
-				mItemMasseur, 
-				ApplicationMassageNearby.mSingletonApp.mItemClientMe,this);
+		if(mSCM!=null) {
+			try {
+				mSCM=new SocketCommunicationsManager(
+						this, 
+						ApplicationMassageNearby.mSingletonApp.mItemClientMe,this, new Handler());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.beginTransaction()
-				.add(R.id.container, MessagesFragment.newInstance(mSCM)).commit();
+				.add(R.id.container, MessagesFragment.newInstance(mItemMasseur)).commit();
 
 	}
 
@@ -100,29 +108,23 @@ public class ActivityChat extends FragmentActivity implements
 	}
 
 	@Override
-	public void lostCommunicationsWith(SocketCommunicationsManager itemUser) {
+	public void lostCommunicationsWith(ItemUser itemUser, SocketCommunicationsManager.REASON_FOR_CLOSE reasonForClose) {
 		// 1. get new list of mMasseurs
 		MasseurListActivity.mSingleton.updateMasseursList(this);
 	}
 
 	@Override
-	public void weveGotANewChat(SocketCommunicationsManager itemUser) {
+	public void weveGotAChat(ItemUser user) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void IveGotNewMesseurs() {
-		// 2. create mSCM, and update my messagesfragment with mSCM
-		mSCM=new SocketCommunicationsManager(
-				null, 
-				this, 
-				MasseurListActivity.mSingleton.getMasseurWhoseUserIdIs(Integer.valueOf(mProfileChatId)), 
-				ApplicationMassageNearby.mSingletonApp.mItemClientMe,this);		
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		MessagesFragment theOldOne = (MessagesFragment)fragmentManager.findFragmentById(R.id.container);
 		fragmentManager.beginTransaction()
 				.remove(theOldOne)
-				.add(R.id.container, MessagesFragment.newInstance(mSCM)).commit();
+				.add(R.id.container, MessagesFragment.newInstance(mItemMasseur)).commit();
 	}
 }

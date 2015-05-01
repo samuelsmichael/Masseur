@@ -5,7 +5,7 @@ import android.content.ContentResolver;
 import com.diamondsoftware.android.massagenearby.model.ItemUser;
 
 public interface ChatPageManager {
-	void lostCommunicationsWith(SocketCommunicationsManager itemUser);
+	void lostCommunicationsWith(ItemUser itemUser, SocketCommunicationsManager.REASON_FOR_CLOSE reasonForClose);
 	ContentResolver getContentResolver();
-	void weveGotANewChat(SocketCommunicationsManager itemUser);
+	void weveGotAChat(ItemUser user);
 }

@@ -250,18 +250,8 @@ public class HomePageFragment extends Fragment implements ManagesFileUploads {
 	private void finishOnViewCreated() {
 		displayMasseurImage(false);
 		GregorianCalendar bdate;
+		MasseurMainActivity.mSingleton.tellSocketServerImHere();
 		ItemMasseur im = MasseurMainActivity.mSingleton.mItemMasseur_me;
-    	mSettingsManager.setChatId(String.valueOf(im.getmUserId()));
-    	ItemClient ic=new ItemClient();
-
-		SocketCommunicationsManager ctr=new SocketCommunicationsManager(null, (MasseurMainActivity)getActivity(), ic, im,getActivity());
-		try {
-			ctr.doSend(GlobalStaticValues.COMMAND_IAM, "");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		getActivity().getActionBar().setTitle(im.getmName());
 		tvHeight.setText(im.getHeight());
 		if(!Utils.isNullDate(im.getSubscriptionEndDate())) {

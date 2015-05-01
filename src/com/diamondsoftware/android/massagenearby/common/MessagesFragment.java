@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.diamondsoftware.android.massagenearby.model.ItemUser;
 import com.diamondsoftware.android.masseur.ApplicationMassageNearby;
 import com.diamondsoftware.android.masseur.DataProvider;
 import com.diamondsoftware.android.masseur.R;
@@ -119,10 +120,10 @@ public class MessagesFragment extends android.support.v4.app.ListFragment implem
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static MessagesFragment newInstance(SocketCommunicationsManager scm) {
+    public static MessagesFragment newInstance(ItemUser scm) {
         MessagesFragment fragment = new MessagesFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, scm.getmItemUserClient().getmUserId());
+        args.putInt(ARG_SECTION_NUMBER, scm.getmUserId());
         fragment.setArguments(args);
         return fragment;
     }

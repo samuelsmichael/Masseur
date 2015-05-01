@@ -190,13 +190,14 @@ com.diamondsoftware.android.common.DataGetter {
 			}
 		} catch (Exception e) {}
 	}
-	
+	Handler mHandler=null;
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onViewCreated(android.view.View, android.os.Bundle)
 	 */
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {	
 		super.onViewCreated(view, savedInstanceState);
+		mHandler=new Handler();
 		if(mSettingsManager.getMasseurName()!=null) {
 				finishOnViewCreated();
 		}
@@ -309,6 +310,14 @@ com.diamondsoftware.android.common.DataGetter {
 					mSettingsManager.setMasseurName(masseur.getmName());	
 					if (MasseurMainActivity.mSingleton != null) {
 						MasseurMainActivity.mSingleton.mItemMasseur_me=masseur;
+				        try {
+				        	MasseurMainActivity.mSingleton.mSCM=new SocketCommunicationsManager(MasseurMainActivity.mSingleton, masseur, MasseurMainActivity.mSingleton,mHandler);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						
 					}
 					/*
 	                Intent intent=new Intent(getActivity(),MasseurSocketService.class);

@@ -30,7 +30,7 @@ public class CommonMethods {
 	                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 	                    InetAddress inetAddress = enumIpAddr.nextElement();	                    
                     	String hostAddress=inetAddress.getHostAddress().toString();
-	            		new Logger(new SettingsManager(context).getLoggingLevel(),"MasseurSocketService",context).log("Got inetaddress: " + hostAddress, com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
+	            //		new Logger(new SettingsManager(context).getLoggingLevel(),"MasseurSocketService",context).log("Got inetaddress: " + hostAddress, com.diamondsoftware.android.common.GlobalStaticValues.LOG_LEVEL_CRITICAL);
 	                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()) {
 	    		    
 	                    	if(Pattern.matches("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", hostAddress)) {

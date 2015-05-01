@@ -12,6 +12,7 @@ import org.acra.ReportingInteractionMode;
 
 import com.diamondsoftware.android.massagenearby.common.SocketCommunicationsManager;
 import com.diamondsoftware.android.massagenearby.model.ItemClient;
+import com.diamondsoftware.android.massagenearby.model.ItemUser;
 
 
 import android.app.Application;
@@ -53,14 +54,14 @@ public class ApplicationMassageNearby extends Application {
 	public boolean isSettingUpMasseur;
 
 	public static ApplicationMassageNearby mSingletonApp=null;
-	public ArrayList<SocketCommunicationsManager> mClients=new ArrayList<SocketCommunicationsManager>();
+	public ArrayList<ItemUser> mClients=new ArrayList<ItemUser>();
 	public Hashtable<Integer,Socket> mPendingSockets=new Hashtable<Integer,Socket>();
 	String[] getAllClientsAsStringArray() {
 		if(mClients!=null) {
 			String[] allClientNames=new String[mClients.size()];
 			int c=0;
-			for(SocketCommunicationsManager ic: mClients) {
-				allClientNames[c++]=ic.getmItemUserClient().getmName();
+			for(ItemUser ic: mClients) {
+				allClientNames[c++]=ic.getmName();
 			}		
 			return allClientNames;
 		} else {
@@ -68,10 +69,10 @@ public class ApplicationMassageNearby extends Application {
 		}
 	}
 	
-	SocketCommunicationsManager getItemClientWhoseUserIdEquals(int userId) {
-		SocketCommunicationsManager retValue=null;
-		for(SocketCommunicationsManager ic: mClients) {
-			if(ic.getmItemUserClient().getmUserId()==userId) {
+	ItemUser getItemClientWhoseUserIdEquals(int userId) {
+		ItemUser retValue=null;
+		for(ItemUser ic: mClients) {
+			if(ic.getmUserId()==userId) {
 				retValue=ic;
 				break;
 			}
@@ -79,18 +80,18 @@ public class ApplicationMassageNearby extends Application {
 		return retValue;
 	}
 	
-	void removeUserFromList(SocketCommunicationsManager scm) {
-		ArrayList<SocketCommunicationsManager> newClients=new ArrayList<SocketCommunicationsManager>();
-		for(SocketCommunicationsManager smcexisting: mClients) {
-			if(smcexisting.getmItemUserClient().getmUserId()!=scm.getmItemUserClient().getmUserId()) {
+	void removeUserFromList(ItemUser user) {
+		ArrayList<ItemUser> newClients=new ArrayList<ItemUser>();
+		for(ItemUser smcexisting: mClients) {
+			if(smcexisting.getmUserId()!=user.getmUserId()) {
 				newClients.add(smcexisting);
 			}
 			mClients=newClients;
 		}
 	}
-	void updateListWithNewSCM(SocketCommunicationsManager scm) {
-		removeUserFromList(scm);
-		mClients.add(scm);
+	void updateListWithNewSCM(ItemUser user) {
+		removeUserFromList(user);
+		mClients.add(user);
 	}
 }
 

@@ -72,6 +72,7 @@ public class MasseurMainActivity extends FragmentActivity
 	public static boolean IS_ALREADY_IN_LOGIN=false;
     Uri mSelectedImageNewMasseurPublicPhoto;
     Uri mCertifiedImage;
+    public SocketCommunicationsManager mSCM=null;
     public static final boolean IS_FORCE_NEWMASSEUR_VALUES=false;
 
 
@@ -87,6 +88,11 @@ public class MasseurMainActivity extends FragmentActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    
+    public void tellSocketServerImHere() {
+		ItemMasseur im = mItemMasseur_me;
+    	mSettingsManager.setChatId(String.valueOf(im.getmUserId()));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +120,7 @@ public class MasseurMainActivity extends FragmentActivity
                 .replace(R.id.container, HomePageFragment.newInstance(mSettingsManager))
                 .commit();
 
+        
 /*        
         if(mSettingsManager.getMasseurName()==null) {
 		    android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -182,12 +189,13 @@ public class MasseurMainActivity extends FragmentActivity
     
     
     public void addNewClientSocket(Socket socket,String name, int userId) {
-    	// TODO
     	/*
+    	// We used to get invoked by the MasseurSocketService
+    	/
     	 * This is a new socket. It doesn't have a ClientMasseur associated with it yet. 
     	 * In other words, we don't know who the Client is who accessed the socket.  The service will have already sent a "Hi. I'm Masseur xxx" record, and
     	 * just needs an acknowledgement (with a name)
-    	 */
+    	 /
 
     	if(this.mItemMasseur_me==null) {
     		mItemMasseur_me=new ItemMasseur();
@@ -197,7 +205,7 @@ public class MasseurMainActivity extends FragmentActivity
     	mSettingsManager.setChatId(String.valueOf(userId));
     	ItemClient ic=new ItemClient();
     	SocketCommunicationsManager ctr=new SocketCommunicationsManager(socket, this, ic, mItemMasseur_me,this);
-
+		*/
     }
     
     
@@ -208,10 +216,7 @@ public class MasseurMainActivity extends FragmentActivity
 	@Override
 	protected void onDestroy() {
 		mSingleton=null;
-		ArrayList<SocketCommunicationsManager> aL=((ApplicationMassageNearby)getApplication()).mClients;
-		for(SocketCommunicationsManager ic: aL) {
-			ic.close();
-		}
+		mSCM.close(SocketCommunicationsManager.REASON_FOR_CLOSE.NORMAL,null);
 		((ApplicationMassageNearby)getApplication()).mClients.clear();
 		super.onDestroy();
 	}
@@ -219,10 +224,10 @@ public class MasseurMainActivity extends FragmentActivity
 	@Override
     public void onNavigationDrawerItemSelected(int position) {
 		if(position>=100) {
-			ArrayList<SocketCommunicationsManager> aL=((ApplicationMassageNearby)getApplication()).mClients;
+			ArrayList<ItemUser> aL=((ApplicationMassageNearby)getApplication()).mClients;
 			if(aL.size()>0) {
-				SocketCommunicationsManager smc=aL.get(position-100);
-				profileClientId=String.valueOf(smc.getmItemUserClient().getmUserId());
+				ItemUser smc=aL.get(position-100);
+				profileClientId=String.valueOf(smc.getmUserId());
 		        // update the main content by replacing fragments
 		        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 		        fragmentManager.beginTransaction()
@@ -350,9 +355,9 @@ public class MasseurMainActivity extends FragmentActivity
 	}
 	
     public void onSectionAttached(int number) {
-    	ArrayList<SocketCommunicationsManager> allMs=((ApplicationMassageNearby)getApplication()).mClients;
+    	ArrayList<ItemUser> allMs=((ApplicationMassageNearby)getApplication()).mClients;
     	if(allMs!=null && allMs.size()>0) {
-    		ItemUser ic= ((ApplicationMassageNearby)getApplication()).getItemClientWhoseUserIdEquals(number).getmItemUserClient();
+    		ItemUser ic= ((ApplicationMassageNearby)getApplication()).getItemClientWhoseUserIdEquals(number);
     		if(ic!=null) {
     			mTitle = ic.getmName();
     		} else {
@@ -400,7 +405,7 @@ public class MasseurMainActivity extends FragmentActivity
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends android.support.v4.app.Fragment {
-    	SocketCommunicationsManager mSCM;
+    	ItemUser mSCM;
     	private EditText msgEdit;
     	private Button btnSend;
 
@@ -415,10 +420,10 @@ public class MasseurMainActivity extends FragmentActivity
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(SocketCommunicationsManager scm,SettingsManager sm) {
+        public static PlaceholderFragment newInstance(ItemUser scm,SettingsManager sm) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, scm.getmItemUserClient().getmUserId());
+            args.putInt(ARG_SECTION_NUMBER, scm.getmUserId());
             fragment.setArguments(args);
             fragment.mSCM=scm;
             return fragment;
@@ -447,7 +452,7 @@ public class MasseurMainActivity extends FragmentActivity
 	           			btnSend.setEnabled(false);
 	    				ItemMasseur im=((MasseurMainActivity)getActivity()).mItemMasseur_me;
 	           			try {
-	           				mSCM.doSend(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG,msg);
+	           				((MasseurMainActivity)getActivity()).mSCM.doSend(GlobalStaticValues.COMMAND_HERES_MY_CHAT_MSG,msg,mSCM);
 	           			} catch (Exception e) {
 		    				btnSend.setEnabled(true);
 	           				return;
@@ -455,7 +460,7 @@ public class MasseurMainActivity extends FragmentActivity
 	           			
             			ContentValues values = new ContentValues(2);
             			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_MSG, msg);
-            			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_TO, String.valueOf(mSCM.getmItemUserClient().getmUserId()));
+            			values.put(com.diamondsoftware.android.masseur.DataProvider.COL_TO, String.valueOf(mSCM.getmUserId()));
             			getActivity().getContentResolver().insert(com.diamondsoftware.android.masseur.DataProvider.CONTENT_URI_MESSAGES, values);
             			
 	           			
@@ -503,50 +508,54 @@ public class MasseurMainActivity extends FragmentActivity
 
 	@Override
 	// Note: this does not occur on the UI thread
-	public void lostCommunicationsWith(final SocketCommunicationsManager itemUser) {
-		mHandler.post(new Runnable() {
-
-			@Override
-			public void run() {
-		        AlertDialog.Builder bld = new AlertDialog.Builder(MasseurMainActivity.this);
-		        bld.setTitle("Communications has been lost with "+itemUser.getmItemUserClient().getmName());
-		        bld.setMessage("Do you want to close the chat window for this user?");
-		        bld.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						((ApplicationMassageNearby)getApplication()).removeUserFromList(itemUser);
-						if(((ApplicationMassageNearby)getApplication()).mClients.size()==0) {
-							finish();
-						} else {
-							android.support.v4.app.Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
-							getSupportFragmentManager().beginTransaction()
-					        	.remove(frag)
-					            .commit();
-						}
-					}
-				});
-		        bld.setNegativeButton("No", new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				});
-		        bld.create().show();
-				
-			}
-			
-		});
+	public void lostCommunicationsWith(final ItemUser itemUser, SocketCommunicationsManager.REASON_FOR_CLOSE reasonForClose) {
 		
+		if(
+				reasonForClose.equals(SocketCommunicationsManager.REASON_FOR_CLOSE.TIMED_OUT)
+		) {
+			mHandler.post(new Runnable() {
+	
+				@Override
+				public void run() {
+			        AlertDialog.Builder bld = new AlertDialog.Builder(MasseurMainActivity.this);
+			        bld.setTitle("Communications has been lost with a user");
+			        bld.setMessage("Do you want to close the chat window for this user?");
+			        bld.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							((ApplicationMassageNearby)getApplication()).removeUserFromList(itemUser);
+							if(((ApplicationMassageNearby)getApplication()).mClients.size()==0) {
+								//nolonger,since I'm not launching automaticallyfinish();
+							} else {
+								android.support.v4.app.Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
+								getSupportFragmentManager().beginTransaction()
+						        	.remove(frag)
+						            .commit();
+							}
+						}
+					});
+			        bld.setNegativeButton("No", new DialogInterface.OnClickListener() {
+	
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			        bld.create().show();
+					
+				}
+				
+			});
+		}
 	}
 
 	@Override
 	// Note: this does not occur on the UI thread
-	public void weveGotANewChat(SocketCommunicationsManager ctr) {
-		if(((ApplicationMassageNearby)getApplication()).getItemClientWhoseUserIdEquals(ctr.getmItemUserClient().getmUserId())!=null) {
-			((ApplicationMassageNearby)getApplication()).updateListWithNewSCM(ctr);
+	public void weveGotAChat(ItemUser user) {
+		if(((ApplicationMassageNearby)getApplication()).getItemClientWhoseUserIdEquals(user.getmUserId())!=null) {
+			((ApplicationMassageNearby)getApplication()).updateListWithNewSCM(user);
 		} else {
-			((ApplicationMassageNearby)getApplication()).mClients.add(ctr);
+			((ApplicationMassageNearby)getApplication()).mClients.add(user);
 		}
 		mHandler.post(new Runnable() {
 
